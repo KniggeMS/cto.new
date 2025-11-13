@@ -1,0 +1,227 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User account model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  profile            Profile?
+  watchlistEntries   WatchlistEntry[]
+  familyMemberships  FamilyMembership[]
+  recommendations    Recommendation[]   @relation("RecommendedBy")
+  recommendationsFor Recommendation[]   @relation("RecommendedTo")
+  sessions           Session[]
+  refreshTokens      RefreshToken[]
+  families           Family[]           @relation("FamilyCreatedBy")
+
+  @@index([email])
+}
+
+// User profile information
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  bio         String?
+  avatar      String?
+  preferences Json? // JSON field for user preferences
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Media item (movie/TV show) with TMDB identifiers
+model MediaItem {
+  id           String    @id @default(cuid())
+  tmdbId       Int       @unique
+  tmdbType     String // 'movie' or 'tv'
+  title        String
+  description  String?
+  posterPath   String?
+  backdropPath String?
+  releaseDate  DateTime?
+  rating       Float?
+  genres       String[] // Array of genre names
+  creators     String[] // Directors/Creators
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  watchlistEntries   WatchlistEntry[]
+  recommendations    Recommendation[]
+  streamingProviders StreamingProvider[]
+
+  @@index([tmdbId])
+  @@index([title])
+}
+
+// Watch status enumeration
+enum WatchStatus {
+  not_watched
+  watching
+  completed
+}
+
+// Watchlist entry for user tracking
+model WatchlistEntry {
+  id          String      @id @default(cuid())
+  userId      String
+  mediaItemId String
+  status      WatchStatus @default(not_watched)
+  rating      Int? // 1-10 personal rating
+  notes       String?
+  dateAdded   DateTime    @default(now())
+  dateUpdated DateTime    @updatedAt
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaItem MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+
+  // Unique constraint: one entry per user per media item
+  @@unique([userId, mediaItemId])
+  @@index([userId])
+  @@index([mediaItemId])
+  @@index([status])
+}
+
+// Family group model
+model Family {
+  id        String   @id @default(cuid())
+  name      String
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  creator     User               @relation("FamilyCreatedBy", fields: [createdBy], references: [id], onDelete: Cascade)
+  members     FamilyMembership[]
+  invitations FamilyInvitation[]
+
+  @@index([createdBy])
+}
+
+// Membership of user in a family
+model FamilyMembership {
+  id       String   @id @default(cuid())
+  userId   String
+  familyId String
+  role     String   @default("member") // "admin", "member"
+  joinedAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  // Unique constraint: user can only belong to family once
+  @@unique([userId, familyId])
+  @@index([userId])
+  @@index([familyId])
+}
+
+// Family invitation model
+model FamilyInvitation {
+  id         String    @id @default(cuid())
+  familyId   String
+  email      String
+  token      String    @unique
+  status     String    @default("pending") // "pending", "accepted", "declined"
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  acceptedAt DateTime?
+
+  // Relations
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([familyId, email])
+  @@index([familyId])
+  @@index([email])
+  @@index([token])
+}
+
+// Recommendation model for sharing between users
+model Recommendation {
+  id            String   @id @default(cuid())
+  mediaItemId   String
+  recommendedBy String
+  recommendedTo String
+  message       String?
+  status        String   @default("pending") // "pending", "accepted", "rejected"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  mediaItem MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+  fromUser  User      @relation("RecommendedBy", fields: [recommendedBy], references: [id], onDelete: Cascade)
+  toUser    User      @relation("RecommendedTo", fields: [recommendedTo], references: [id], onDelete: Cascade)
+
+  @@index([mediaItemId])
+  @@index([recommendedBy])
+  @@index([recommendedTo])
+  @@index([status])
+}
+
+// Session for authentication
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+// Refresh token for token rotation
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+// Streaming provider information for media items
+model StreamingProvider {
+  id          String   @id @default(cuid())
+  mediaItemId String
+  provider    String // e.g., "netflix", "hulu", "prime"
+  url         String?
+  regions     String[] // Array of region codes
+  addedAt     DateTime @default(now())
+
+  // Relations
+  mediaItem MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+
+  @@unique([mediaItemId, provider])
+  @@index([mediaItemId])
+  @@index([provider])
+}
