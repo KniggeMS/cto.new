@@ -13,17 +13,20 @@ Backend API server for the InFocus media tracking platform, built with Node.js, 
 ### Setup
 
 1. **Install dependencies**:
+
 ```bash
 npm install
 ```
 
 2. **Configure database connection**:
-Create `.env` file (or update from `.env.example`):
+   Create `.env` file (or update from `.env.example`):
+
 ```bash
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/infocus_dev"
 ```
 
 3. **Create PostgreSQL database** (if using Docker):
+
 ```bash
 docker run --name postgres-infocus \
   -e POSTGRES_PASSWORD=postgres \
@@ -32,21 +35,25 @@ docker run --name postgres-infocus \
 ```
 
 Then create the database:
+
 ```bash
 docker exec postgres-infocus createdb infocus_dev -U postgres
 ```
 
 4. **Run migrations**:
+
 ```bash
 npm run migrate
 ```
 
 5. **Seed demo data**:
+
 ```bash
 npm run seed
 ```
 
 6. **Start development server**:
+
 ```bash
 npm run dev
 ```
@@ -119,6 +126,7 @@ npm run migrate
 ```
 
 This will:
+
 1. Display a diff of schema changes
 2. Create a new migration file
 3. Apply it to the local database
@@ -148,9 +156,11 @@ npm run seed
 The API provides JWT-based authentication with secure refresh token rotation:
 
 #### POST /auth/register
+
 Register a new user account.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -160,6 +170,7 @@ Register a new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "message": "User registered successfully",
@@ -173,9 +184,11 @@ Register a new user account.
 ```
 
 #### POST /auth/login
+
 Authenticate and receive tokens.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -184,6 +197,7 @@ Authenticate and receive tokens.
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Login successful",
@@ -197,9 +211,11 @@ Authenticate and receive tokens.
 ```
 
 #### POST /auth/refresh
+
 Refresh an expired access token using a valid refresh token.
 
 **Request:**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -207,6 +223,7 @@ Refresh an expired access token using a valid refresh token.
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Token refreshed successfully",
@@ -215,9 +232,11 @@ Refresh an expired access token using a valid refresh token.
 ```
 
 #### POST /auth/logout
+
 Revoke refresh token and clear session.
 
 **Response:**
+
 ```json
 {
   "message": "Logout successful"
@@ -229,9 +248,11 @@ Revoke refresh token and clear session.
 Protected routes require an `Authorization: Bearer <access_token>` header:
 
 #### GET /api/profile
+
 Get the authenticated user's profile.
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -263,13 +284,16 @@ For complete API specification, see [OpenAPI Documentation](docs/openapi.yaml).
 ## Environment Variables
 
 **Required:**
+
 - `DATABASE_URL` - PostgreSQL connection string
 
 **Authentication:**
+
 - `JWT_ACCESS_SECRET` - Secret for signing access tokens
 - `JWT_REFRESH_SECRET` - Secret for signing refresh tokens
 
 **Server:**
+
 - `PORT` - Server port (default: 3001)
 - `NODE_ENV` - Environment mode (development|production)
 - `CORS_ORIGIN` - Allowed CORS origin (development allows all)
@@ -293,11 +317,13 @@ npx prisma validate
 ### Connection Issues
 
 Verify PostgreSQL connection:
+
 ```bash
 npm run prisma:studio
 ```
 
 If it fails to connect, check:
+
 - PostgreSQL is running
 - DATABASE_URL is correct
 - Database exists
@@ -314,11 +340,13 @@ npm run prisma:generate
 ## Database Backup & Recovery
 
 Backup database:
+
 ```bash
 docker exec postgres-infocus pg_dump -U postgres infocus_dev > backup.sql
 ```
 
 Restore from backup:
+
 ```bash
 docker exec -i postgres-infocus psql -U postgres infocus_dev < backup.sql
 ```
@@ -327,14 +355,19 @@ docker exec -i postgres-infocus psql -U postgres infocus_dev < backup.sql
 
 1. Set `DATABASE_URL` to production database
 2. Run migrations:
+
 ```bash
 npm run migrate:prod
 ```
+
 3. Build application:
+
 ```bash
 npm run build
 ```
+
 4. Start server:
+
 ```bash
 node dist/index.js
 ```
@@ -363,6 +396,7 @@ npm run test:coverage
 ### Test Coverage
 
 The test suite covers:
+
 - User registration with validation
 - User login with credential verification
 - Token refresh flow
@@ -374,6 +408,7 @@ The test suite covers:
 ### Postman Collection
 
 Import `docs/postman-collection.json` into Postman for easy API testing:
+
 1. Open Postman
 2. Click "Import" → "File"
 3. Select `docs/postman-collection.json`

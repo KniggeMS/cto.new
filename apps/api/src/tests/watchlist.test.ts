@@ -19,25 +19,21 @@ describe('Watchlist Endpoints', () => {
     await prisma.user.deleteMany();
 
     // Create test user and get access token
-    const registerResponse = await request(app)
-      .post('/auth/register')
-      .send({
-        email: 'watchlist@example.com',
-        password: 'password123',
-        name: 'Watchlist User'
-      });
+    const registerResponse = await request(app).post('/auth/register').send({
+      email: 'watchlist@example.com',
+      password: 'password123',
+      name: 'Watchlist User',
+    });
 
     accessToken = registerResponse.body.accessToken;
     userId = registerResponse.body.user.id;
 
     // Create another test user for unauthorized access tests
-    const otherRegisterResponse = await request(app)
-      .post('/auth/register')
-      .send({
-        email: 'other@example.com',
-        password: 'password123',
-        name: 'Other User'
-      });
+    const otherRegisterResponse = await request(app).post('/auth/register').send({
+      email: 'other@example.com',
+      password: 'password123',
+      name: 'Other User',
+    });
 
     otherAccessToken = otherRegisterResponse.body.accessToken;
     otherUserId = otherRegisterResponse.body.user.id;
@@ -61,12 +57,13 @@ describe('Watchlist Endpoints', () => {
         status: 'not_watched',
         metadata: {
           title: 'Fight Club',
-          description: 'An insomniac office worker and a devil-may-care soapmaker form an underground fight club...',
+          description:
+            'An insomniac office worker and a devil-may-care soapmaker form an underground fight club...',
           posterPath: '/p64JHd3bGjH8qSEp0gyS1BFrP4V.jpg',
           rating: 8.8,
           genres: ['Drama', 'Thriller'],
-          creators: ['David Fincher']
-        }
+          creators: ['David Fincher'],
+        },
       };
 
       const response = await request(app)
@@ -91,8 +88,8 @@ describe('Watchlist Endpoints', () => {
         notes: 'Amazing movie!',
         metadata: {
           title: 'The Shawshank Redemption',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       };
 
       const response = await request(app)
@@ -116,10 +113,10 @@ describe('Watchlist Endpoints', () => {
             {
               provider: 'netflix',
               url: 'https://www.netflix.com/title/123456',
-              regions: ['US', 'CA']
-            }
-          ]
-        }
+              regions: ['US', 'CA'],
+            },
+          ],
+        },
       };
 
       const response = await request(app)
@@ -134,7 +131,7 @@ describe('Watchlist Endpoints', () => {
 
       const mediaItemId = response.body.data.mediaItem.id;
       const providersInDb = await prisma.streamingProvider.findMany({
-        where: { mediaItemId }
+        where: { mediaItemId },
       });
       expect(providersInDb).toHaveLength(1);
       expect(providersInDb[0].provider).toBe('netflix');
@@ -147,14 +144,14 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 1399,
           tmdbType: 'tv',
           title: 'Breaking Bad',
-          genres: ['Crime', 'Drama']
-        }
+          genres: ['Crime', 'Drama'],
+        },
       });
 
       const watchlistData = {
         tmdbId: 1399,
         tmdbType: 'tv',
-        status: 'watching'
+        status: 'watching',
       };
 
       const response = await request(app)
@@ -164,7 +161,7 @@ describe('Watchlist Endpoints', () => {
         .expect(201);
 
       expect(response.body.data.mediaItem.title).toBe('Breaking Bad');
-      
+
       // Check that only one media item exists
       const mediaCount = await prisma.mediaItem.count({ where: { tmdbId: 1399 } });
       expect(mediaCount).toBe(1);
@@ -174,7 +171,7 @@ describe('Watchlist Endpoints', () => {
       const watchlistData = {
         tmdbId: 999999,
         tmdbType: 'movie',
-        status: 'not_watched'
+        status: 'not_watched',
       };
 
       const response = await request(app)
@@ -183,7 +180,9 @@ describe('Watchlist Endpoints', () => {
         .send(watchlistData)
         .expect(400);
 
-      expect(response.body.error).toBe('Media item not found. Please provide metadata to create it.');
+      expect(response.body.error).toBe(
+        'Media item not found. Please provide metadata to create it.',
+      );
     });
 
     it('should return 409 if media already in watchlist', async () => {
@@ -191,8 +190,8 @@ describe('Watchlist Endpoints', () => {
         tmdbId: 550,
         tmdbType: 'movie',
         metadata: {
-          title: 'Fight Club'
-        }
+          title: 'Fight Club',
+        },
       };
 
       // Add first time
@@ -218,8 +217,8 @@ describe('Watchlist Endpoints', () => {
         tmdbType: 'movie',
         rating: 10, // Should be 0-5
         metadata: {
-          title: 'Fight Club'
-        }
+          title: 'Fight Club',
+        },
       };
 
       const response = await request(app)
@@ -236,8 +235,8 @@ describe('Watchlist Endpoints', () => {
         tmdbId: 550,
         tmdbType: 'series', // Should be 'movie' or 'tv'
         metadata: {
-          title: 'Fight Club'
-        }
+          title: 'Fight Club',
+        },
       };
 
       const response = await request(app)
@@ -254,14 +253,11 @@ describe('Watchlist Endpoints', () => {
         tmdbId: 550,
         tmdbType: 'movie',
         metadata: {
-          title: 'Fight Club'
-        }
+          title: 'Fight Club',
+        },
       };
 
-      const response = await request(app)
-        .post('/watchlist')
-        .send(watchlistData)
-        .expect(401);
+      const response = await request(app).post('/watchlist').send(watchlistData).expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -275,8 +271,8 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 550,
           tmdbType: 'movie',
           title: 'Fight Club',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const movie2 = await prisma.mediaItem.create({
@@ -284,8 +280,8 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 278,
           tmdbType: 'movie',
           title: 'The Shawshank Redemption',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const tvShow = await prisma.mediaItem.create({
@@ -293,8 +289,8 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 1399,
           tmdbType: 'tv',
           title: 'Breaking Bad',
-          genres: ['Crime', 'Drama']
-        }
+          genres: ['Crime', 'Drama'],
+        },
       });
 
       await prisma.watchlistEntry.create({
@@ -303,16 +299,16 @@ describe('Watchlist Endpoints', () => {
           mediaItemId: movie1.id,
           status: 'completed',
           rating: 5,
-          notes: 'Great movie!'
-        }
+          notes: 'Great movie!',
+        },
       });
 
       await prisma.watchlistEntry.create({
         data: {
           userId,
           mediaItemId: movie2.id,
-          status: 'not_watched'
-        }
+          status: 'not_watched',
+        },
       });
 
       await prisma.watchlistEntry.create({
@@ -320,8 +316,8 @@ describe('Watchlist Endpoints', () => {
           userId,
           mediaItemId: tvShow.id,
           status: 'watching',
-          notes: 'On season 3'
-        }
+          notes: 'On season 3',
+        },
       });
     });
 
@@ -371,9 +367,7 @@ describe('Watchlist Endpoints', () => {
     });
 
     it('should return 401 without authentication', async () => {
-      const response = await request(app)
-        .get('/watchlist')
-        .expect(401);
+      const response = await request(app).get('/watchlist').expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -383,36 +377,36 @@ describe('Watchlist Endpoints', () => {
     beforeEach(async () => {
       // Create media items
       const movie1 = await prisma.mediaItem.create({
-        data: { tmdbId: 1, tmdbType: 'movie', title: 'Movie 1', genres: [] }
+        data: { tmdbId: 1, tmdbType: 'movie', title: 'Movie 1', genres: [] },
       });
       const movie2 = await prisma.mediaItem.create({
-        data: { tmdbId: 2, tmdbType: 'movie', title: 'Movie 2', genres: [] }
+        data: { tmdbId: 2, tmdbType: 'movie', title: 'Movie 2', genres: [] },
       });
       const movie3 = await prisma.mediaItem.create({
-        data: { tmdbId: 3, tmdbType: 'movie', title: 'Movie 3', genres: [] }
+        data: { tmdbId: 3, tmdbType: 'movie', title: 'Movie 3', genres: [] },
       });
       const movie4 = await prisma.mediaItem.create({
-        data: { tmdbId: 4, tmdbType: 'movie', title: 'Movie 4', genres: [] }
+        data: { tmdbId: 4, tmdbType: 'movie', title: 'Movie 4', genres: [] },
       });
       const movie5 = await prisma.mediaItem.create({
-        data: { tmdbId: 5, tmdbType: 'movie', title: 'Movie 5', genres: [] }
+        data: { tmdbId: 5, tmdbType: 'movie', title: 'Movie 5', genres: [] },
       });
 
       // Create entries with different statuses
       await prisma.watchlistEntry.create({
-        data: { userId, mediaItemId: movie1.id, status: 'completed' }
+        data: { userId, mediaItemId: movie1.id, status: 'completed' },
       });
       await prisma.watchlistEntry.create({
-        data: { userId, mediaItemId: movie2.id, status: 'completed' }
+        data: { userId, mediaItemId: movie2.id, status: 'completed' },
       });
       await prisma.watchlistEntry.create({
-        data: { userId, mediaItemId: movie3.id, status: 'watching' }
+        data: { userId, mediaItemId: movie3.id, status: 'watching' },
       });
       await prisma.watchlistEntry.create({
-        data: { userId, mediaItemId: movie4.id, status: 'not_watched' }
+        data: { userId, mediaItemId: movie4.id, status: 'not_watched' },
       });
       await prisma.watchlistEntry.create({
-        data: { userId, mediaItemId: movie5.id, status: 'not_watched' }
+        data: { userId, mediaItemId: movie5.id, status: 'not_watched' },
       });
     });
 
@@ -441,9 +435,7 @@ describe('Watchlist Endpoints', () => {
     });
 
     it('should return 401 without authentication', async () => {
-      const response = await request(app)
-        .get('/watchlist/stats')
-        .expect(401);
+      const response = await request(app).get('/watchlist/stats').expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -459,16 +451,16 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 550,
           tmdbType: 'movie',
           title: 'Fight Club',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const entry = await prisma.watchlistEntry.create({
         data: {
           userId,
           mediaItemId: movie.id,
-          status: 'not_watched'
-        }
+          status: 'not_watched',
+        },
       });
 
       entryId = entry.id;
@@ -476,7 +468,7 @@ describe('Watchlist Endpoints', () => {
 
     it('should update status', async () => {
       const updateData = {
-        status: 'watching'
+        status: 'watching',
       };
 
       const response = await request(app)
@@ -493,7 +485,7 @@ describe('Watchlist Endpoints', () => {
       const updateData = {
         status: 'completed',
         rating: 4,
-        notes: 'Really good!'
+        notes: 'Really good!',
       };
 
       const response = await request(app)
@@ -509,7 +501,7 @@ describe('Watchlist Endpoints', () => {
 
     it('should update only specified fields', async () => {
       const updateData = {
-        rating: 3
+        rating: 3,
       };
 
       const response = await request(app)
@@ -550,7 +542,7 @@ describe('Watchlist Endpoints', () => {
       expect(response.body.error).toBe('Watchlist entry not found');
     });
 
-    it('should return 403 when trying to update another user\'s entry', async () => {
+    it("should return 403 when trying to update another user's entry", async () => {
       const response = await request(app)
         .patch(`/watchlist/${entryId}`)
         .set('Authorization', `Bearer ${otherAccessToken}`)
@@ -562,7 +554,7 @@ describe('Watchlist Endpoints', () => {
 
     it('should return 400 for invalid rating', async () => {
       const updateData = {
-        rating: 10 // Should be 0-5
+        rating: 10, // Should be 0-5
       };
 
       const response = await request(app)
@@ -576,7 +568,7 @@ describe('Watchlist Endpoints', () => {
 
     it('should return 400 for invalid status', async () => {
       const updateData = {
-        status: 'invalid_status'
+        status: 'invalid_status',
       };
 
       const response = await request(app)
@@ -608,16 +600,16 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 550,
           tmdbType: 'movie',
           title: 'Fight Club',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const entry = await prisma.watchlistEntry.create({
         data: {
           userId,
           mediaItemId: movie.id,
-          status: 'not_watched'
-        }
+          status: 'not_watched',
+        },
       });
 
       entryId = entry.id;
@@ -633,7 +625,7 @@ describe('Watchlist Endpoints', () => {
 
       // Verify entry is deleted
       const deletedEntry = await prisma.watchlistEntry.findUnique({
-        where: { id: entryId }
+        where: { id: entryId },
       });
       expect(deletedEntry).toBeNull();
     });
@@ -647,7 +639,7 @@ describe('Watchlist Endpoints', () => {
       expect(response.body.error).toBe('Watchlist entry not found');
     });
 
-    it('should return 403 when trying to delete another user\'s entry', async () => {
+    it("should return 403 when trying to delete another user's entry", async () => {
       const response = await request(app)
         .delete(`/watchlist/${entryId}`)
         .set('Authorization', `Bearer ${otherAccessToken}`)
@@ -657,9 +649,7 @@ describe('Watchlist Endpoints', () => {
     });
 
     it('should return 401 without authentication', async () => {
-      const response = await request(app)
-        .delete(`/watchlist/${entryId}`)
-        .expect(401);
+      const response = await request(app).delete(`/watchlist/${entryId}`).expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -674,16 +664,16 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 550,
           tmdbType: 'movie',
           title: 'Fight Club',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const entry = await prisma.watchlistEntry.create({
         data: {
           userId,
           mediaItemId: movie.id,
-          status: 'not_watched'
-        }
+          status: 'not_watched',
+        },
       });
 
       entryId = entry.id;
@@ -740,16 +730,16 @@ describe('Watchlist Endpoints', () => {
           tmdbId: 550,
           tmdbType: 'movie',
           title: 'Fight Club',
-          genres: ['Drama']
-        }
+          genres: ['Drama'],
+        },
       });
 
       const entry = await prisma.watchlistEntry.create({
         data: {
           userId,
           mediaItemId: movie.id,
-          status: 'not_watched'
-        }
+          status: 'not_watched',
+        },
       });
 
       entryId = entry.id;

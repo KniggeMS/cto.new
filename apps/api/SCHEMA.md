@@ -7,6 +7,7 @@ This document describes the data schema for the InFocus application, a collabora
 ## Architecture Decisions
 
 ### 1. Primary Key Strategy
+
 - All tables use `CUID` (Collision-resistant IDs) as primary keys instead of auto-incrementing integers
 - Benefits:
   - Globally unique across distributed systems
@@ -14,15 +15,18 @@ This document describes the data schema for the InFocus application, a collabora
   - Database-agnostic
 
 ### 2. Timestamps
+
 - All tables include `createdAt` (immutable) and `updatedAt` (auto-updated) fields
 - Enables audit trails and sorting by recency
 
 ### 3. TMDB Integration
+
 - `MediaItem` entities include `tmdbId` and `tmdbType` fields
 - Enables easy synchronization with The Movie Database API
 - Unique constraint on `tmdbId` prevents duplicates
 
 ### 4. Soft Delete Pattern
+
 - Not used: Hard deletes with cascade on delete
 - Allows simplified queries without special handling
 
@@ -179,57 +183,68 @@ This document describes the data schema for the InFocus application, a collabora
 ## Entity Descriptions
 
 ### User
+
 - Central entity representing an InFocus user account
 - Unique email constraint ensures each user has a distinct email
 - Password should be hashed with bcrypt in production
 
 ### Profile
+
 - One-to-one relationship with User
 - Contains user preferences and biographical information
 - Preferences stored as JSON for flexibility
 
 ### MediaItem
+
 - Represents a movie or TV show
 - TMDB integration fields enable API synchronization
 - Genres and creators stored as arrays for flexibility
 - Unique on `tmdbId` to prevent duplicate entries
 
 ### WatchlistEntry
+
 - Tracks user's interaction with media items
 - Status can be: `not_watched`, `watching`, `completed`
 - Rating is optional (1-10 scale)
 - Unique constraint on (userId, mediaItemId) ensures one entry per user per media
 
 ### Family
+
 - Represents a group of users who share watchlists
 - CreatedBy links to the family's creator
 - Enables collaborative features
 
 ### FamilyMembership
+
 - Many-to-many relationship between User and Family
 - Role attribute enables permission management (admin, member)
 - Unique constraint prevents duplicate memberships
 
 ### FamilyInvitation
+
 - Tracks pending family group invitations
 - Token-based system for accepting invitations
 - Expiration date prevents indefinite open invitations
 
 ### Recommendation
+
 - Enables users to recommend media to each other
 - Status tracks: pending, accepted, rejected
 - Optional message for personal notes
 
 ### Session
+
 - Tracks active user sessions
 - Token-based authentication
 - Expiration for security
 
 ### RefreshToken
+
 - Enables token rotation for enhanced security
 - Revoke flag allows invalidating tokens without deletion
 
 ### StreamingProvider
+
 - Maps media availability across streaming platforms
 - Stores region information (US, CA, GB, etc.)
 - URL may contain deep links to streaming service
@@ -237,6 +252,7 @@ This document describes the data schema for the InFocus application, a collabora
 ## Indices and Constraints
 
 ### Unique Constraints
+
 - `User.email` - Ensures unique email addresses
 - `MediaItem.tmdbId` - Prevents duplicate TMDB entries
 - `WatchlistEntry(userId, mediaItemId)` - One entry per user per media
@@ -247,6 +263,7 @@ This document describes the data schema for the InFocus application, a collabora
 - `StreamingProvider(mediaItemId, provider)` - One provider entry per media
 
 ### Indices
+
 - All foreign keys are indexed for join performance
 - Status fields indexed for filtering queries
 - Email fields indexed for quick user lookups
@@ -267,6 +284,7 @@ npm run migrate:prod
 ## Seeding
 
 Development seeding includes:
+
 - 3 demo users with profiles
 - 3 demo media items (Fight Club, The Shawshank Redemption, Breaking Bad)
 - Sample watchlist entries with various statuses and ratings

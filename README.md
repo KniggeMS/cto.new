@@ -71,7 +71,7 @@ This is a monorepo powered by [Turborepo](https://turbo.build/repo) and [pnpm wo
 
 ## Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **pnpm** 8+ (install with `npm install -g pnpm`)
 - **PostgreSQL** 14+
 
@@ -278,6 +278,7 @@ pnpm run prisma:studio
 ```
 
 Prisma Studio will open at http://localhost:5555 where you can:
+
 - Browse all database tables
 - View relationships
 - Add/edit/delete records
@@ -295,6 +296,7 @@ pnpm init
 ```
 
 Make sure to:
+
 - Set `"private": true` in package.json
 - Use workspace protocol for internal dependencies: `"@infocus/shared": "workspace:*"`
 - Extend shared configs (tsconfig, eslint, etc.)
@@ -321,6 +323,7 @@ pnpm run migrate
 ```
 
 This will:
+
 1. Show a diff of changes
 2. Create a new migration file
 3. Apply the migration to your local database

@@ -19,11 +19,13 @@ Retrieves all watchlist entries for the authenticated user with optional filteri
 **Endpoint:** `GET /watchlist`
 
 **Query Parameters:**
+
 - `status` (optional): Filter by watch status (`not_watched`, `watching`, `completed`)
 - `sortBy` (optional): Field to sort by (`dateAdded`, `dateUpdated`, `status`, `rating`). Default: `dateAdded`
 - `order` (optional): Sort order (`asc`, `desc`). Default: `desc`
 
 **Response:** `200 OK`
+
 ```json
 {
   "data": [
@@ -64,6 +66,7 @@ Retrieves all watchlist entries for the authenticated user with optional filteri
 ```
 
 **Example Requests:**
+
 ```bash
 # Get all entries
 curl -H "Authorization: Bearer <token>" http://localhost:3001/watchlist
@@ -84,6 +87,7 @@ Returns aggregated counts of watchlist entries by status.
 **Endpoint:** `GET /watchlist/stats`
 
 **Response:** `200 OK`
+
 ```json
 {
   "total": 25,
@@ -94,6 +98,7 @@ Returns aggregated counts of watchlist entries by status.
 ```
 
 **Example Request:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" http://localhost:3001/watchlist/stats
 ```
@@ -107,6 +112,7 @@ Adds a media item to the user's watchlist. If the media item doesn't exist in th
 **Endpoint:** `POST /watchlist`
 
 **Request Body:**
+
 ```json
 {
   "tmdbId": 550,
@@ -135,10 +141,12 @@ Adds a media item to the user's watchlist. If the media item doesn't exist in th
 ```
 
 **Required Fields:**
+
 - `tmdbId`: TMDB ID of the media item (positive integer)
 - `tmdbType`: Type of media (`movie` or `tv`)
 
 **Optional Fields:**
+
 - `status`: Watch status (`not_watched`, `watching`, `completed`). Default: `not_watched`
 - `rating`: Personal rating (0-5 stars, nullable)
 - `notes`: Personal notes (nullable)
@@ -147,6 +155,7 @@ Adds a media item to the user's watchlist. If the media item doesn't exist in th
   - `description`, `posterPath`, `backdropPath`, `releaseDate`, `rating`, `genres`, `creators`, `streamingProviders`: All optional
 
 **Response:** `201 Created`
+
 ```json
 {
   "message": "Added to watchlist successfully",
@@ -165,11 +174,13 @@ Adds a media item to the user's watchlist. If the media item doesn't exist in th
 ```
 
 **Error Responses:**
+
 - `400 Bad Request`: Validation error or media item not found without metadata
 - `409 Conflict`: Media item already in watchlist
 - `401 Unauthorized`: Authentication required
 
 **Example Request:**
+
 ```bash
 curl -X POST http://localhost:3001/watchlist \
   -H "Authorization: Bearer <token>" \
@@ -194,9 +205,11 @@ Updates an existing watchlist entry. Only the owner can update their entries.
 **Endpoint:** `PATCH /watchlist/:id`
 
 **URL Parameters:**
+
 - `id`: Watchlist entry ID
 
 **Request Body:** (all fields optional, but at least one must be provided)
+
 ```json
 {
   "status": "completed",
@@ -206,6 +219,7 @@ Updates an existing watchlist entry. Only the owner can update their entries.
 ```
 
 **Response:** `200 OK`
+
 ```json
 {
   "message": "Watchlist entry updated successfully",
@@ -224,12 +238,14 @@ Updates an existing watchlist entry. Only the owner can update their entries.
 ```
 
 **Error Responses:**
+
 - `400 Bad Request`: Validation error
 - `403 Forbidden`: Not authorized to update this entry
 - `404 Not Found`: Entry not found
 - `401 Unauthorized`: Authentication required
 
 **Example Request:**
+
 ```bash
 curl -X PATCH http://localhost:3001/watchlist/clx123abc456 \
   -H "Authorization: Bearer <token>" \
@@ -249,9 +265,11 @@ Dedicated endpoint for updating watch progress. Requires status to be provided, 
 **Endpoint:** `PATCH /watchlist/:id/progress`
 
 **URL Parameters:**
+
 - `id`: Watchlist entry ID
 
 **Request Body:**
+
 ```json
 {
   "status": "completed",
@@ -260,12 +278,15 @@ Dedicated endpoint for updating watch progress. Requires status to be provided, 
 ```
 
 **Required Fields:**
+
 - `status`: Watch status (`not_watched`, `watching`, `completed`)
 
 **Optional Fields:**
+
 - `rating`: Personal rating (0-5 stars, nullable)
 
 **Response:** `200 OK`
+
 ```json
 {
   "message": "Watch progress updated successfully",
@@ -279,12 +300,14 @@ Dedicated endpoint for updating watch progress. Requires status to be provided, 
 ```
 
 **Error Responses:**
+
 - `400 Bad Request`: Validation error (e.g., missing status)
 - `403 Forbidden`: Not authorized to update this entry
 - `404 Not Found`: Entry not found
 - `401 Unauthorized`: Authentication required
 
 **Example Request:**
+
 ```bash
 curl -X PATCH http://localhost:3001/watchlist/clx123abc456/progress \
   -H "Authorization: Bearer <token>" \
@@ -303,9 +326,11 @@ Removes an entry from the watchlist. Only the owner can delete their entries.
 **Endpoint:** `DELETE /watchlist/:id`
 
 **URL Parameters:**
+
 - `id`: Watchlist entry ID
 
 **Response:** `200 OK`
+
 ```json
 {
   "message": "Watchlist entry deleted successfully"
@@ -313,11 +338,13 @@ Removes an entry from the watchlist. Only the owner can delete their entries.
 ```
 
 **Error Responses:**
+
 - `403 Forbidden`: Not authorized to delete this entry
 - `404 Not Found`: Entry not found
 - `401 Unauthorized`: Authentication required
 
 **Example Request:**
+
 ```bash
 curl -X DELETE http://localhost:3001/watchlist/clx123abc456 \
   -H "Authorization: Bearer <token>"
@@ -330,11 +357,13 @@ curl -X DELETE http://localhost:3001/watchlist/clx123abc456 \
 ### Watch Status
 
 The watchlist supports three status values:
+
 - `not_watched`: Media item is in the watchlist but not yet started
 - `watching`: Currently watching/in progress
 - `completed`: Finished watching
 
 Status transitions are flexible - users can move between any states. For example:
+
 - `not_watched` → `watching` → `completed` (typical flow)
 - `not_watched` → `completed` (direct completion)
 - `completed` → `watching` (rewatching)
@@ -443,6 +472,7 @@ curl -X DELETE http://localhost:3001/watchlist/<entry_id> \
 All endpoints follow consistent error response formats:
 
 ### Validation Error (400)
+
 ```json
 {
   "error": "Validation failed",
@@ -461,6 +491,7 @@ All endpoints follow consistent error response formats:
 ```
 
 ### Authentication Error (401)
+
 ```json
 {
   "error": "Access token required"
@@ -468,6 +499,7 @@ All endpoints follow consistent error response formats:
 ```
 
 ### Authorization Error (403)
+
 ```json
 {
   "error": "You do not have permission to update this entry"
@@ -475,6 +507,7 @@ All endpoints follow consistent error response formats:
 ```
 
 ### Not Found Error (404)
+
 ```json
 {
   "error": "Watchlist entry not found"
@@ -482,6 +515,7 @@ All endpoints follow consistent error response formats:
 ```
 
 ### Conflict Error (409)
+
 ```json
 {
   "error": "This media item is already in your watchlist",
@@ -494,21 +528,23 @@ All endpoints follow consistent error response formats:
 ## Data Models
 
 ### WatchlistEntry
+
 ```typescript
 {
-  id: string;           // CUID
-  userId: string;       // User who owns this entry
-  mediaItemId: string;  // Reference to MediaItem
+  id: string; // CUID
+  userId: string; // User who owns this entry
+  mediaItemId: string; // Reference to MediaItem
   status: 'not_watched' | 'watching' | 'completed';
-  rating: number | null;  // 0-5 stars
+  rating: number | null; // 0-5 stars
   notes: string | null;
   dateAdded: Date;
   dateUpdated: Date;
-  mediaItem: MediaItem;   // Populated in responses
+  mediaItem: MediaItem; // Populated in responses
 }
 ```
 
 ### MediaItem
+
 ```typescript
 {
   id: string;           // CUID
@@ -527,6 +563,7 @@ All endpoints follow consistent error response formats:
 ```
 
 ### StreamingProvider
+
 ```typescript
 {
   id: string;           // CUID

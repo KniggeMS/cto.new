@@ -3,11 +3,7 @@ const baseConfig = require('./base');
 module.exports = {
   ...baseConfig,
   plugins: [...baseConfig.plugins, 'react', 'react-hooks'],
-  extends: [
-    ...baseConfig.extends,
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-  ],
+  extends: [...baseConfig.extends, 'plugin:react/recommended', 'plugin:react-hooks/recommended'],
   parserOptions: {
     ...baseConfig.parserOptions,
     ecmaFeatures: {
