@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 import { authRouter } from './routes/auth';
 import { watchlistRouter } from './routes/watchlist';
 import { familyRouter } from './routes/family';
+import recommendationsRouter from './routes/recommendations';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -39,6 +40,7 @@ app.get('/health', (_req, res) => {
 app.use('/auth', authRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/families', familyRouter);
+app.use('/recommendations', recommendationsRouter);
 
 // Protected route example
 app.get('/api/profile', authMiddleware, (req, res) => {
