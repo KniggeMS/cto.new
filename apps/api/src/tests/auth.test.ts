@@ -94,8 +94,6 @@ describe('Authentication Endpoints', () => {
   });
 
   describe('POST /auth/login', () => {
-    let loginEmail: string;
-
     it('should login successfully with valid credentials', async () => {
       const uniqueEmail = `login-${Date.now()}-${Math.random()}@example.com`;
       
