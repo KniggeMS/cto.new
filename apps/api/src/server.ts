@@ -1,0 +1,78 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import { PrismaClient } from '@prisma/client';
+import { authRouter } from './routes/auth';
+import { errorHandler } from './middleware/errorHandler';
+import { authMiddleware } from './middleware/auth';
+
+const app = express();
+const prisma = new PrismaClient();
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? false : true,
+  credentials: true
+}));
+
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Logging middleware
+app.use(morgan('combined'));
+
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Routes
+app.use('/auth', authRouter);
+
+// Protected route example
+app.get('/api/profile', authMiddleware, (req, res) => {
+  res.json({ user: (req as any).user });
+});
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3001;
+
+async function startServer() {
+  try {
+    await prisma.$connect();
+    console.log('Database connected successfully');
+    
+    app.listen(PORT, () => {
+      console.log(`InFocus API server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT received, shutting down gracefully');
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+if (require.main === module) {
+  startServer();
+}
+
+export { app, prisma };

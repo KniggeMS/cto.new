@@ -11,6 +11,8 @@
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"prisma/**/*.ts\"",
     "test": "jest --config jest.config.cjs",
+    "test:watch": "jest --config jest.config.cjs --watch",
+    "test:coverage": "jest --config jest.config.cjs --coverage",
     "migrate": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
     "seed": "ts-node prisma/seed.ts",
@@ -22,7 +24,23 @@
   "license": "ISC",
   "dependencies": {
     "@infocus/shared": "workspace:*",
-    "@prisma/client": "^5.8.0"
+    "@prisma/client": "^5.8.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/supertest": "^6.0.3",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "supertest": "^7.1.4",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@infocus/eslint-config": "workspace:*",
