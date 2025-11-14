@@ -44,7 +44,7 @@ const setRefreshTokenCookie = (res: any, refreshToken: string) => {
 };
 
 // POST /auth/register
-router.post('/register', async (req: any, res: any, next: any): Promise<void> => {
+router.post('/register', async (req: any, res: any, next: any) => {
   try {
     const validatedData = registerSchema.parse(req.body);
     const { email, password, name } = validatedData;
@@ -110,7 +110,7 @@ router.post('/register', async (req: any, res: any, next: any): Promise<void> =>
 });
 
 // POST /auth/login
-router.post('/login', async (req: any, res: any, next: any): Promise<void> => {
+router.post('/login', async (req: any, res: any, next: any) => {
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password } = validatedData;
@@ -167,10 +167,22 @@ router.post('/login', async (req: any, res: any, next: any): Promise<void> => {
 });
 
 // POST /auth/refresh
-router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => {
+router.post('/refresh', async (req: any, res: any, next: any) => {
   try {
-    const cookies = req.cookies || {};
-    const refreshToken = cookies.refreshToken || req.body.refreshToken;
+    let refreshToken = null;
+    
+    // Safely get refresh token from cookies or body
+    try {
+      if (req.cookies && typeof req.cookies === 'object') {
+        refreshToken = req.cookies.refreshToken;
+      }
+    } catch (e) {
+      // Ignore cookie parsing errors
+    }
+    
+    if (!refreshToken && req.body && req.body.refreshToken) {
+      refreshToken = req.body.refreshToken;
+    }
 
     if (!refreshToken) {
       return res.status(401).json({ error: 'Refresh token required' });
@@ -208,10 +220,22 @@ router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => 
 });
 
 // POST /auth/logout
-router.post('/logout', async (req: any, res: any, next: any): Promise<void> => {
+router.post('/logout', async (req: any, res: any, next: any) => {
   try {
-    const cookies = req.cookies || {};
-    const refreshToken = cookies.refreshToken || req.body.refreshToken;
+    let refreshToken = null;
+    
+    // Safely get refresh token from cookies or body
+    try {
+      if (req.cookies && typeof req.cookies === 'object') {
+        refreshToken = req.cookies.refreshToken;
+      }
+    } catch (e) {
+      // Ignore cookie parsing errors
+    }
+    
+    if (!refreshToken && req.body && req.body.refreshToken) {
+      refreshToken = req.body.refreshToken;
+    }
 
     if (refreshToken) {
       // Revoke refresh token in database

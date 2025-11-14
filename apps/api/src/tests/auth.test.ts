@@ -94,20 +94,22 @@ describe('Authentication Endpoints', () => {
   });
 
   describe('POST /auth/login', () => {
-    beforeEach(async () => {
-      // Create a test user for login tests
+    let loginEmail: string;
+
+    it('should login successfully with valid credentials', async () => {
+      const uniqueEmail = `login-${Date.now()}-${Math.random()}@example.com`;
+      
+      // First register a user
       await request(app)
         .post('/auth/register')
         .send({
-          email: 'login@example.com',
+          email: uniqueEmail,
           password: 'password123',
           name: 'Login User'
         });
-    });
 
-    it('should login successfully with valid credentials', async () => {
       const loginData = {
-        email: 'login@example.com',
+        email: uniqueEmail,
         password: 'password123'
       };
 
@@ -138,8 +140,19 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should return 401 for invalid password', async () => {
+      const uniqueEmail = `login-${Date.now()}@example.com`;
+      
+      // First register a user
+      await request(app)
+        .post('/auth/register')
+        .send({
+          email: uniqueEmail,
+          password: 'password123',
+          name: 'Login User'
+        });
+
       const loginData = {
-        email: 'login@example.com',
+        email: uniqueEmail,
         password: 'wrongpassword'
       };
 
