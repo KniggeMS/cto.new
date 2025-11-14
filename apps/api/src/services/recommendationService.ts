@@ -46,18 +46,21 @@ function isCacheValid(cache: RecommendationCache): boolean {
   return Date.now() - cache.timestamp < cache.ttl;
 }
 
-function getCachedRecommendations(userId: string, familyId?: string): RecommendationResult[] | null {
+function getCachedRecommendations(
+  userId: string,
+  familyId?: string,
+): RecommendationResult[] | null {
   const key = getCacheKey(userId, familyId);
   const cached = recommendationCache.get(key);
-  
+
   if (cached && isCacheValid(cached)) {
     return cached.recommendations;
   }
-  
+
   if (cached) {
     recommendationCache.delete(key);
   }
-  
+
   return null;
 }
 
@@ -83,9 +86,8 @@ function calculateScore(
   const avgRatingScore = familyAvgRating ? familyAvgRating * 3 : 0;
   const popularityScore = familyWatchCount * 2;
   const tmdbScore = tmdbRating ? tmdbRating / 2 : 0;
-  const avgStatusWeight = statusWeights.length > 0
-    ? statusWeights.reduce((a, b) => a + b, 0) / statusWeights.length
-    : 0;
+  const avgStatusWeight =
+    statusWeights.length > 0 ? statusWeights.reduce((a, b) => a + b, 0) / statusWeights.length : 0;
 
   return avgRatingScore + popularityScore + tmdbScore + avgStatusWeight;
 }
@@ -200,24 +202,16 @@ export async function generateRecommendations(
   const recommendations: RecommendationResult[] = [];
 
   for (const { mediaItem, entries } of mediaItemMap.values()) {
-    const ratings = entries
-      .filter((e) => e.rating !== null)
-      .map((e) => e.rating as number);
+    const ratings = entries.filter((e) => e.rating !== null).map((e) => e.rating as number);
 
-    const familyAvgRating = ratings.length > 0
-      ? ratings.reduce((a, b) => a + b, 0) / ratings.length
-      : null;
+    const familyAvgRating =
+      ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : null;
 
     const familyWatchCount = entries.length;
     const tmdbRating = mediaItem.rating;
     const statusWeights = entries.map((e) => getStatusWeight(e.status));
 
-    const score = calculateScore(
-      familyAvgRating,
-      familyWatchCount,
-      tmdbRating,
-      statusWeights,
-    );
+    const score = calculateScore(familyAvgRating, familyWatchCount, tmdbRating, statusWeights);
 
     recommendations.push({
       mediaItem,

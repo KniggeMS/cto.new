@@ -28,7 +28,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: infocus
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -41,7 +41,7 @@ services:
       JWT_REFRESH_SECRET: dev-secret
       TMDB_API_KEY: ${TMDB_API_KEY}
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - postgres
 
@@ -59,6 +59,7 @@ The Dockerfile uses a multi-stage build:
 4. **Runtime**: Final minimal image
 
 Key features:
+
 - Alpine Linux base (small image size)
 - Multi-stage optimization
 - Health checks configured
@@ -98,47 +99,47 @@ spec:
         app: infocus
     spec:
       containers:
-      - name: api
-        image: infocus-api:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: infocus-secrets
-              key: database-url
-        - name: NODE_ENV
-          value: production
-        - name: JWT_ACCESS_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: infocus-secrets
-              key: jwt-access-secret
-        - name: JWT_REFRESH_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: infocus-secrets
-              key: jwt-refresh-secret
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: api
+          image: infocus-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: infocus-secrets
+                  key: database-url
+            - name: NODE_ENV
+              value: production
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: infocus-secrets
+                  key: jwt-access-secret
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: infocus-secrets
+                  key: jwt-refresh-secret
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 ### Service
@@ -153,9 +154,9 @@ spec:
   selector:
     app: infocus
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3000
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
 ```
 
 ## PostgreSQL Setup
@@ -191,6 +192,7 @@ postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]
 ```
 
 Example:
+
 ```
 postgresql://postgres:password@localhost:5432/infocus?schema=public
 ```
@@ -235,6 +237,7 @@ curl http://localhost:3000/health
 ```
 
 Response:
+
 ```json
 {
   "status": "ok",
@@ -265,12 +268,14 @@ Response:
 Use external logging services:
 
 1. **CloudWatch** (AWS)
+
    ```javascript
    // Send logs to CloudWatch
    import winston from 'winston';
    ```
 
 2. **Datadog**
+
    ```bash
    npm install --save dd-trace
    ```
@@ -293,7 +298,7 @@ railway logs | grep ERROR
 Integrate error tracking service:
 
 ```javascript
-import * as Sentry from "@sentry/node";
+import * as Sentry from '@sentry/node';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -308,14 +313,17 @@ Sentry.init({
 Never commit secrets. Use environment variable management:
 
 **Railway:**
+
 - Set via dashboard or CLI
 - Automatically encrypted
 
 **Render:**
+
 - Set via dashboard
 - Shown only once on creation
 
 **GitHub Actions:**
+
 - Set in repository secrets
 - Injected as environment variables
 
@@ -324,6 +332,7 @@ Never commit secrets. Use environment variable management:
 Both Railway and Render provide automatic SSL/TLS certificates.
 
 For self-hosted:
+
 ```bash
 # Using Let's Encrypt with certbot
 certbot certonly --standalone -d yourdomain.com
@@ -359,7 +368,7 @@ For production, restrict CORS:
 cors({
   origin: ['https://yourdomain.com', 'https://app.yourdomain.com'],
   credentials: true,
-})
+});
 ```
 
 ### Database Security
@@ -443,6 +452,7 @@ server {
 ### Performance Tuning
 
 1. **Node.js Flags**
+
    ```bash
    node --max-old-space-size=2048 dist/index.js
    ```
@@ -516,6 +526,7 @@ railway deploy
 ### Key Metrics Dashboard
 
 Display:
+
 - Request rate (req/sec)
 - Error rate (%)
 - Response time (ms)

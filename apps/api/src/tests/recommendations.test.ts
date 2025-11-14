@@ -247,12 +247,8 @@ describe('Recommendations Endpoints', () => {
       const recommendations = response.body.data;
 
       // Find the positions of mediaItem1 and mediaItem3
-      const media1Index = recommendations.findIndex(
-        (r: any) => r.mediaItem.id === mediaItem1Id,
-      );
-      const media3Index = recommendations.findIndex(
-        (r: any) => r.mediaItem.id === mediaItem3Id,
-      );
+      const media1Index = recommendations.findIndex((r: any) => r.mediaItem.id === mediaItem1Id);
+      const media3Index = recommendations.findIndex((r: any) => r.mediaItem.id === mediaItem3Id);
 
       // mediaItem1 has avg rating of 8.5 (from user2:9, user3:8)
       // mediaItem3 has avg rating of 4 (from user3:4)
@@ -275,18 +271,14 @@ describe('Recommendations Endpoints', () => {
 
       // mediaItem2 has rating 10 from user2, and high TMDB rating (9.0)
       // It should be ranked very high or first
-      const media2 = recommendations.find(
-        (r: any) => r.mediaItem.id === mediaItem2Id,
-      );
+      const media2 = recommendations.find((r: any) => r.mediaItem.id === mediaItem2Id);
 
       expect(media2).toBeDefined();
       expect(media2.metadata.familyAvgRating).toBe(10);
       expect(media2.score).toBeGreaterThan(0);
 
       // Should be in top positions
-      const media2Index = recommendations.findIndex(
-        (r: any) => r.mediaItem.id === mediaItem2Id,
-      );
+      const media2Index = recommendations.findIndex((r: any) => r.mediaItem.id === mediaItem2Id);
       expect(media2Index).toBeLessThan(3);
     });
 
@@ -308,9 +300,7 @@ describe('Recommendations Endpoints', () => {
       const recommendations = response.body.data;
 
       // mediaItem1 should not be in recommendations
-      const media1Exists = recommendations.some(
-        (r: any) => r.mediaItem.id === mediaItem1Id,
-      );
+      const media1Exists = recommendations.some((r: any) => r.mediaItem.id === mediaItem1Id);
       expect(media1Exists).toBe(false);
 
       // Clean up
@@ -343,9 +333,7 @@ describe('Recommendations Endpoints', () => {
       const recommendations = response.body.data;
 
       // mediaItem2 should not be in recommendations
-      const media2Exists = recommendations.some(
-        (r: any) => r.mediaItem.id === mediaItem2Id,
-      );
+      const media2Exists = recommendations.some((r: any) => r.mediaItem.id === mediaItem2Id);
       expect(media2Exists).toBe(false);
 
       // Clean up
@@ -370,9 +358,7 @@ describe('Recommendations Endpoints', () => {
 
       // Should only include items from family members (user2, user3)
       // Should not include mediaItem4 which is from user4 in different family
-      const media4Exists = response.body.data.some(
-        (r: any) => r.mediaItem.id === mediaItem4Id,
-      );
+      const media4Exists = response.body.data.some((r: any) => r.mediaItem.id === mediaItem4Id);
       expect(media4Exists).toBe(false);
     });
 
@@ -405,9 +391,7 @@ describe('Recommendations Endpoints', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .get('/recommendations')
-        .expect(401);
+      const response = await request(app).get('/recommendations').expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -439,9 +423,7 @@ describe('Recommendations Endpoints', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .expect(200);
 
-      const media1Rec = response.body.data.find(
-        (r: any) => r.mediaItem.id === mediaItem1Id,
-      );
+      const media1Rec = response.body.data.find((r: any) => r.mediaItem.id === mediaItem1Id);
 
       expect(media1Rec).toBeDefined();
       expect(media1Rec.metadata.watchedBy).toHaveLength(2);
@@ -520,9 +502,7 @@ describe('Recommendations Endpoints', () => {
 
       // Should include the new entry (mediaItem4) from user2
       // Note: mediaItem4 was originally from user4 in different family, but now user2 also has it
-      const media4Rec = response.body.data.find(
-        (r: any) => r.mediaItem.id === mediaItem4Id,
-      );
+      const media4Rec = response.body.data.find((r: any) => r.mediaItem.id === mediaItem4Id);
       expect(media4Rec).toBeDefined();
 
       // Clean up
@@ -564,10 +544,7 @@ describe('Recommendations Endpoints', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .post('/recommendations/clear-cache')
-        .send({})
-        .expect(401);
+      const response = await request(app).post('/recommendations/clear-cache').send({}).expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -584,9 +561,7 @@ describe('Recommendations Endpoints', () => {
 
       // Verify items are sorted by score descending
       for (let i = 0; i < recommendations.length - 1; i++) {
-        expect(recommendations[i].score).toBeGreaterThanOrEqual(
-          recommendations[i + 1].score,
-        );
+        expect(recommendations[i].score).toBeGreaterThanOrEqual(recommendations[i + 1].score);
       }
     });
 
@@ -596,9 +571,7 @@ describe('Recommendations Endpoints', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .expect(200);
 
-      const media1Rec = response.body.data.find(
-        (r: any) => r.mediaItem.id === mediaItem1Id,
-      );
+      const media1Rec = response.body.data.find((r: any) => r.mediaItem.id === mediaItem1Id);
 
       // mediaItem1 has 2 watchers
       expect(media1Rec.metadata.familyWatchCount).toBe(2);
@@ -613,9 +586,7 @@ describe('Recommendations Endpoints', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .expect(200);
 
-      const media2Rec = response.body.data.find(
-        (r: any) => r.mediaItem.id === mediaItem2Id,
-      );
+      const media2Rec = response.body.data.find((r: any) => r.mediaItem.id === mediaItem2Id);
 
       // mediaItem2 has high TMDB rating (9.0)
       expect(media2Rec.metadata.tmdbRating).toBe(9.0);
@@ -653,9 +624,7 @@ describe('Recommendations Endpoints', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .expect(200);
 
-      const unratedRec = response.body.data.find(
-        (r: any) => r.mediaItem.id === mediaNoRating.id,
-      );
+      const unratedRec = response.body.data.find((r: any) => r.mediaItem.id === mediaNoRating.id);
 
       if (unratedRec) {
         expect(unratedRec.metadata.familyAvgRating).toBeNull();

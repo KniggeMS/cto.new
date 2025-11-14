@@ -85,7 +85,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Optional Variables
 
 - `LOG_LEVEL` - Logging level (default: info)
-- `CORS_ORIGIN` - CORS origin for frontend (default: * in production disables CORS)
+- `CORS_ORIGIN` - CORS origin for frontend (default: \* in production disables CORS)
 
 ## Local Deployment Testing
 
@@ -217,6 +217,7 @@ railway deploy
 ```
 
 The deployment will:
+
 - Build the Docker image
 - Run migrations (via Procfile release phase)
 - Start the application
@@ -307,6 +308,7 @@ git push origin main
 ```
 
 Render will automatically:
+
 - Build the image
 - Run migrations
 - Deploy the application

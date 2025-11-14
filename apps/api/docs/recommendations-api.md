@@ -22,11 +22,11 @@ Get personalized recommendations for the authenticated user.
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| familyId | string | No | Filter recommendations to a specific family |
-| limit | number | No | Maximum number of recommendations to return |
-| refresh | boolean | No | Set to `true` to bypass cache and fetch fresh results |
+| Parameter | Type    | Required | Description                                           |
+| --------- | ------- | -------- | ----------------------------------------------------- |
+| familyId  | string  | No       | Filter recommendations to a specific family           |
+| limit     | number  | No       | Maximum number of recommendations to return           |
+| refresh   | boolean | No       | Set to `true` to bypass cache and fetch fresh results |
 
 #### Response
 
@@ -92,18 +92,21 @@ Get personalized recommendations for the authenticated user.
 #### Examples
 
 **Get all recommendations**:
+
 ```bash
 curl -X GET http://localhost:3001/recommendations \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 **Get recommendations from specific family**:
+
 ```bash
 curl -X GET "http://localhost:3001/recommendations?familyId=clfam123" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 **Get top 5 recommendations with fresh data**:
+
 ```bash
 curl -X GET "http://localhost:3001/recommendations?limit=5&refresh=true" \
   -H "Authorization: Bearer YOUR_TOKEN"
@@ -182,6 +185,7 @@ score = (familyAvgRating × 3) + (familyPopularity × 2) + (tmdbRating ÷ 2) + a
 ### Example Calculation
 
 For "The Great Movie" watched by 3 family members:
+
 - Family ratings: [9, 8, 10] → avg = 9.0
 - Family watch count: 3
 - TMDB rating: 8.5
@@ -224,6 +228,7 @@ score = (9.0 × 3) + (3 × 2) + (8.5 ÷ 2) + 2.0
 ### When to Refresh
 
 The cache should be refreshed when:
+
 - A family member adds a new watchlist entry
 - A family member updates ratings
 - A user joins or leaves a family
@@ -240,6 +245,7 @@ The cache should be refreshed when:
 ### Typical Workflows
 
 #### 1. Movie Night Planning
+
 ```
 1. User opens app
 2. GET /recommendations?limit=10
@@ -249,6 +255,7 @@ The cache should be refreshed when:
 ```
 
 #### 2. Family-Specific Discovery
+
 ```
 1. User has multiple families
 2. GET /recommendations?familyId=clfam123&limit=20
@@ -258,6 +265,7 @@ The cache should be refreshed when:
 ```
 
 #### 3. Post-Watch Updates
+
 ```
 1. User completes a movie and rates it
 2. POST /recommendations/clear-cache
@@ -275,16 +283,13 @@ async function getRecommendations(familyId, limit = 20) {
   const queryParams = new URLSearchParams();
   if (familyId) queryParams.append('familyId', familyId);
   if (limit) queryParams.append('limit', limit.toString());
-  
-  const response = await fetch(
-    `http://localhost:3001/recommendations?${queryParams}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  );
-  
+
+  const response = await fetch(`http://localhost:3001/recommendations?${queryParams}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   return response.json();
 }
 
@@ -293,10 +298,10 @@ async function clearRecommendationsCache(familyId) {
   await fetch('http://localhost:3001/recommendations/clear-cache', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ familyId })
+    body: JSON.stringify({ familyId }),
   });
 }
 ```
@@ -309,18 +314,18 @@ const axios = require('axios');
 // Get recommendations for a user
 async function getUserRecommendations(userId, accessToken, options = {}) {
   const { familyId, limit, refresh } = options;
-  
+
   const response = await axios.get('http://localhost:3001/recommendations', {
     headers: {
-      'Authorization': `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}`,
     },
     params: {
       familyId,
       limit,
-      refresh
-    }
+      refresh,
+    },
   });
-  
+
   return response.data;
 }
 
@@ -331,10 +336,10 @@ async function invalidateRecommendations(userId, accessToken, familyId) {
     { familyId },
     {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    }
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    },
   );
 }
 ```
@@ -364,6 +369,7 @@ async function invalidateRecommendations(userId, accessToken, familyId) {
 #### No Recommendations Returned
 
 **Possible Causes**:
+
 - User is not in any families
 - Family members haven't added any watchlist items
 - All family items are already in user's watchlist
@@ -373,6 +379,7 @@ async function invalidateRecommendations(userId, accessToken, familyId) {
 #### Stale Recommendations
 
 **Possible Causes**:
+
 - Cache hasn't expired yet
 - Cache wasn't cleared after watchlist update
 
@@ -381,6 +388,7 @@ async function invalidateRecommendations(userId, accessToken, familyId) {
 #### Unexpected Rankings
 
 **Possible Causes**:
+
 - Understanding of scoring algorithm
 - Missing TMDB ratings affecting scores
 
