@@ -66,13 +66,24 @@ npm run dev
 ```
 apps/api/
 ├── src/
-│   └── index.ts                 # Application entry point
+│   ├── index.ts                 # Application entry point
+│   ├── server.ts                # Express server setup
+│   ├── routes/
+│   │   └── auth.ts              # Authentication routes
+│   ├── middleware/
+│   │   ├── auth.ts              # Authentication middleware
+│   │   └── errorHandler.ts      # Error handling middleware
+│   └── tests/
+│       └── auth.test.ts         # Authentication integration tests
 ├── prisma/
 │   ├── schema.prisma            # Database schema
 │   ├── seed.ts                  # Seeding script
 │   └── migrations/              # Migration history (auto-generated)
+├── docs/
+│   └── openapi.yaml             # OpenAPI specification
 ├── .env                         # Local environment config (git-ignored)
 ├── .env.example                 # Environment template
+├── jest.config.cjs              # Jest test configuration
 ├── package.json
 ├── tsconfig.json
 ├── SCHEMA.md                    # Database schema documentation
@@ -130,13 +141,138 @@ To modify demo data, edit `prisma/seed.ts` and re-run:
 npm run seed
 ```
 
+## API Documentation
+
+### Authentication Endpoints
+
+The API provides JWT-based authentication with secure refresh token rotation:
+
+#### POST /auth/register
+Register a new user account.
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "John Doe"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": "clx123abc456",
+    "email": "user@example.com",
+    "name": "John Doe"
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### POST /auth/login
+Authenticate and receive tokens.
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": "clx123abc456",
+    "email": "user@example.com",
+    "name": "John Doe"
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### POST /auth/refresh
+Refresh an expired access token using a valid refresh token.
+
+**Request:**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Token refreshed successfully",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### POST /auth/logout
+Revoke refresh token and clear session.
+
+**Response:**
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+### Protected Routes
+
+Protected routes require an `Authorization: Bearer <access_token>` header:
+
+#### GET /api/profile
+Get the authenticated user's profile.
+
+**Response:**
+```json
+{
+  "user": {
+    "id": "clx123abc456",
+    "email": "user@example.com",
+    "name": "John Doe"
+  }
+}
+```
+
+### Authentication Flow
+
+1. **Register/Login**: User provides credentials, receives access token (15min) and refresh token (7d)
+2. **Access Protected Routes**: Include access token in `Authorization: Bearer <token>` header
+3. **Token Refresh**: When access token expires, use refresh token to get new access token
+4. **Logout**: Revoke refresh token to end session
+
+### Security Features
+
+- **Password Hashing**: bcrypt with salt rounds (12)
+- **JWT Tokens**: Short-lived access tokens (15min) + long-lived refresh tokens (7d)
+- **Secure Cookies**: HttpOnly, Secure, SameSite=Strict for refresh tokens
+- **Token Rotation**: Refresh tokens are stored in database and can be revoked
+- **Input Validation**: Zod schema validation for all inputs
+- **Error Handling**: Standardized error responses without sensitive information
+
+For complete API specification, see [OpenAPI Documentation](docs/openapi.yaml).
+
 ## Environment Variables
 
 **Required:**
 - `DATABASE_URL` - PostgreSQL connection string
 
-**Optional:**
+**Authentication:**
+- `JWT_ACCESS_SECRET` - Secret for signing access tokens
+- `JWT_REFRESH_SECRET` - Secret for signing refresh tokens
+
+**Server:**
+- `PORT` - Server port (default: 3001)
 - `NODE_ENV` - Environment mode (development|production)
+- `CORS_ORIGIN` - Allowed CORS origin (development allows all)
 
 See `.env.example` for template.
 
@@ -209,9 +345,46 @@ node dist/index.js
 - [Prisma Documentation](https://www.prisma.io/docs/) - Official ORM docs
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Database reference
 
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Coverage
+
+The test suite covers:
+- User registration with validation
+- User login with credential verification
+- Token refresh flow
+- Logout and token revocation
+- Authentication middleware
+- Error handling scenarios
+- Input validation edge cases
+
+### Postman Collection
+
+Import `docs/postman-collection.json` into Postman for easy API testing:
+1. Open Postman
+2. Click "Import" → "File"
+3. Select `docs/postman-collection.json`
+4. Set the `baseUrl` variable to your API endpoint
+5. Use the collection to test all endpoints
+
 ## Notes
 
-- Passwords are stored plainly in demo seed - use bcrypt in production
-- Session/RefreshToken tokens are random strings - use proper JWT in production
-- TMDB IDs enable easy API synchronization for media metadata
-- Family/User relationships support multi-user collaborative features
+- **Authentication**: Fully implemented with JWT tokens, refresh token rotation, and secure cookie handling
+- **Security**: Passwords are hashed with bcrypt (12 salt rounds), tokens stored securely in database
+- **Testing**: Comprehensive integration tests covering all authentication flows
+- **Documentation**: Complete OpenAPI specification and Postman collection provided
+- **TMDB IDs**: Enable easy API synchronization for media metadata
+- **Family/User relationships**: Support multi-user collaborative features
