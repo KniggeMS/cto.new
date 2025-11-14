@@ -288,6 +288,361 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /watchlist:
+    get:
+      summary: Get user's watchlist
+      description: Retrieves all watchlist entries for the authenticated user with optional filtering and sorting
+      tags:
+        - Watchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by watch status
+          required: false
+          schema:
+            type: string
+            enum: [not_watched, watching, completed]
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            default: dateAdded
+            example: dateAdded
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Watchlist retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WatchlistEntry'
+                  count:
+                    type: integer
+                    example: 10
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Add to watchlist
+      description: Adds a media item to the user's watchlist. Creates MediaItem if it doesn't exist.
+      tags:
+        - Watchlist
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tmdbId
+                - tmdbType
+              properties:
+                tmdbId:
+                  type: integer
+                  description: TMDB ID of the media item
+                  example: 550
+                tmdbType:
+                  type: string
+                  enum: [movie, tv]
+                  description: Type of media
+                  example: movie
+                status:
+                  type: string
+                  enum: [not_watched, watching, completed]
+                  default: not_watched
+                  description: Watch status
+                  example: not_watched
+                rating:
+                  type: integer
+                  minimum: 0
+                  maximum: 5
+                  nullable: true
+                  description: Personal rating (0-5 stars)
+                  example: 4
+                notes:
+                  type: string
+                  nullable: true
+                  description: Personal notes
+                  example: Great movie!
+                metadata:
+                  type: object
+                  description: Metadata for creating MediaItem if it doesn't exist
+                  required:
+                    - title
+                  properties:
+                    title:
+                      type: string
+                      example: Fight Club
+                    description:
+                      type: string
+                      nullable: true
+                      example: An insomniac office worker...
+                    posterPath:
+                      type: string
+                      nullable: true
+                      example: /p64JHd3bGjH8qSEp0gyS1BFrP4V.jpg
+                    backdropPath:
+                      type: string
+                      nullable: true
+                      example: /a0JqB5VHx7q0D8dj4qcpFSMiR8e.jpg
+                    releaseDate:
+                      type: string
+                      format: date
+                      nullable: true
+                      example: "1999-10-15"
+                    rating:
+                      type: number
+                      nullable: true
+                      example: 8.8
+                    genres:
+                      type: array
+                      items:
+                        type: string
+                      example: [Drama, Thriller]
+                    creators:
+                      type: array
+                      items:
+                        type: string
+                      example: [David Fincher]
+                    streamingProviders:
+                      type: array
+                      description: Optional streaming provider metadata to associate with the media item
+                      items:
+                        type: object
+                        required:
+                          - provider
+                        properties:
+                          provider:
+                            type: string
+                            example: netflix
+                          url:
+                            type: string
+                            nullable: true
+                            example: https://www.netflix.com/title/550
+                          regions:
+                            type: array
+                            items:
+                              type: string
+                            example: [US, CA]
+      responses:
+        '201':
+          description: Added to watchlist successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Added to watchlist successfully
+                  data:
+                    $ref: '#/components/schemas/WatchlistEntry'
+        '400':
+          description: Validation error or media item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Media item already in watchlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: This media item is already in your watchlist
+                  entryId:
+                    type: string
+                    example: clx123abc456
+
+  /watchlist/stats:
+    get:
+      summary: Get watchlist statistics
+      description: Returns aggregated counts of watchlist entries by status
+      tags:
+        - Watchlist
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 25
+                  not_watched:
+                    type: integer
+                    example: 10
+                  watching:
+                    type: integer
+                    example: 5
+                  completed:
+                    type: integer
+                    example: 10
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /watchlist/{id}:
+    patch:
+      summary: Update watchlist entry
+      description: Updates an existing watchlist entry. Only the owner can update.
+      tags:
+        - Watchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist entry ID
+          schema:
+            type: string
+            example: clx123abc456
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [not_watched, watching, completed]
+                  description: Watch status
+                  example: completed
+                rating:
+                  type: integer
+                  minimum: 0
+                  maximum: 5
+                  nullable: true
+                  description: Personal rating (0-5 stars)
+                  example: 5
+                notes:
+                  type: string
+                  nullable: true
+                  description: Personal notes
+                  example: Updated notes
+      responses:
+        '200':
+          description: Entry updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Watchlist entry updated successfully
+                  data:
+                    $ref: '#/components/schemas/WatchlistEntry'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not authorized to update this entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Entry not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete watchlist entry
+      description: Removes an entry from the watchlist. Only the owner can delete.
+      tags:
+        - Watchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Watchlist entry ID
+          schema:
+            type: string
+            example: clx123abc456
+      responses:
+        '200':
+          description: Entry deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Watchlist entry deleted successfully
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not authorized to delete this entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Entry not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Error:
@@ -315,6 +670,129 @@ components:
           description: Error timestamp
           example: 2024-01-15T10:30:00.000Z
 
+    MediaItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clx123abc456
+        tmdbId:
+          type: integer
+          example: 550
+        tmdbType:
+          type: string
+          enum: [movie, tv]
+          example: movie
+        title:
+          type: string
+          example: Fight Club
+        description:
+          type: string
+          nullable: true
+          example: An insomniac office worker and a devil-may-care soapmaker...
+        posterPath:
+          type: string
+          nullable: true
+          example: /p64JHd3bGjH8qSEp0gyS1BFrP4V.jpg
+        backdropPath:
+          type: string
+          nullable: true
+          example: /a0JqB5VHx7q0D8dj4qcpFSMiR8e.jpg
+        releaseDate:
+          type: string
+          format: date-time
+          nullable: true
+          example: "1999-10-15T00:00:00.000Z"
+        rating:
+          type: number
+          nullable: true
+          example: 8.8
+        genres:
+          type: array
+          items:
+            type: string
+          example: [Drama, Thriller]
+        creators:
+          type: array
+          items:
+            type: string
+          example: [David Fincher]
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        streamingProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamingProvider'
+
+    StreamingProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clx123abc456
+        mediaItemId:
+          type: string
+          example: clx123abc456
+        provider:
+          type: string
+          example: netflix
+        url:
+          type: string
+          nullable: true
+          example: https://www.netflix.com/title/550
+        regions:
+          type: array
+          items:
+            type: string
+          example: [US, CA, GB]
+        addedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+
+    WatchlistEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clx123abc456
+        userId:
+          type: string
+          example: clx123abc456
+        mediaItemId:
+          type: string
+          example: clx123abc456
+        status:
+          type: string
+          enum: [not_watched, watching, completed]
+          example: watching
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 5
+          nullable: true
+          example: 4
+        notes:
+          type: string
+          nullable: true
+          example: Great movie! Highly recommended.
+        dateAdded:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        dateUpdated:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        mediaItem:
+          $ref: '#/components/schemas/MediaItem'
+
   securitySchemes:
     bearerAuth:
       type: http
@@ -327,5 +805,7 @@ tags:
     description: User authentication endpoints
   - name: User
     description: User profile and management endpoints
+  - name: Watchlist
+    description: User watchlist management endpoints
   - name: Health
     description: Health check endpoints

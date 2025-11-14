@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import { authRouter } from './routes/auth';
+import { watchlistRouter } from './routes/watchlist';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -33,6 +34,7 @@ app.get('/health', (_req, res) => {
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/watchlist', watchlistRouter);
 
 // Protected route example
 app.get('/api/profile', authMiddleware, (req, res) => {
