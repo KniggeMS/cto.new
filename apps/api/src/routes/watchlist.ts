@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { PrismaClient, WatchStatus, Prisma } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth';
+import { mediaPersistenceService } from '../services/mediaPersistenceService';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -156,27 +157,53 @@ router.post('/', authMiddleware, async (req: Request, res: Response, next: NextF
     });
 
     if (!mediaItem) {
-      if (!metadata || !metadata.title) {
-        res.status(400).json({
-          error: 'Media item not found. Please provide metadata to create it.'
-        });
-        return;
-      }
-
-      mediaItem = await prisma.mediaItem.create({
-        data: {
-          tmdbId,
-          tmdbType,
-          title: metadata.title,
-          description: metadata.description || null,
-          posterPath: metadata.posterPath || null,
-          backdropPath: metadata.backdropPath || null,
-          releaseDate: parseOptionalDate(metadata.releaseDate),
-          rating: metadata.rating ?? null,
-          genres: metadata.genres || [],
-          creators: metadata.creators || []
+      try {
+        // Automatically fetch data from TMDB if not provided
+        if (!metadata || !metadata.title) {
+          const { mediaItem: fetchedMedia, isNew } = await mediaPersistenceService.persistMediaItem(tmdbId, tmdbType);
+          mediaItem = fetchedMedia;
+        } else {
+          // Use provided metadata
+          mediaItem = await prisma.mediaItem.create({
+            data: {
+              tmdbId,
+              tmdbType,
+              title: metadata.title,
+              description: metadata.description || null,
+              posterPath: metadata.posterPath || null,
+              backdropPath: metadata.backdropPath || null,
+              releaseDate: parseOptionalDate(metadata.releaseDate),
+              rating: metadata.rating ?? null,
+              genres: metadata.genres || [],
+              creators: metadata.creators || []
+            }
+          });
         }
-      });
+      } catch (error) {
+        if (!metadata || !metadata.title) {
+          res.status(400).json({
+            error: 'Media item not found and could not be fetched from TMDB. Please provide metadata to create it.',
+            details: error instanceof Error ? error.message : 'Unknown error'
+          });
+          return;
+        }
+        
+        // Fallback to provided metadata if TMDB fetch fails
+        mediaItem = await prisma.mediaItem.create({
+          data: {
+            tmdbId,
+            tmdbType,
+            title: metadata.title,
+            description: metadata.description || null,
+            posterPath: metadata.posterPath || null,
+            backdropPath: metadata.backdropPath || null,
+            releaseDate: parseOptionalDate(metadata.releaseDate),
+            rating: metadata.rating ?? null,
+            genres: metadata.genres || [],
+            creators: metadata.creators || []
+          }
+        });
+      }
     }
 
     const existingEntry = await prisma.watchlistEntry.findUnique({

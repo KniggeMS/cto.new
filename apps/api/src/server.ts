@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import { authRouter } from './routes/auth';
 import { watchlistRouter } from './routes/watchlist';
+import { searchRouter } from './routes/search';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -35,6 +36,7 @@ app.get('/health', (_req, res) => {
 // Routes
 app.use('/auth', authRouter);
 app.use('/watchlist', watchlistRouter);
+app.use('/search', searchRouter);
 
 // Protected route example
 app.get('/api/profile', authMiddleware, (req, res) => {

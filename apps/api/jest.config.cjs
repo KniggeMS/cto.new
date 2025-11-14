@@ -5,4 +5,6 @@ module.exports = {
   displayName: 'api',
   rootDir: __dirname,
   testMatch: ['<rootDir>/src/**/*.test.ts'],
+  setupFiles: ['<rootDir>/src/tests/setup.ts'],
+  testEnvironment: 'node',
 };
