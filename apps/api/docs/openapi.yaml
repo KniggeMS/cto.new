@@ -643,6 +643,191 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /search:
+    get:
+      summary: Search movies and TV shows
+      description: Search for movies and TV shows across TMDB database with results enriched with cached provider data
+      tags:
+        - Search
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Search query
+          example: inception
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 1
+          description: Page number
+        - name: include_adult
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: Include adult content in results
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Failed to perform search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /search/media/{tmdbId}:
+    get:
+      summary: Get media details
+      description: Get detailed information about a specific movie or TV show including streaming providers
+      tags:
+        - Search
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: TMDB ID of the media
+          example: 27205
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [movie, tv]
+            default: movie
+          description: Media type
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+            default: en
+          description: Language code for results
+      responses:
+        '200':
+          description: Media details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaDetails'
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Media not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Failed to fetch media details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /search/genres/{type}:
+    get:
+      summary: Get genres
+      description: Get list of available genres for movies or TV shows
+      tags:
+        - Search
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [movie, tv]
+          description: Genre type
+      responses:
+        '200':
+          description: Genres retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenresResponse'
+        '400':
+          description: Invalid genre type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Failed to fetch genres
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /search/cache/clear:
+    post:
+      summary: Clear cache
+      description: Clear all cached search and media data
+      tags:
+        - Search
+      responses:
+        '200':
+          description: Cache cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Cache cleared successfully
+        '500':
+          description: Failed to clear cache
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /search/cache/stats:
+    get:
+      summary: Get cache statistics
+      description: Get current cache statistics for monitoring and debugging
+      tags:
+        - Search
+      responses:
+        '200':
+          description: Cache statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CacheStats'
+        '500':
+          description: Failed to get cache statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Error:
@@ -793,6 +978,267 @@ components:
         mediaItem:
           $ref: '#/components/schemas/MediaItem'
 
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDB ID
+          example: 27205
+        title:
+          type: string
+          description: Title (movie or TV show name)
+          example: Inception
+        overview:
+          type: string
+          nullable: true
+          description: Description/plot summary
+          example: A thief who steals corporate secrets...
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+          example: /qmDpIHrmpDINLDtE9IuPWqI6p4f.jpg
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+          example: /s3TBrRGB1iav7gFOCNx3H31MoYS.jpg
+        release_date:
+          type: string
+          nullable: true
+          description: Release date (movies) or first air date (TV)
+          example: "2010-07-16"
+        vote_average:
+          type: number
+          nullable: true
+          description: Average rating (0-10)
+          example: 8.367
+        genre_ids:
+          type: array
+          items:
+            type: integer
+          description: Array of genre IDs
+          example: [28, 878, 12]
+        media_type:
+          type: string
+          enum: [movie, tv]
+          description: Media type
+          example: movie
+        streamingProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamingProvider'
+          description: Array of streaming providers (if in database)
+        inDatabase:
+          type: boolean
+          description: Boolean indicating if media exists in our database
+          example: true
+
+    SearchResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+          description: Array of search results
+        total_results:
+          type: integer
+          description: Total number of results
+          example: 1
+        total_pages:
+          type: integer
+          description: Total number of pages
+          example: 1
+        cached:
+          type: boolean
+          description: Boolean indicating if results came from cache
+          example: false
+        stale:
+          type: boolean
+          description: Boolean indicating if cached data is stale (only present when using fallback)
+          example: false
+        warning:
+          type: string
+          description: Warning message (only present when using fallback)
+          example: Using cached data due to TMDB API unavailability
+
+    MediaDetails:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+        - type: object
+          properties:
+            adult:
+              type: boolean
+              description: Adult content flag
+              example: false
+            original_language:
+              type: string
+              description: Original language code
+              example: en
+            popularity:
+              type: number
+              description: Popularity score
+              example: 31.486
+            video:
+              type: boolean
+              description: Video flag
+              example: false
+            vote_count:
+              type: integer
+              description: Number of votes
+              example: 35000
+            genres:
+              type: array
+              items:
+                $ref: '#/components/schemas/Genre'
+              description: Array of genres
+            watch_providers:
+              $ref: '#/components/schemas/WatchProviders'
+            runtime:
+              type: integer
+              description: Duration in minutes (movies only)
+              example: 148
+            number_of_seasons:
+              type: integer
+              description: Total number of seasons (TV shows only)
+              example: 3
+            number_of_episodes:
+              type: integer
+              description: Total number of episodes (TV shows only)
+              example: 24
+            status:
+              type: string
+              description: Release/Series status
+              example: Released
+
+    Genre:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Genre ID
+          example: 28
+        name:
+          type: string
+          description: Genre name
+          example: Action
+
+    StreamingProvider:
+      type: object
+      properties:
+        provider_id:
+          type: string
+          description: Provider ID
+          example: netflix
+        provider_name:
+          type: string
+          description: Provider name
+          example: netflix
+        logo_path:
+          type: string
+          nullable: true
+          description: Provider logo path
+          example: null
+        regions:
+          type: array
+          items:
+            type: string
+          description: Array of region codes
+          example: [US, GB]
+
+    WatchProviders:
+      type: object
+      properties:
+        results:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/RegionalProviders'
+          description: Regional provider data from TMDB
+        cached:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamingProvider'
+          description: Cached provider data from our database
+
+    RegionalProviders:
+      type: object
+      properties:
+        flatrate:
+          type: array
+          items:
+            $ref: '#/components/schemas/TMDBProvider'
+          description: Subscription providers
+        buy:
+          type: array
+          items:
+            $ref: '#/components/schemas/TMDBProvider'
+          description: Purchase providers
+        rent:
+          type: array
+          items:
+            $ref: '#/components/schemas/TMDBProvider'
+          description: Rental providers
+
+    TMDBProvider:
+      type: object
+      properties:
+        provider_id:
+          type: integer
+          description: TMDB provider ID
+          example: 8
+        provider_name:
+          type: string
+          description: Provider name
+          example: Netflix
+        logo_path:
+          type: string
+          nullable: true
+          description: Provider logo path
+          example: /t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg
+
+    GenresResponse:
+      type: object
+      properties:
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+          description: Array of genres
+        cached:
+          type: boolean
+          description: Boolean indicating if results came from cache
+          example: false
+
+    CacheStats:
+      type: object
+      properties:
+        keys:
+          type: integer
+          description: Number of cached keys
+          example: 1247
+        hits:
+          type: integer
+          description: Number of cache hits
+          example: 5234
+        misses:
+          type: integer
+          description: Number of cache misses
+          example: 892
+        ksize:
+          type: integer
+          description: Size of keys in bytes
+          example: 2048576
+        vsize:
+          type: integer
+          description: Size of values in bytes
+          example: 5242880
+
   securitySchemes:
     bearerAuth:
       type: http
@@ -807,5 +1253,7 @@ tags:
     description: User profile and management endpoints
   - name: Watchlist
     description: User watchlist management endpoints
+  - name: Search
+    description: TMDB search and media discovery endpoints
   - name: Health
     description: Health check endpoints
