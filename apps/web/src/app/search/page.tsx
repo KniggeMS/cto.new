@@ -3,12 +3,30 @@
 import { useState } from 'react';
 import { PageShell } from '@/components/layout/PageShell';
 import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useSearch } from '@/lib/hooks/use-search';
+import { useAddToWatchlist } from '@/lib/hooks/use-watchlist';
+import { Plus, Check } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const { data: results, isLoading } = useSearch(query);
+  const addToWatchlistMutation = useAddToWatchlist();
+
+  const handleAddToWatchlist = async (result: any) => {
+    try {
+      await addToWatchlistMutation.mutateAsync({
+        tmdbId: result.id,
+        mediaType: result.mediaType,
+        status: 'not_watched',
+      });
+      toast.success(`Added "${result.title}" to your watchlist!`);
+    } catch (error) {
+      toast.error('Failed to add to watchlist');
+    }
+  };
 
   return (
     <PageShell title="Search" description="Search for movies and TV shows to add to your watchlist">
@@ -64,21 +82,53 @@ export default function SearchPage() {
       {results && results.length > 0 && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {results.map((result) => (
-            <Card key={result.id}>
-              <CardContent className="space-y-2">
-                <h3 className="text-lg font-semibold text-gray-900">{result.title}</h3>
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span className="capitalize">{result.mediaType}</span>
-                  {result.releaseDate && <span>{new Date(result.releaseDate).getFullYear()}</span>}
+            <Card key={result.id} className="group hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 space-y-3">
+                {/* Poster */}
+                {result.posterPath && (
+                  <div className="aspect-[2/3] -mx-4 -mt-4 mb-3">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w342${result.posterPath}`}
+                      alt={result.title}
+                      className="w-full h-full object-cover rounded-t-lg"
+                    />
+                  </div>
+                )}
+                
+                {/* Title and basic info */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-700 transition-colors">
+                    {result.title}
+                  </h3>
+                  <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
+                    <span className="capitalize">{result.mediaType}</span>
+                    {result.releaseDate && <span>{new Date(result.releaseDate).getFullYear()}</span>}
+                  </div>
                 </div>
+
+                {/* Overview */}
                 {result.overview && (
                   <p className="line-clamp-3 text-sm text-gray-600">{result.overview}</p>
                 )}
+
+                {/* Rating */}
                 {result.voteAverage && (
-                  <div className="text-sm font-medium text-primary-600">
+                  <div className="text-sm font-medium text-yellow-600">
                     ⭐ {result.voteAverage.toFixed(1)}/10
                   </div>
                 )}
+
+                {/* Add to Watchlist Button */}
+                <Button
+                  onClick={() => handleAddToWatchlist(result)}
+                  disabled={addToWatchlistMutation.isPending}
+                  isLoading={addToWatchlistMutation.isPending}
+                  className="w-full"
+                  size="sm"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add to Watchlist
+                </Button>
               </CardContent>
             </Card>
           ))}

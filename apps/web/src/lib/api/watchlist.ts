@@ -3,11 +3,13 @@ import { apiClient } from './client';
 export interface WatchlistEntry {
   id: string;
   mediaItemId: string;
-  status: 'watching' | 'completed' | 'plan_to_watch';
+  status: 'not_watched' | 'watching' | 'completed';
   rating?: number;
   notes?: string;
   createdAt: string;
   updatedAt: string;
+  dateAdded: string;
+  dateUpdated: string;
   mediaItem: {
     id: string;
     tmdbId: number;
@@ -15,19 +17,29 @@ export interface WatchlistEntry {
     mediaType: 'movie' | 'tv';
     posterPath?: string;
     releaseDate?: string;
+    description?: string;
+    rating?: number;
+    genres?: string[];
+    creators?: string[];
+    streamingProviders?: Array<{
+      id: string;
+      provider: string;
+      url?: string;
+      regions?: string[];
+    }>;
   };
 }
 
 export interface CreateWatchlistEntryData {
   tmdbId: number;
   mediaType: 'movie' | 'tv';
-  status: 'watching' | 'completed' | 'plan_to_watch';
+  status?: 'not_watched' | 'watching' | 'completed';
   rating?: number;
   notes?: string;
 }
 
 export interface UpdateWatchlistEntryData {
-  status?: 'watching' | 'completed' | 'plan_to_watch';
+  status?: 'not_watched' | 'watching' | 'completed';
   rating?: number;
   notes?: string;
 }
@@ -39,7 +51,11 @@ export const watchlistApi = {
   },
 
   async addToWatchlist(data: CreateWatchlistEntryData): Promise<WatchlistEntry> {
-    const response = await apiClient.post('/watchlist', data);
+    const response = await apiClient.post('/watchlist', {
+      ...data,
+      tmdbType: data.mediaType,
+      status: data.status || 'not_watched',
+    });
     return response.data.data;
   },
 
