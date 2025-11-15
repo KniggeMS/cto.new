@@ -23,13 +23,10 @@ describe('Authentication Endpoints', () => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
-      const response = await request(app)
-        .post('/auth/register')
-        .send(userData)
-        .expect(201);
+      const response = await request(app).post('/auth/register').send(userData).expect(201);
 
       expect(response.body.message).toBe('User registered successfully');
       expect(response.body.user.email).toBe(userData.email);
@@ -43,13 +40,10 @@ describe('Authentication Endpoints', () => {
       const userData = {
         email: 'invalid-email',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
-      const response = await request(app)
-        .post('/auth/register')
-        .send(userData)
-        .expect(400);
+      const response = await request(app).post('/auth/register').send(userData).expect(400);
 
       expect(response.body.error).toBe('Validation failed');
       expect(response.body.details).toBeDefined();
@@ -59,13 +53,10 @@ describe('Authentication Endpoints', () => {
       const userData = {
         email: 'test@example.com',
         password: '123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
-      const response = await request(app)
-        .post('/auth/register')
-        .send(userData)
-        .expect(400);
+      const response = await request(app).post('/auth/register').send(userData).expect(400);
 
       expect(response.body.error).toBe('Validation failed');
     });
@@ -74,20 +65,14 @@ describe('Authentication Endpoints', () => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       // Create first user
-      await request(app)
-        .post('/auth/register')
-        .send(userData)
-        .expect(201);
+      await request(app).post('/auth/register').send(userData).expect(201);
 
       // Try to create duplicate
-      const response = await request(app)
-        .post('/auth/register')
-        .send(userData)
-        .expect(409);
+      const response = await request(app).post('/auth/register').send(userData).expect(409);
 
       expect(response.body.error).toBe('User with this email already exists');
     });
@@ -111,10 +96,7 @@ describe('Authentication Endpoints', () => {
         password: 'password123'
       };
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(loginData)
-        .expect(200);
+      const response = await request(app).post('/auth/login').send(loginData).expect(200);
 
       expect(response.body.message).toBe('Login successful');
       expect(response.body.user.email).toBe(loginData.email);
@@ -126,13 +108,10 @@ describe('Authentication Endpoints', () => {
     it('should return 401 for invalid email', async () => {
       const loginData = {
         email: 'wrong@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(loginData)
-        .expect(401);
+      const response = await request(app).post('/auth/login').send(loginData).expect(401);
 
       expect(response.body.error).toBe('Invalid credentials');
     });
@@ -154,19 +133,13 @@ describe('Authentication Endpoints', () => {
         password: 'wrongpassword'
       };
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(loginData)
-        .expect(401);
+      const response = await request(app).post('/auth/login').send(loginData).expect(401);
 
       expect(response.body.error).toBe('Invalid credentials');
     });
 
     it('should return 400 for missing fields', async () => {
-      const response = await request(app)
-        .post('/auth/login')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/auth/login').send({}).expect(400);
 
       expect(response.body.error).toBe('Validation failed');
     });
@@ -178,25 +151,27 @@ describe('Authentication Endpoints', () => {
 
     beforeEach(async () => {
       // Register and login to get tokens
-      const registerResponse = await request(app)
-        .post('/auth/register')
-        .send({
-          email: 'refresh@example.com',
-          password: 'password123',
-          name: 'Refresh User'
-        });
+      const registerResponse = await request(app).post('/auth/register').send({
+        email: 'refresh@example.com',
+        password: 'password123',
+        name: 'Refresh User',
+      });
 
       accessToken = registerResponse.body.accessToken;
-      
+
       // Extract refresh token from cookies
       const cookies = registerResponse.headers['set-cookie'];
-      refreshToken = cookies?.find((cookie: string) => cookie.startsWith('refreshToken='))?.split('=')[1]?.split(';')[0] || '';
+      refreshToken =
+        cookies
+          ?.find((cookie: string) => cookie.startsWith('refreshToken='))
+          ?.split('=')[1]
+          ?.split(';')[0] || '';
     });
 
     it('should refresh access token successfully', async () => {
       // Add a small delay to ensure different JWT issue time
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const response = await request(app)
         .post('/auth/refresh')
         .set('Cookie', `refreshToken=${refreshToken}`)
@@ -209,9 +184,7 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should return 401 for missing refresh token', async () => {
-      const response = await request(app)
-        .post('/auth/refresh')
-        .expect(401);
+      const response = await request(app).post('/auth/refresh').expect(401);
 
       expect(response.body.error).toBe('Refresh token required');
     });
@@ -226,10 +199,7 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should work with refresh token in request body', async () => {
-      const response = await request(app)
-        .post('/auth/refresh')
-        .send({ refreshToken })
-        .expect(200);
+      const response = await request(app).post('/auth/refresh').send({ refreshToken }).expect(200);
 
       expect(response.body.message).toBe('Token refreshed successfully');
       expect(response.body.accessToken).toBeDefined();
@@ -241,17 +211,19 @@ describe('Authentication Endpoints', () => {
 
     beforeEach(async () => {
       // Register and login to get refresh token
-      const registerResponse = await request(app)
-        .post('/auth/register')
-        .send({
-          email: 'logout@example.com',
-          password: 'password123',
-          name: 'Logout User'
-        });
+      const registerResponse = await request(app).post('/auth/register').send({
+        email: 'logout@example.com',
+        password: 'password123',
+        name: 'Logout User',
+      });
 
       // Extract refresh token from cookies
       const cookies = registerResponse.headers['set-cookie'];
-      refreshToken = cookies?.find((cookie: string) => cookie.startsWith('refreshToken='))?.split('=')[1]?.split(';')[0] || '';
+      refreshToken =
+        cookies
+          ?.find((cookie: string) => cookie.startsWith('refreshToken='))
+          ?.split('=')[1]
+          ?.split(';')[0] || '';
     });
 
     it('should logout successfully with cookie', async () => {
@@ -261,28 +233,25 @@ describe('Authentication Endpoints', () => {
         .expect(200);
 
       expect(response.body.message).toBe('Logout successful');
-      
+
       // Check that refresh token cookie is cleared
       const setCookieHeaders = response.headers['set-cookie'];
       if (setCookieHeaders) {
-        const clearedCookie = setCookieHeaders.find((cookie: string) => cookie.includes('refreshToken=;'));
+        const clearedCookie = setCookieHeaders.find((cookie: string) =>
+          cookie.includes('refreshToken=;'),
+        );
         expect(clearedCookie).toBeDefined();
       }
     });
 
     it('should logout successfully with refresh token in body', async () => {
-      const response = await request(app)
-        .post('/auth/logout')
-        .send({ refreshToken })
-        .expect(200);
+      const response = await request(app).post('/auth/logout').send({ refreshToken }).expect(200);
 
       expect(response.body.message).toBe('Logout successful');
     });
 
     it('should handle logout without token gracefully', async () => {
-      const response = await request(app)
-        .post('/auth/logout')
-        .expect(200);
+      const response = await request(app).post('/auth/logout').expect(200);
 
       expect(response.body.message).toBe('Logout successful');
     });
@@ -293,13 +262,11 @@ describe('Authentication Endpoints', () => {
 
     beforeEach(async () => {
       // Register and login to get access token
-      const registerResponse = await request(app)
-        .post('/auth/register')
-        .send({
-          email: 'middleware@example.com',
-          password: 'password123',
-          name: 'Middleware User'
-        });
+      const registerResponse = await request(app).post('/auth/register').send({
+        email: 'middleware@example.com',
+        password: 'password123',
+        name: 'Middleware User',
+      });
 
       accessToken = registerResponse.body.accessToken;
     });
@@ -315,9 +282,7 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should reject access without token', async () => {
-      const response = await request(app)
-        .get('/api/profile')
-        .expect(401);
+      const response = await request(app).get('/api/profile').expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -343,9 +308,7 @@ describe('Authentication Endpoints', () => {
 
   describe('Health Check', () => {
     it('should return health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body.status).toBe('ok');
       expect(response.body.timestamp).toBeDefined();

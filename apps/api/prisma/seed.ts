@@ -74,7 +74,8 @@ async function main() {
       tmdbId: 550,
       tmdbType: 'movie',
       title: 'Fight Club',
-      description: 'An insomniac office worker and a devil-may-care soapmaker form an underground fight club...',
+      description:
+        'An insomniac office worker and a devil-may-care soapmaker form an underground fight club...',
       posterPath: '/p64JHd3bGjH8qSEp0gyS1BFrP4V.jpg',
       backdropPath: '/a0JqB5VHx7q0D8dj4qcpFSMiR8e.jpg',
       releaseDate: new Date('1999-10-15'),
@@ -89,7 +90,8 @@ async function main() {
       tmdbId: 278,
       tmdbType: 'movie',
       title: 'The Shawshank Redemption',
-      description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+      description:
+        'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
       posterPath: '/q6y0Go1tsGEsmtpSDb3kxcH9z0o.jpg',
       backdropPath: '/qiP0tFb3gMrW6wysZI2hlBudGVc.jpg',
       releaseDate: new Date('1994-09-23'),
@@ -104,7 +106,8 @@ async function main() {
       tmdbId: 1399,
       tmdbType: 'tv',
       title: 'Breaking Bad',
-      description: 'A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing methamphetamine...',
+      description:
+        'A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing methamphetamine...',
       posterPath: '/ggFHVNvVYapdOayUS6XRRtSaZc4.jpg',
       backdropPath: '/x2GZyKXw32edranZgzFnWKwgKSe.jpg',
       releaseDate: new Date('2008-01-20'),

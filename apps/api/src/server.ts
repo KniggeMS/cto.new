@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import { authRouter } from './routes/auth';
+import { watchlistRouter } from './routes/watchlist';
+import { familyRouter } from './routes/family';
+import recommendationsRouter from './routes/recommendations';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -13,10 +16,12 @@ const prisma = new PrismaClient();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? false : true,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === 'production' ? false : true,
+    credentials: true,
+  }),
+);
 
 // Body parsing middleware
 app.use(express.json());
@@ -33,6 +38,9 @@ app.get('/health', (_req, res) => {
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/watchlist', watchlistRouter);
+app.use('/families', familyRouter);
+app.use('/recommendations', recommendationsRouter);
 
 // Protected route example
 app.get('/api/profile', authMiddleware, (req, res) => {
@@ -48,7 +56,7 @@ async function startServer() {
   try {
     await prisma.$connect();
     console.log('Database connected successfully');
-    
+
     app.listen(PORT, () => {
       console.log(`InFocus API server running on port ${PORT}`);
     });

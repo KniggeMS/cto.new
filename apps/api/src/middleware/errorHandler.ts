@@ -9,14 +9,14 @@ export const errorHandler = (
   error: CustomError,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   console.error('Error occurred:', {
     message: error.message,
     stack: error.stack,
     url: req.url,
     method: req.method,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Default error response
@@ -58,7 +58,7 @@ export const errorHandler = (
   // Send error response
   const errorResponse: any = {
     error: message,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   if (details) {
@@ -78,6 +78,6 @@ export const notFoundHandler = (req: Request, res: Response) => {
   res.status(404).json({
     error: 'Route not found',
     message: `Cannot ${req.method} ${req.url}`,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };

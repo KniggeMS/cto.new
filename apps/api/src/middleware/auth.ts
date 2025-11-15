@@ -18,10 +18,14 @@ declare global {
   }
 }
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       res.status(401).json({ error: 'Access token required' });
       return;
@@ -44,8 +48,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       select: {
         id: true,
         email: true,
-        name: true
-      }
+        name: true,
+      },
     });
 
     if (!user) {
@@ -57,7 +61,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     req.user = {
       id: user.id,
       email: user.email,
-      name: user.name || undefined
+      name: user.name || undefined,
     };
     next();
   } catch (error) {
@@ -68,10 +72,14 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 };
 
 // Optional authentication middleware - doesn't throw error if no token
-export const optionalAuthMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const optionalAuthMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       next(); // Continue without user context
       return;
@@ -94,15 +102,15 @@ export const optionalAuthMiddleware = async (req: Request, res: Response, next: 
       select: {
         id: true,
         email: true,
-        name: true
-      }
+        name: true,
+      },
     });
 
     if (user) {
       req.user = {
         id: user.id,
         email: user.email,
-        name: user.name || undefined
+        name: user.name || undefined,
       };
     }
 

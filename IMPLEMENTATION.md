@@ -14,17 +14,20 @@ The schema introduces a complete data model for a collaborative media tracking p
 ## Entities Implemented
 
 ### User Management
+
 1. **User** - Core user account entity with authentication fields
 2. **Profile** - Extended user information with preferences (JSON)
 3. **Session** - Active login sessions with token-based authentication
 4. **RefreshToken** - Secure token rotation system with revoke capability
 
 ### Media Tracking
+
 5. **MediaItem** - Movies and TV shows with TMDB integration
 6. **WatchlistEntry** - User tracking with status (not_watched/watching/completed), rating, and notes
 7. **StreamingProvider** - Media availability across platforms with regional info
 
 ### Social Features
+
 8. **Family** - Groups for collaborative features
 9. **FamilyMembership** - User membership in families with role-based access
 10. **FamilyInvitation** - Token-based family invitations with expiration
@@ -33,22 +36,26 @@ The schema introduces a complete data model for a collaborative media tracking p
 ## Key Features Implemented
 
 ### Watch Status Tracking
+
 - Enum with three states: `not_watched`, `watching`, `completed`
 - Default is `not_watched`
 - Indexed for efficient filtering
 
 ### Personal Ratings and Notes
+
 - Rating: Optional 1-10 integer scale on WatchlistEntry
 - Notes: Optional text field for user comments
 - Both stored with the watchlist entry for user-specific data
 
 ### Streaming Provider Metadata
+
 - StreamingProvider model tracks availability
 - Provider field: netflix, hulu, prime_video, etc.
 - Regions array: Geographic availability (US, CA, GB, etc.)
 - URL field: Optional deep links to streaming services
 
 ### Unique Business Rules
+
 - **WatchlistEntry**: One entry per user per media item (prevents duplicates)
 - **FamilyMembership**: One per user per family (prevents duplicate memberships)
 - **FamilyInvitation**: One pending invitation per email per family
@@ -56,6 +63,7 @@ The schema introduces a complete data model for a collaborative media tracking p
 - **User**: Unique email (prevents duplicate accounts)
 
 ### Authentication & Security
+
 - Session tokens for active login sessions
 - RefreshToken for token rotation
 - Revoke flag on RefreshToken for invalidation without deletion
@@ -65,6 +73,7 @@ The schema introduces a complete data model for a collaborative media tracking p
 ## Constraints and Indices
 
 ### Unique Constraints (11 total)
+
 - User.email
 - MediaItem.tmdbId
 - WatchlistEntry(userId, mediaItemId)
@@ -77,6 +86,7 @@ The schema introduces a complete data model for a collaborative media tracking p
 - FamilyInvitation.token
 
 ### Indices (25+ total)
+
 - All foreign keys are indexed for join performance
 - Status fields indexed for filtering (WatchStatus, Recommendation.status, etc.)
 - Email, token, and TMDB ID fields indexed for quick lookups
@@ -85,6 +95,7 @@ The schema introduces a complete data model for a collaborative media tracking p
 ## Migration Strategy
 
 ### Initial Setup
+
 ```bash
 # From apps/api/
 npm install
@@ -92,13 +103,16 @@ npm run migrate
 ```
 
 This creates the initial migration with:
+
 - All table definitions
 - Unique constraints
 - Foreign key relationships
 - Indices for performance
 
 ### Schema Versioning
+
 Each schema change creates a new migration file:
+
 ```
 prisma/migrations/
 ├── 20240101000000_initial_schema/
@@ -108,6 +122,7 @@ prisma/migrations/
 ```
 
 ### Deployment
+
 ```bash
 npm run migrate:prod  # Deploy migrations to production
 ```
@@ -115,6 +130,7 @@ npm run migrate:prod  # Deploy migrations to production
 ## Seeding & Demo Data
 
 The seed script (`prisma/seed.ts`) creates:
+
 - 3 demo users with varied profiles
 - 3 media items (TMDB real examples: Fight Club, Shawshank Redemption, Breaking Bad)
 - 4 watchlist entries with varied statuses and ratings
@@ -128,6 +144,7 @@ Run with: `npm run seed`
 ## TMDB Integration
 
 MediaItem entities include TMDB fields for easy API synchronization:
+
 - `tmdbId`: TMDB identifier (movies/shows)
 - `tmdbType`: "movie" or "tv"
 - Unique constraint on tmdbId prevents duplicates
@@ -146,24 +163,28 @@ MediaItem entities include TMDB fields for easy API synchronization:
 ## Production Considerations
 
 ### Security
+
 - Passwords should be hashed with bcrypt (currently plaintext in seed)
 - Session tokens should use JWT instead of random strings
 - Implement token expiration cleanup jobs
 - Add rate limiting on authentication endpoints
 
 ### Performance
+
 - All indices are created automatically
 - Watch for N+1 queries in application code
 - Consider caching user preferences
 - Monitor slow query logs
 
 ### Scalability
+
 - CUID primary keys support sharding
 - Consider read replicas for reporting queries
 - Archive old sessions/refresh tokens
 - Add connection pooling (PgBouncer)
 
 ### Compliance
+
 - Consider soft deletes for audit trails
 - Add audit logging table for data changes
 - Implement GDPR data export/deletion features
@@ -172,12 +193,14 @@ MediaItem entities include TMDB fields for easy API synchronization:
 ## Monitoring & Maintenance
 
 ### Regular Tasks
+
 - Monitor migration status: `npx prisma migrate status`
 - Run Prisma Studio for data inspection: `npx prisma studio`
 - Check index usage and fragmentation
 - Archive old sessions periodically
 
 ### Troubleshooting
+
 - Reset local database: `npx prisma migrate reset`
 - Validate schema: `npx prisma validate`
 - Generate client: `npx prisma generate`
@@ -185,6 +208,7 @@ MediaItem entities include TMDB fields for easy API synchronization:
 ## Future Enhancements
 
 Planned features that may require schema changes:
+
 - Notifications system (add Notification model)
 - Extended reviews with ratings from multiple sources
 - User collections/lists beyond families
@@ -197,6 +221,7 @@ See [apps/api/SCHEMA.md](apps/api/SCHEMA.md) for complete documentation.
 ## Files Modified/Created
 
 ### New Files
+
 - `apps/api/prisma/schema.prisma` - Core schema definition
 - `apps/api/prisma/seed.ts` - Development data seeding
 - `apps/api/src/index.ts` - Application entry point
@@ -211,6 +236,7 @@ See [apps/api/SCHEMA.md](apps/api/SCHEMA.md) for complete documentation.
 - `.gitignore` - Root level git ignore
 
 ### Generated Files
+
 - `apps/api/prisma/migrations/` - Auto-generated migration files
 - `apps/api/node_modules/@prisma/` - Prisma client
 

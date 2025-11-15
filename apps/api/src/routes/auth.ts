@@ -3,6 +3,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -11,12 +12,12 @@ const prisma = new PrismaClient();
 const registerSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  name: z.string().min(1, 'Name is required').optional()
+  name: z.string().min(1, 'Name is required').optional(),
 });
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(1, 'Password is required')
+  password: z.string().min(1, 'Password is required'),
 });
 
 // JWT configuration
@@ -39,7 +40,7 @@ const setRefreshTokenCookie = (res: any, refreshToken: string) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
 
@@ -51,7 +52,7 @@ router.post('/register', async (req: any, res: any, next: any) => {
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
@@ -67,14 +68,14 @@ router.post('/register', async (req: any, res: any, next: any) => {
       data: {
         email,
         password: hashedPassword,
-        name
+        name,
       },
       select: {
         id: true,
         email: true,
         name: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     // Generate tokens
@@ -86,8 +87,8 @@ router.post('/register', async (req: any, res: any, next: any) => {
       data: {
         userId: user.id,
         token: refreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-      }
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
     });
 
     // Set refresh token cookie
@@ -96,13 +97,13 @@ router.post('/register', async (req: any, res: any, next: any) => {
     res.status(201).json({
       message: 'User registered successfully',
       user,
-      accessToken
+      accessToken,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        error: 'Validation failed', 
-        details: error.errors 
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: error.errors,
       });
     }
     next(error);
@@ -117,7 +118,7 @@ router.post('/login', async (req: any, res: any, next: any) => {
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -139,8 +140,8 @@ router.post('/login', async (req: any, res: any, next: any) => {
       data: {
         userId: user.id,
         token: refreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-      }
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
     });
 
     // Set refresh token cookie
@@ -151,15 +152,15 @@ router.post('/login', async (req: any, res: any, next: any) => {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
       },
-      accessToken
+      accessToken,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        error: 'Validation failed', 
-        details: error.errors 
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: error.errors,
       });
     }
     next(error);
@@ -199,7 +200,7 @@ router.post('/refresh', async (req: any, res: any, next: any) => {
     // Check if refresh token exists in database and is not revoked
     const storedToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
-      include: { user: true }
+      include: { user: true },
     });
 
     if (!storedToken || storedToken.revoked || storedToken.expiresAt < new Date()) {
@@ -211,7 +212,7 @@ router.post('/refresh', async (req: any, res: any, next: any) => {
 
     res.json({
       message: 'Token refreshed successfully',
-      accessToken
+      accessToken,
     });
   } catch (error) {
     console.error('Refresh route error:', error);
@@ -241,7 +242,7 @@ router.post('/logout', async (req: any, res: any, next: any) => {
       // Revoke refresh token in database
       await prisma.refreshToken.updateMany({
         where: { token: refreshToken },
-        data: { revoked: true }
+        data: { revoked: true },
       });
     }
 
@@ -251,6 +252,29 @@ router.post('/logout', async (req: any, res: any, next: any) => {
     res.json({ message: 'Logout successful' });
   } catch (error) {
     console.error('Logout route error:', error);
+    next(error);
+  }
+});
+
+// GET /auth/me - Get current authenticated user
+router.get('/me', authMiddleware, async (req: any, res: any, next: any): Promise<void> => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    res.json({
+      message: 'Current user',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (error) {
+    console.error('Get current user error:', error);
     next(error);
   }
 });
