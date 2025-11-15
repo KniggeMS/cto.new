@@ -12,15 +12,14 @@ module.exports = {
     '!src/**/index.ts',
     '!src/**/index.tsx',
   ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|@react-navigation|expo-secure-store)/)',
-  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'native.js', 'android.js', 'ios.js'],
+  // Empty transformIgnorePatterns means: transform EVERYTHING
+  // babel-jest will use Flow plugin to strip types from react-native
+  transformIgnorePatterns: [],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.js' }],
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|svg)$': 'identity-obj-proxy',
-    '^react-native$': '<rootDir>/../../node_modules/react-native',
   },
 };
