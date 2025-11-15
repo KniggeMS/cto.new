@@ -35,6 +35,8 @@ Create a `.env.local` file in the `apps/web` directory:
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
+For production deployment, see [Deploying to Vercel](#deploying-to-vercel) for required environment variables.
+
 ### Development
 
 ```bash
@@ -143,6 +145,33 @@ Reusable components built with Tailwind CSS:
 - **Card** - Container component for content sections
 - **Navigation** - Top navigation bar with authentication state
 - **PageShell** - Page wrapper with title and description
+
+## Deploying to Vercel
+
+The InFocus web app is designed for seamless deployment to Vercel. For complete deployment instructions, including environment setup, CORS configuration, and validation steps, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+### Quick Start
+
+1. **Prerequisites**: Ensure backend API is deployed and accessible
+2. **Environment Variables**: Configure `NEXT_PUBLIC_API_URL` in Vercel dashboard
+3. **Deploy**: Import GitHub repository to Vercel with root directory `apps/web`
+4. **Validate**: Run smoke tests to verify authentication and API connectivity
+
+### Required Environment Variables
+
+```env
+# Production
+NEXT_PUBLIC_API_URL=https://your-api-domain.com
+
+# Optional: For preview deployments
+NEXT_PUBLIC_API_URL_PREVIEW=https://your-staging-api.com
+```
+
+### Key Configuration Points
+
+- **Root Directory**: Set to `apps/web` when importing to Vercel
+- **CORS**: Ensure backend `CORS_ORIGIN` includes your Vercel domain
+- **API URL**: Do NOT include `/api` prefix in `NEXT_PUBLIC_API_URL`
 
 ## Contributing
 
