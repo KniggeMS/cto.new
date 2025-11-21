@@ -353,10 +353,6 @@ docker exec -i postgres-infocus psql -U postgres infocus_dev < backup.sql
 
 ## Production Deployment
 
-For detailed deployment instructions including Docker containerization, CI/CD setup, and deployment to Railway or Render, see [../../DEPLOYMENT.md](../../DEPLOYMENT.md).
-
-### Quick Start
-
 1. Set `DATABASE_URL` to production database
 2. Run migrations:
 
@@ -376,44 +372,8 @@ npm run build
 node dist/index.js
 ```
 
-### Docker Deployment
-
-Build and run the Docker image:
-
-```bash
-# Build
-docker build -t infocus-api:latest .
-
-# Run
-docker run -p 3000:3000 \
-  -e DATABASE_URL="postgresql://..." \
-  -e NODE_ENV=production \
-  -e JWT_ACCESS_SECRET="..." \
-  -e JWT_REFRESH_SECRET="..." \
-  -e TMDB_API_KEY="..." \
-  infocus-api:latest
-```
-
-### CI/CD Pipeline
-
-The project includes automated CI/CD pipeline (GitHub Actions) that:
-
-1. Installs dependencies
-2. Runs linting and type checking
-3. Runs tests with PostgreSQL
-4. Builds Docker image
-5. Deploys to Railway/Render on main branch push
-
-Configure repository secrets:
-
-- `RAILWAY_TOKEN` - For Railway deployments
-- `RENDER_DEPLOY_HOOK_URL` - For Render deployments
-
-See [GitHub Actions Workflow](.github/workflows/ci-cd.yml) for details.
-
 ## Documentation
 
-- [Deployment Guide](../../DEPLOYMENT.md) - Complete production deployment instructions
 - [Database Schema Documentation](SCHEMA.md) - Complete entity descriptions and relationships
 - [Prisma Documentation](https://www.prisma.io/docs/) - Official ORM docs
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Database reference

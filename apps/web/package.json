@@ -4,27 +4,17 @@
   "private": true,
   "description": "InFocus web application",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "echo 'Web app dev server (to be implemented)'",
+    "build": "echo 'Building web app...' && mkdir -p dist && echo '<!doctype html><html><body><div id=\"root\"></div></body></html>' > dist/index.html",
     "clean": "rm -rf dist .next",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "lint": "next lint",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
     "@infocus/shared": "workspace:*",
-    "@tanstack/react-query": "^5.17.19",
-    "axios": "^1.6.5",
-    "clsx": "^2.1.0",
-    "next": "^14.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.48.0",
-    "react-hot-toast": "^2.4.1",
-    "tailwind-merge": "^2.2.0",
-    "zod": "^3.22.4"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@infocus/eslint-config": "workspace:*",
@@ -33,18 +23,11 @@
     "@infocus/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.4.1",
     "@testing-library/react": "^14.1.2",
-    "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
-    "autoprefixer": "^10.4.16",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^14.0.4",
     "identity-obj-proxy": "^3.0.0",
     "jest-environment-jsdom": "^29.7.0",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3"
   }
 }

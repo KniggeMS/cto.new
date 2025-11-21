@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "InFocus - Collaborative media tracking and recommendation platform",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -40,9 +36,5 @@
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@10.22.0",
-  "dependencies": {
-    "@tailwindcss/line-clamp": "^0.4.4",
-    "lucide-react": "^0.553.0"
-  }
+  "packageManager": "pnpm@10.22.0"
 }
