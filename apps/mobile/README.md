@@ -1,272 +1,251 @@
 # InFocus Mobile App
 
-React Native mobile application for InFocus - a collaborative media tracking and recommendation platform.
-
-## Features
-
-### Authentication
-- **Login/Register Screens**: Form validation and API integration mirroring web auth endpoints
-- **Secure Token Storage**: Using Expo SecureStore for persistent, encrypted token storage
-- **Token Refresh**: Automatic token refresh on 401 responses with axios interceptors
-- **Onboarding Flow**: Post-registration flow for setting display name and preferred streaming providers
-- **Navigation Guards**: Prevents unauthenticated access to main tabs
-- **Session Persistence**: Authentication persists across app restarts
-
-### Main Features
-- **Watchlist**: View and manage your watchlist (placeholder)
-- **Search**: Search for movies and TV shows (placeholder)
-- **Family**: Manage family groups (placeholder)
-- **Settings**: View profile and logout
+React Native mobile application built with Expo for the InFocus platform.
 
 ## Tech Stack
 
-- **React Native** 0.73.11
-- **React Navigation** - Native Stack and Bottom Tabs
-- **Expo SecureStore** - Secure token storage
-- **Axios** - HTTP client with interceptors
-- **React Hook Form** - Form handling
-- **Zod** - Schema validation
+- **Expo SDK 50** - Managed React Native workflow
+- **React Navigation 6** - Navigation library with authentication flow
+- **NativeBase** - Cross-platform UI component library
 - **TypeScript** - Type safety
+- **Zod** - Runtime validation
+- **Axios** - HTTP client with interceptors
+- **AsyncStorage** - Local token storage
+- **Jest + React Native Testing Library** - Unit/integration testing
+- **Detox** - End-to-end testing
 
 ## Project Structure
 
 ```
 src/
-├── components/
-│   ├── forms/
-│   │   ├── Input.tsx          # Reusable input component
-│   │   └── Button.tsx         # Reusable button component
-│   └── layout/
-│       └── Container.tsx      # Screen container with SafeArea
-├── screens/
-│   ├── auth/
-│   │   ├── LoginScreen.tsx    # Login form
-│   │   ├── RegisterScreen.tsx # Registration form
-│   │   └── OnboardingScreen.tsx # Post-registration onboarding
-│   ├── tabs/
-│   │   ├── WatchlistScreen.tsx
-│   │   ├── SearchScreen.tsx
-│   │   ├── FamilyScreen.tsx
-│   │   └── SettingsScreen.tsx
-│   └── SplashScreen.tsx       # Loading screen
-├── navigation/
-│   ├── AuthNavigator.tsx      # Auth stack (Login/Register)
-│   ├── TabNavigator.tsx       # Main tabs
-│   └── RootNavigator.tsx      # Root navigation logic
-├── lib/
-│   ├── api/
-│   │   ├── client.ts          # Axios client with interceptors
-│   │   ├── auth.ts            # Auth API methods
-│   │   └── types.ts           # API types
-│   ├── context/
-│   │   └── AuthContext.tsx    # Global auth state
-│   ├── storage/
-│   │   └── SecureStorage.ts   # SecureStore wrapper
-│   └── validation/
-│       └── auth.ts            # Zod schemas
-└── __tests__/                 # Jest tests
-    ├── components/
-    ├── screens/
-    └── e2e/                   # Detox E2E tests
+├── contexts/          # React contexts (Auth)
+├── lib/              # Core libraries
+│   └── api/          # API client and endpoints
+├── navigation/       # Navigation stacks and tabs
+├── screens/          # Screen components
+│   ├── auth/         # Authentication screens (Login, Register)
+│   └── app/          # Main app screens (Watchlist, Search, Family, Settings)
+├── theme/            # NativeBase theme configuration
+├── types/            # TypeScript type definitions
+└── App.tsx           # Root component
+
+e2e/                  # Detox end-to-end tests
 ```
 
-## Setup
+## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
-- React Native development environment
-- iOS Simulator (for iOS) or Android Emulator (for Android)
+- pnpm 8+
+- iOS: Xcode 14+ and CocoaPods
+- Android: Android Studio and SDK
 
 ### Installation
 
 ```bash
+# Install dependencies
+pnpm install
+
+# Start Expo development server
 cd apps/mobile
-npm install
+pnpm start
 ```
+
+### Running on Simulators/Emulators
+
+```bash
+# iOS
+pnpm ios
+
+# Android
+pnpm android
+
+# Web (for quick testing)
+pnpm web
+```
+
+## Configuration
 
 ### Environment Variables
 
-Create a `.env` file based on `.env.example`:
+Copy `.env.example` to `.env` and configure:
+
+```env
+EXPO_PUBLIC_API_URL=http://localhost:3001
+EXPO_PUBLIC_API_TIMEOUT=10000
+EXPO_PUBLIC_APP_ENV=development
+```
+
+### EAS Build
+
+The app is configured for EAS Build with three environments:
+
+- **development**: Local development builds with dev client
+- **preview**: Staging/testing builds
+- **production**: Production builds for app stores
+
+To build:
 
 ```bash
-API_URL=http://localhost:3000
-NODE_ENV=development
+# Install EAS CLI
+npm install -g eas-cli
+
+# Login to Expo
+eas login
+
+# Configure project (first time only)
+eas build:configure
+
+# Build for development
+eas build --profile development --platform ios
+eas build --profile development --platform android
+
+# Build for production
+eas build --profile production --platform all
 ```
+
+## Features
+
+### Authentication
+
+- Email/password login and registration
+- JWT token management with automatic refresh
+- Secure token storage with AsyncStorage
+- Protected route navigation
+
+### Navigation
+
+The app uses a conditional navigation structure:
+
+- **Auth Stack**: Login and Register screens (unauthenticated users)
+- **App Tabs**: Main app screens with bottom tab navigation (authenticated users)
+  - Watchlist: User's watchlist (placeholder)
+  - Search: Search for media (placeholder)
+  - Family: Family groups (placeholder)
+  - Settings: User settings and logout
+
+### Theming
+
+The app uses a custom NativeBase theme that matches the web app's color scheme:
+
+- Primary colors: Blue shades (#0ea5e9 - #082f49)
+- Secondary colors: Purple shades (#a855f7 - #3b0764)
+- Consistent styling across all components
 
 ## Development
 
+### Scripts
+
 ```bash
-# Run development server
-npm run dev
+# Start development server
+pnpm start
+pnpm dev
 
 # Type checking
-npm run typecheck
+pnpm typecheck
 
 # Linting
-npm run lint
+pnpm lint
+
+# Testing
+pnpm test
+pnpm test:watch
+
+# Clean build artifacts
+pnpm clean
 ```
 
-## Testing
+### Testing
 
-> **Note**: Full React Native testing requires a properly configured React Native environment with iOS/Android projects. The project currently uses pnpm workspaces. If using npm, you may need to install dependencies with pnpm or convert workspace protocol references.
-
-### Unit Tests
+#### Unit/Integration Tests
 
 ```bash
-# Run all unit tests (from project root using turbo)
-npm test
+# Run all tests
+pnpm test
 
-# Run mobile tests specifically
-cd apps/mobile && npm test
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run tests with coverage
-npm test -- --coverage
+# Watch mode
+pnpm test:watch
 ```
 
-### E2E Tests (Detox)
+#### E2E Tests with Detox
 
 ```bash
-# Build iOS app for testing
-npm run build:e2e:ios
+# Build for iOS
+pnpm test:e2e:build:ios
 
-# Run iOS E2E tests
-npm run test:e2e
+# Run iOS tests
+pnpm test:e2e:test:ios
 
-# Build Android app for testing
-npm run build:e2e:android
+# Build for Android
+pnpm test:e2e:build:android
 
-# Run Android E2E tests
-npm run test:e2e:android
+# Run Android tests
+pnpm test:e2e:test:android
 ```
-
-## Authentication Flow
-
-### Token Management
-
-1. **Login/Register**: Receives `accessToken` and `refreshToken` from API
-2. **Storage**: Tokens are stored securely using Expo SecureStore
-3. **Request Interceptor**: Automatically attaches access token to API requests
-4. **Response Interceptor**: Handles 401 errors by refreshing tokens
-5. **Logout**: Clears tokens from SecureStore
-
-### Navigation Flow
-
-```
-App Launch
-    ↓
-Auth Context Initialized
-    ↓
-Check for Access Token
-    ↓
-    ├─ Token Found → Verify with API → Main Tabs
-    ├─ Token Invalid → Login Screen
-    └─ No Token → Login Screen
-        ↓
-    Login/Register
-        ↓
-    Needs Onboarding? → Onboarding Screen
-        ↓
-    Main Tabs
-```
-
-### Onboarding
-
-After registration, users without a display name are guided through an onboarding flow:
-
-1. **Display Name**: Optional, but recommended
-2. **Streaming Providers**: Select available streaming services
-3. **Skip Option**: Can skip onboarding and complete later
 
 ## API Integration
 
-The mobile app mirrors the web app's API endpoints:
+The mobile app connects to the same backend API as the web app. The API client is configured with:
 
-- `POST /auth/login` - Login
-- `POST /auth/register` - Register
-- `POST /auth/logout` - Logout
+- Automatic JWT token injection
+- Token refresh on 401 responses
+- Error handling and retry logic
+- Request/response interceptors
+
+### API Endpoints Used
+
+- `POST /auth/login` - User login
+- `POST /auth/register` - User registration
+- `POST /auth/logout` - User logout
 - `GET /auth/me` - Get current user
 - `POST /auth/refresh` - Refresh access token
-- `PATCH /profile` - Update profile (onboarding)
 
-## Form Validation
+## Troubleshoads
 
-### Login
-- Email: Valid email format
-- Password: Required
+### iOS Build Issues
 
-### Register
-- Display Name: 1-100 characters
-- Email: Valid email format
-- Password: Min 8 chars, uppercase, lowercase, number
-- Confirm Password: Must match password
-
-### Onboarding
-- Display Name: Optional, 1-100 characters
-- Streaming Providers: Optional, multi-select
-
-## Components
-
-### Input
-Reusable text input with label and error message display.
-
-```tsx
-<Input
-  label="Email"
-  placeholder="Enter your email"
-  value={value}
-  onChangeText={onChange}
-  error={errors.email?.message}
-  keyboardType="email-address"
-/>
+```bash
+# Clean iOS build
+cd ios && pod deintegrate && pod install
 ```
 
-### Button
-Reusable button with loading state and variants.
+### Android Build Issues
 
-```tsx
-<Button
-  title="Sign In"
-  onPress={handleSubmit}
-  loading={loading}
-  variant="primary"
-/>
+```bash
+# Clean Android build
+cd android && ./gradlew clean
 ```
 
-### Container
-Screen wrapper with SafeArea and KeyboardAvoidingView.
+### Metro Bundler Issues
 
-```tsx
-<Container scrollable>
-  {/* Screen content */}
-</Container>
+```bash
+# Clear Metro cache
+pnpm start --clear
 ```
-
-## Security
-
-- **Secure Storage**: Tokens stored in device keychain/keystore
-- **HTTPS**: All API requests over HTTPS in production
-- **Token Refresh**: Automatic token refresh on expiry
-- **Logout on Error**: Clears tokens on authentication errors
-
-## Known Limitations
-
-- **React Native Environment**: Full React Native environment with iOS/Android projects not yet configured
-- **Testing**: Unit tests require React Native dependencies to be properly installed via pnpm
-- **Package Manager**: Project uses pnpm workspaces; npm may have compatibility issues
-- **Navigation**: Set up but requires actual native builds to test fully
-- **E2E Tests**: Require native app builds (iOS/Android) and real devices/simulators
-- **Push notifications**: Not yet implemented
-- **Biometric authentication**: Not yet implemented
 
 ## Future Enhancements
 
-- [ ] Biometric authentication (Face ID / Touch ID)
-- [ ] Push notifications
-- [ ] Offline support
-- [ ] Deep linking
-- [ ] Social authentication (Google, Apple)
-- [ ] Remember me functionality
-- [ ] Password reset flow
+- [ ] Implement watchlist CRUD operations
+- [ ] Add search functionality with TMDB integration
+- [ ] Implement family group features
+- [ ] Add push notifications
+- [ ] Offline support with local caching
+- [ ] Biometric authentication
+- [ ] Deep linking support
+- [ ] Social sharing features
+- [ ] Dark mode support
+- [ ] Accessibility improvements
+
+## Contributing
+
+Follow the same code style and patterns as the web app:
+
+- Use TypeScript for type safety
+- Follow existing component patterns
+- Write tests for new features
+- Update documentation as needed
+
+## License
+
+Private - InFocus Platform

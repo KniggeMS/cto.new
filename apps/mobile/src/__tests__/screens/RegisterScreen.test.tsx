@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
-import { RegisterScreen } from '../../screens/auth/RegisterScreen';
+import RegisterScreen from '../../screens/auth/RegisterScreen';
 import { useAuth } from '../../lib/context/AuthContext';
 import { Alert } from 'react-native';
 

@@ -1,8 +1,28 @@
 {
-  "extends": "@infocus/tsconfig/react-native",
+  "extends": "../../packages/tsconfig/react-native.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "strict": true,
+    "jsx": "react-native",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@infocus/shared": ["../../packages/shared/src"]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*",
+    "*.ts",
+    "*.tsx",
+    "*.js",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "android",
+    "ios",
+    ".expo"
+  ]
 }
