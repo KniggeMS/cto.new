@@ -328,8 +328,21 @@ This will:
 2. Create a new migration file
 3. Apply the migration to your local database
 
+## Deployment
+
+For comprehensive deployment instructions including:
+
+- Docker containerization with multi-stage builds
+- GitHub Actions CI/CD pipeline
+- Railway and Render deployment setup
+- Environment variable configuration
+- Database migration automation
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
+
 ## Documentation
 
+- [Deployment Guide](DEPLOYMENT.md) - Production deployment instructions
 - [Database Schema Documentation](apps/api/SCHEMA.md) - Comprehensive schema design
 - [API README](apps/api/README.md) - API-specific documentation
 - [Turborepo Documentation](https://turbo.build/repo/docs) - Turborepo guide

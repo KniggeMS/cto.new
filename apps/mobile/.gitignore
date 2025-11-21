@@ -1,14 +1,8 @@
-# Dependencies
-node_modules/
+# OSX
+.DS_Store
 
-# Build artifacts
-dist/
+# Xcode
 build/
-*.tgz
-
-# iOS
-ios/build/
-ios/Pods/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -24,11 +18,9 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-ios/.xcode.env.local
+project.xcworkspace
 
 # Android
-android/app/build/
-android/build/
 *.apk
 *.ap_
 *.aab
@@ -41,45 +33,33 @@ out/
 local.properties
 *.iml
 .idea/
-*.hprof
-.cxx/
+.gradle
+gradle.properties
 
-# React Native
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Expo
 .expo/
 .expo-shared/
-*.jks
+dist/
+web-build/
 
 # Environment
 .env
 .env.local
-.env.*.local
+.env.production
+.env.development
 
 # Testing
 coverage/
-.nyc_output/
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Detox
-*.detox
-
-# Temporary
-*.tmp
-*.temp
+# Misc
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*

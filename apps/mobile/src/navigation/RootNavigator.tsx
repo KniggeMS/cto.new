@@ -1,42 +1,20 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAuth } from '../lib/context/AuthContext';
-import { AuthNavigator } from './AuthNavigator';
-import { TabNavigator } from './TabNavigator';
-import { OnboardingScreen } from '../screens/auth/OnboardingScreen';
-import { SplashScreen } from '../screens/SplashScreen';
+import { Spinner, Center } from 'native-base';
+import { useAuth } from '@/contexts/AuthContext';
+import { AuthStack } from './AuthStack';
+import { AppTabs } from './AppTabs';
 
-export type RootStackParamList = {
-  Auth: undefined;
-  Onboarding: undefined;
-  Main: undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-export const RootNavigator: React.FC = () => {
-  const { isLoading, isAuthenticated, needsOnboarding } = useAuth();
+export function RootNavigator() {
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <SplashScreen />;
+    return (
+      <Center flex={1} bg="white">
+        <Spinner size="lg" color="primary.600" />
+      </Center>
+    );
   }
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        {!isAuthenticated ? (
-          <Stack.Screen name="Auth" component={AuthNavigator} />
-        ) : needsOnboarding ? (
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        ) : (
-          <Stack.Screen name="Main" component={TabNavigator} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+  return <NavigationContainer>{isAuthenticated ? <AppTabs /> : <AuthStack />}</NavigationContainer>;
+}

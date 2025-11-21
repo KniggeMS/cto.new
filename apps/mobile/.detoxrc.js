@@ -17,20 +17,21 @@ module.exports = {
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..',
+      build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
+      reversePorts: [8081],
     },
   },
   devices: {
     simulator: {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone 14',
+        type: 'iPhone 15',
       },
     },
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_4_API_30',
+        avdName: 'Pixel_5_API_31',
       },
     },
   },

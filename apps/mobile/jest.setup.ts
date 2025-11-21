@@ -1,1 +1,1 @@
-import '@testing-library/jest-native/extend-expect';
+// Basic jest setup for mobile app

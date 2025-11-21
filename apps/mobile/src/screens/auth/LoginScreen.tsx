@@ -1,144 +1,149 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { AxiosError } from 'axios';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigation } from '@react-navigation/native';
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+  FormControl,
+  Input,
+  Button,
+  Link,
+  useToast,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'native-base';
+import { Platform } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Container } from '../../components/layout/Container';
-import { Input } from '../../components/forms/Input';
-import { Button } from '../../components/forms/Button';
-import { loginSchema, LoginFormData } from '../../lib/validation/auth';
-import { useAuth } from '../../lib/context/AuthContext';
-import { AuthStackParamList } from '../../navigation/AuthNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '@/contexts/AuthContext';
+import { AuthStackParamList } from '@/navigation/AuthStack';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
-export const LoginScreen: React.FC = () => {
-  const { login } = useAuth();
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const toast = useToast();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  const validate = () => {
+    const newErrors: { email?: string; password?: string } = {};
 
-  const onSubmit = async (data: LoginFormData) => {
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is invalid';
+    }
+
+    if (!password) {
+      newErrors.password = 'Password is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLogin = async () => {
+    if (!validate()) return;
+
+    setIsLoading(true);
     try {
-      setLoading(true);
-      await login(data.email, data.password);
+      await login(email, password);
+      toast.show({
+        description: 'Login successful!',
+        bg: 'green.600',
+      });
     } catch (error) {
-      const axiosError = error as AxiosError<{ error?: string }>;
-      Alert.alert(
-        'Login Failed',
-        axiosError.response?.data?.error || (error as Error).message || 'Invalid email or password',
-      );
+      const errorMessage =
+        error instanceof Error && 'response' in error
+          ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
+          : undefined;
+      toast.show({
+        description: errorMessage || 'Login failed. Please try again.',
+        bg: 'red.600',
+      });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <Container scrollable>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
-      </View>
+    <KeyboardAvoidingView flex={1} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView flex={1} bg="white">
+        <Box flex={1} px={6} py={12} justifyContent="center">
+          <VStack space={6} alignItems="center">
+            <Heading size="2xl" color="primary.600">
+              InFocus
+            </Heading>
+            <Text fontSize="md" color="gray.600">
+              Sign in to your account
+            </Text>
 
-      <View style={styles.form}>
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Email"
-              placeholder="Enter your email"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.email?.message}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              testID="email-input"
-            />
-          )}
-        />
+            <VStack space={4} width="100%" mt={8}>
+              <FormControl isInvalid={'email' in errors}>
+                <FormControl.Label>Email</FormControl.Label>
+                <Input
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    if (errors.email) setErrors({ ...errors, email: undefined });
+                  }}
+                  placeholder="Enter your email"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  size="lg"
+                />
+                {'email' in errors && (
+                  <FormControl.ErrorMessage>{errors.email}</FormControl.ErrorMessage>
+                )}
+              </FormControl>
 
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Password"
-              placeholder="Enter your password"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.password?.message}
-              secureTextEntry
-              testID="password-input"
-            />
-          )}
-        />
+              <FormControl isInvalid={'password' in errors}>
+                <FormControl.Label>Password</FormControl.Label>
+                <Input
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    if (errors.password) setErrors({ ...errors, password: undefined });
+                  }}
+                  placeholder="Enter your password"
+                  type="password"
+                  size="lg"
+                />
+                {'password' in errors && (
+                  <FormControl.ErrorMessage>{errors.password}</FormControl.ErrorMessage>
+                )}
+              </FormControl>
 
-        <Button
-          title="Sign In"
-          onPress={handleSubmit(onSubmit)}
-          loading={loading}
-          testID="login-button"
-        />
+              <Button
+                onPress={handleLogin}
+                isLoading={isLoading}
+                isLoadingText="Signing in..."
+                size="lg"
+                mt={4}
+              >
+                Sign In
+              </Button>
 
-        <TouchableOpacity
-          style={styles.registerLink}
-          testID="register-link"
-          onPress={() => navigation.navigate('Register')}
-        >
-          <Text style={styles.registerText}>
-            Don&apos;t have an account? <Text style={styles.registerTextBold}>Sign Up</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </Container>
+              <Box alignItems="center" mt={4}>
+                <Text>
+                  Don&apos;t have an account?{' '}
+                  <Link
+                    onPress={() => navigation.navigate('Register')}
+                    _text={{ color: 'primary.600', fontWeight: 'bold' }}
+                  >
+                    Sign Up
+                  </Link>
+                </Text>
+              </Box>
+            </VStack>
+          </VStack>
+        </Box>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-};
-
-const styles = StyleSheet.create({
-  form: {
-    flex: 1,
-  },
-  header: {
-    marginBottom: 32,
-    marginTop: 40,
-  },
-  registerLink: {
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  registerText: {
-    color: '#6b7280',
-    fontSize: 14,
-  },
-  registerTextBold: {
-    color: '#3b82f6',
-    fontWeight: '600',
-  },
-  subtitle: {
-    color: '#6b7280',
-    fontSize: 16,
-  },
-  title: {
-    color: '#1f2937',
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-});
+}
