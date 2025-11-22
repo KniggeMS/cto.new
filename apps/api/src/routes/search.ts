@@ -4,7 +4,7 @@ import { tmdbService, MediaType, SearchResult, MediaDetails } from '../services/
 import { PrismaClient } from '@prisma/client';
 import { cacheService } from '../services/cacheService';
 
-const router = Router();
+const router: Router = Router();
 const prisma = new PrismaClient();
 
 // Query parameter schemas
@@ -270,7 +270,7 @@ router.post('/cache/clear', async (req: Request, res: Response) => {
 });
 
 // GET /cache/stats - Get cache statistics
-router.get('/cache/stats', async (req: Request, res: Response) => {
+router.get('/cache/stats', async (_req: Request, res: Response) => {
   try {
     const stats = cacheService.getStats();
     res.json(stats);

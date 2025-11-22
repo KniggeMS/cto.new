@@ -74,7 +74,7 @@ export const authMiddleware = async (
 // Optional authentication middleware - doesn't throw error if no token
 export const optionalAuthMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {

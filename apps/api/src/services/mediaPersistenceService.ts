@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { tmdbService, MediaDetails, MediaType } from './tmdbService';
+import { tmdbService, MediaType } from './tmdbService';
 
 export interface CreateMediaItemData {
   tmdbId: number;

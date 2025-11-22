@@ -4,7 +4,7 @@ import { PrismaClient, Prisma, WatchStatus } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth';
 import crypto from 'crypto';
 
-const router = Router();
+const router: Router = Router();
 const prisma = new PrismaClient();
 
 // Validation schemas

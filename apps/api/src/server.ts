@@ -1,3 +1,4 @@
+import type { Express } from 'express';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -11,7 +12,7 @@ import { searchRouter } from './routes/search';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
-const app = express();
+const app: Express = express();
 const prisma = new PrismaClient();
 
 // Security middleware

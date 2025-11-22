@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { PrismaClient, WatchStatus, Prisma } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth';
 
-const router = Router();
+const router: Router = Router();
 const prisma = new PrismaClient();
 
 const parseOptionalDate = (value?: string | null): Date | null => {

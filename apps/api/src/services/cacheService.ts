@@ -122,8 +122,8 @@ export class RedisCacheService extends CacheService {
 
   async getStats(): Promise<CacheStats> {
     try {
-      const info = await this.client.info('memory');
-      const keyspace = await this.client.info('keyspace');
+      const _info = await this.client.info('memory');
+      const _keyspace = await this.client.info('keyspace');
       
       // Parse Redis info to get stats (simplified)
       return {
