@@ -238,7 +238,7 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-         if: secrets.RAILWAY_TOKEN
+        if: secrets.RAILWAY_TOKEN
         run: |
           echo "Deploying to Railway..."
           railway up --service infocus-api --detach
