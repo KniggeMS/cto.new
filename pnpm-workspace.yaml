@@ -1,3 +1,12 @@
 packages:
   - apps/*
   - packages/*
+
+# Allow install/build scripts only for the dependencies that require them.
+# This keeps pnpm's security feature intact while ensuring Prisma and Detox work.
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - detox
+  - dtrace-provider
+  - prisma

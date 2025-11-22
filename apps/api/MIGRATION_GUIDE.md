@@ -5,6 +5,7 @@ This guide explains how to work with Prisma migrations for the InFocus API.
 ## What are Migrations?
 
 Migrations are version-controlled SQL files that track your database schema changes over time. They enable:
+
 - Tracking schema evolution
 - Reproducing schema across environments (local, staging, production)
 - Rolling back to previous states if needed
@@ -40,6 +41,7 @@ npm run seed
 ### What Happens During `npm run migrate`
 
 The command:
+
 1. Compares your `prisma/schema.prisma` with the current database
 2. Shows you the diff of changes
 3. Asks for a migration name
@@ -57,6 +59,7 @@ npm run migrate
 ```
 
 You'll be prompted:
+
 ```
 ✔ Name of migration … add_user_preferences
 ```
@@ -70,6 +73,7 @@ npx prisma migrate status
 ```
 
 Shows:
+
 - Applied migrations
 - Pending migrations (if any)
 - Migration history
@@ -109,6 +113,7 @@ If migrations conflict when pulling from git:
 ## Migration Best Practices
 
 ### Do's ✓
+
 - Migrate frequently (small, focused changes)
 - Write descriptive migration names
 - Test migrations locally before deploying
@@ -116,6 +121,7 @@ If migrations conflict when pulling from git:
 - Run seeds after reset migrations
 
 ### Don'ts ✗
+
 - Don't edit generated migration files manually
 - Don't skip migrations in sequence
 - Don't deploy without testing
@@ -174,6 +180,7 @@ For large tables or complex changes:
 4. Deploy with `npm run migrate:prod`
 
 Prisma handles most cases automatically. For major changes:
+
 - Create new column alongside old
 - Migrate data gradually
 - Drop old column in separate migration
@@ -252,7 +259,7 @@ model User {
   id    String @id @default(cuid())
   email String @unique
   name  String?
-  
+
   @@index([name])  // New index
 }
 ```
@@ -269,6 +276,7 @@ npm run migrate
 **Error**: `Error: Migration X failed to apply`
 
 **Solutions**:
+
 1. Check database connection: `npm run prisma:studio`
 2. View migration SQL: `cat prisma/migrations/[name]/migration.sql`
 3. Check for syntax errors in schema
@@ -279,6 +287,7 @@ npm run migrate
 **Error**: `Generated Prisma Client is out of sync`
 
 **Solution**:
+
 ```bash
 npm run prisma:generate
 ```
@@ -288,6 +297,7 @@ npm run prisma:generate
 **Error**: `Detected changes that were not executed as migrations`
 
 **Solutions**:
+
 1. Inspect changes: `npx prisma db push` (shows diff)
 2. Create migration from current state: `npm run migrate`
 3. Or reset local database: `npx prisma migrate reset`
@@ -297,6 +307,7 @@ npm run prisma:generate
 **Error**: `Can't reach database server`
 
 **Solutions**:
+
 - Verify PostgreSQL is running
 - Check DATABASE_URL in `.env`
 - Test connection: `npm run prisma:studio`
@@ -318,10 +329,12 @@ npm run prisma:generate
 ## Migration History Format
 
 Each migration folder contains:
+
 - `migration.sql` - The actual SQL changes
 - `migration_lock.toml` - Lock file preventing concurrent migrations
 
 Example:
+
 ```
 prisma/migrations/
 ├── migration_lock.toml
@@ -331,14 +344,14 @@ prisma/migrations/
 
 ## Summary
 
-| Command | Purpose |
-|---------|---------|
-| `npm run migrate` | Create and apply interactive migration |
-| `npm run migrate:prod` | Apply all pending migrations automatically |
-| `npx prisma migrate status` | View migration history and status |
-| `npx prisma migrate reset` | Reset database to initial state |
-| `npx prisma validate` | Validate schema syntax |
-| `npm run prisma:generate` | Generate Prisma client |
-| `npm run prisma:studio` | Open visual database explorer |
+| Command                     | Purpose                                    |
+| --------------------------- | ------------------------------------------ |
+| `npm run migrate`           | Create and apply interactive migration     |
+| `npm run migrate:prod`      | Apply all pending migrations automatically |
+| `npx prisma migrate status` | View migration history and status          |
+| `npx prisma migrate reset`  | Reset database to initial state            |
+| `npx prisma validate`       | Validate schema syntax                     |
+| `npm run prisma:generate`   | Generate Prisma client                     |
+| `npm run prisma:studio`     | Open visual database explorer              |
 
 Remember: Migrations are your database's version control. Keep them safe and committed!

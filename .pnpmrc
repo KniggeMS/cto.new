@@ -1,0 +1,30 @@
+# pnpm configuration for InFocus monorepo
+
+# Build Script Approval Configuration
+# -------------------------------------
+# pnpm requires explicit approval for packages that run install/postinstall scripts
+# for security reasons. The approved packages are configured in pnpm-workspace.yaml
+# under the 'onlyBuiltDependencies' field.
+#
+# Approved packages:
+# - @prisma/client: Generates Prisma client code for database access
+# - @prisma/engines: Downloads native database engine binaries
+# - prisma: CLI tool that generates schema and migrations
+# - detox: E2E testing framework for React Native (mobile app)
+# - dtrace-provider: Optional native tracing module (safe to fail)
+#
+# To approve additional packages, run: pnpm approve-builds
+
+# Workspace Configuration
+# ------------------------
+# Link workspace packages for monorepo development
+link-workspace-packages=true
+
+# Hoist patterns for shared dependencies
+# Uncomment if needed for better hoisting control
+# public-hoist-pattern[]=*eslint*
+# public-hoist-pattern[]=*prettier*
+# public-hoist-pattern[]=*typescript*
+
+# Strict peer dependencies to avoid version conflicts
+auto-install-peers=true
