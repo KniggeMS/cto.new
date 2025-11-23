@@ -390,6 +390,9 @@ importers:
       '@infocus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/jest':
+        specifier: ^29.5.11
+        version: 29.5.14
 
   packages/tsconfig: {}
 

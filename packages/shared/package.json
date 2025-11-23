@@ -22,6 +22,7 @@
     "@infocus/eslint-config": "workspace:*",
     "@infocus/jest-config": "workspace:*",
     "@infocus/prettier-config": "workspace:*",
-    "@infocus/tsconfig": "workspace:*"
+    "@infocus/tsconfig": "workspace:*",
+    "@types/jest": "^29.5.11"
   }
 }

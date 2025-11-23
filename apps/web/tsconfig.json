@@ -2,7 +2,8 @@
   "extends": "@infocus/tsconfig/react",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "include": ["src"]
 }
