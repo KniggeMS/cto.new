@@ -238,7 +238,7 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        if: secrets.RAILWAY_TOKEN != ''
+         if: secrets.RAILWAY_TOKEN
         run: |
           echo "Deploying to Railway..."
           railway up --service infocus-api --detach
@@ -247,7 +247,7 @@ jobs:
       - name: Deploy to Render (if configured)
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        if: env.RENDER_DEPLOY_HOOK_URL != '' && secrets.RENDER_DEPLOY_HOOK_URL != ''
+        if: env.RENDER_DEPLOY_HOOK_URL && secrets.RENDER_DEPLOY_HOOK_URL
         run: |
           echo "Triggering Render deployment..."
           curl -X POST "$RENDER_DEPLOY_HOOK_URL"
