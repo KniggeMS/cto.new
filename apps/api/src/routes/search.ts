@@ -40,15 +40,12 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
 
     if (existingMedia) {
       // Add streaming provider info from our database
-      enrichedResult = {
-        ...enrichedResult,
-        streamingProviders: existingMedia.streamingProviders.map(provider => ({
-          provider_id: provider.provider,
-          provider_name: provider.provider,
-          logo_path: null, // We don't store logo paths
-        })),
-        inDatabase: true,
-      };
+      (enrichedResult as any).streamingProviders = existingMedia.streamingProviders.map(provider => ({
+        provider_id: provider.provider,
+        provider_name: provider.provider,
+        logo_path: null, // We don't store logo paths
+      }));
+      (enrichedResult as any).inDatabase = true;
     }
 
     enrichedResults.push(enrichedResult);
@@ -119,7 +116,7 @@ router.get('/search', async (req: Request, res: Response) => {
     // Cache the response for 5 minutes
     cacheService.set(cacheKey, response, 300);
 
-    res.json(response);
+    return res.json(response);
   } catch (error) {
     console.error('Search error:', error);
     
@@ -174,7 +171,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
     // Cache the response for 30 minutes
     cacheService.set(cacheKey, enrichedDetails, 1800);
 
-    res.json(enrichedDetails);
+    return res.json(enrichedDetails);
   } catch (error) {
     console.error('Media details error:', error);
     
@@ -232,7 +229,7 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
     // Cache for 24 hours
     cacheService.set(cacheKey, genres, 86400);
 
-    res.json({ genres });
+    return res.json({ genres });
   } catch (error) {
     console.error('Genres error:', error);
     

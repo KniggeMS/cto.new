@@ -36,7 +36,7 @@ export class InMemoryCacheService extends CacheService {
   }
 
   set<T>(key: string, value: T, ttl?: number): void {
-    this.cache.set(key, value, ttl);
+    this.cache.set(key, value, ttl || 0);
   }
 
   del(key: string): void {
@@ -84,9 +84,9 @@ export class RedisCacheService extends CacheService {
     this.defaultTTL = defaultTTL;
   }
 
-  async get<T>(key: string): Promise<T | undefined> {
+  get<T>(key: string): T | undefined {
     try {
-      const value = await this.client.get(key);
+      const value = this.client.get(key);
       return value ? JSON.parse(value) : undefined;
     } catch (error) {
       console.error('Redis get error:', error);
@@ -94,37 +94,34 @@ export class RedisCacheService extends CacheService {
     }
   }
 
-  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
+  set<T>(key: string, value: T, ttl?: number): void {
     try {
       const serialized = JSON.stringify(value);
       const expiry = ttl || this.defaultTTL;
-      await this.client.setex(key, expiry, serialized);
+      this.client.setex(key, expiry, serialized);
     } catch (error) {
       console.error('Redis set error:', error);
     }
   }
 
-  async del(key: string): Promise<void> {
+  del(key: string): void {
     try {
-      await this.client.del(key);
+      this.client.del(key);
     } catch (error) {
       console.error('Redis del error:', error);
     }
   }
 
-  async clear(): Promise<void> {
+  clear(): void {
     try {
-      await this.client.flushdb();
+      this.client.flushdb();
     } catch (error) {
       console.error('Redis clear error:', error);
     }
   }
 
-  async getStats(): Promise<CacheStats> {
+  getStats(): CacheStats {
     try {
-      const _info = await this.client.info('memory');
-      const _keyspace = await this.client.info('keyspace');
-      
       // Parse Redis info to get stats (simplified)
       return {
         keys: 0, // Would need to parse keyspace info

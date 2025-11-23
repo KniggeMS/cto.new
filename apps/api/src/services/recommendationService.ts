@@ -1,9 +1,23 @@
-import { PrismaClient, WatchlistEntry, MediaItem } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export interface RecommendationResult {
-  mediaItem: MediaItem & {
+  mediaItem: {
+    id: string;
+    tmdbId: number;
+    tmdbType: string;
+    title: string;
+    description: string | null;
+    posterPath: string | null;
+    backdropPath: string | null;
+    releaseDate: Date | null;
+    rating: number | null;
+    genres: string[];
+    creators: string[];
+    createdAt: Date;
+    updatedAt: Date;
+  } & {
     streamingProviders: any[];
   };
   score: number;
@@ -132,7 +146,7 @@ export async function generateRecommendations(
     return [];
   }
 
-  const familyIds = userFamilies.map((f) => f.familyId);
+  const familyIds = userFamilies.map((f: any) => f.familyId);
 
   // Get user's existing watchlist items (to exclude them)
   const userWatchlist = await prisma.watchlistEntry.findMany({
@@ -144,7 +158,7 @@ export async function generateRecommendations(
     },
   });
 
-  const userMediaIds = new Set(userWatchlist.map((w) => w.mediaItemId));
+  const userMediaIds = new Set(userWatchlist.map((w: any) => w.mediaItemId));
 
   // Get all watchlist entries from family members (excluding the current user)
   const familyWatchlistEntries = await prisma.watchlistEntry.findMany({
@@ -177,8 +191,32 @@ export async function generateRecommendations(
   const mediaItemMap = new Map<
     string,
     {
-      mediaItem: MediaItem & { streamingProviders: any[] };
-      entries: Array<WatchlistEntry & { user: { id: string; name: string | null } }>;
+      mediaItem: {
+        id: string;
+        tmdbId: number;
+        tmdbType: string;
+        title: string;
+        description: string | null;
+        posterPath: string | null;
+        backdropPath: string | null;
+        releaseDate: Date | null;
+        rating: number | null;
+        genres: string[];
+        creators: string[];
+        createdAt: Date;
+        updatedAt: Date;
+      } & { streamingProviders: any[] };
+      entries: Array<{
+        id: string;
+        userId: string;
+        mediaItemId: string;
+        status: string;
+        rating: number | null;
+        notes: string | null;
+        dateAdded: Date;
+        dateUpdated: Date;
+        user: { id: string; name: string | null };
+      }>;
     }
   >();
 

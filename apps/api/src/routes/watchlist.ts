@@ -200,14 +200,14 @@ router.post(
           data: {
             tmdbId,
             tmdbType,
-            title: metadata.title,
-            description: metadata.description || null,
-            posterPath: metadata.posterPath || null,
-            backdropPath: metadata.backdropPath || null,
-            releaseDate: parseOptionalDate(metadata.releaseDate),
-            rating: metadata.rating ?? null,
-            genres: metadata.genres || [],
-            creators: metadata.creators || [],
+            title: (metadata as any).title,
+            description: (metadata as any).description || null,
+            posterPath: (metadata as any).posterPath || null,
+            backdropPath: (metadata as any).backdropPath || null,
+            releaseDate: parseOptionalDate((metadata as any).releaseDate),
+            rating: (metadata as any).rating ?? null,
+            genres: (metadata as any).genres || [],
+            creators: (metadata as any).creators || [],
           },
         });
       }
@@ -229,9 +229,9 @@ router.post(
         return;
       }
 
-      if (metadata?.streamingProviders?.length) {
+      if ((metadata as any)?.streamingProviders?.length) {
         await Promise.all(
-          metadata.streamingProviders.map((provider) =>
+          (metadata as any).streamingProviders.map((provider: any) =>
             prisma.streamingProvider.upsert({
               where: {
                 mediaItemId_provider: {
@@ -308,7 +308,7 @@ router.patch(
         return;
       }
 
-      const dataToUpdate: Prisma.WatchlistEntryUpdateInput = {};
+      const dataToUpdate: any = {};
       if (validatedData.status !== undefined) {
         dataToUpdate.status = validatedData.status;
       }
@@ -368,7 +368,7 @@ router.patch(
         return;
       }
 
-      const dataToUpdate: Prisma.WatchlistEntryUpdateInput = {
+      const dataToUpdate: any = {
         status: validatedData.status,
       };
 

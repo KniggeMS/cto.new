@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import NodeCache from 'node-cache';
 import { z } from 'zod';
 
@@ -265,16 +265,10 @@ export class TMDBService {
     const providers = TMDBWatchProvidersResponseSchema.parse(providersData);
 
     return {
-      id: tv.id,
-      title: tv.name,
-      overview: tv.overview,
-      poster_path: tv.poster_path,
-      backdrop_path: tv.backdrop_path,
-      release_date: tv.first_air_date,
-      vote_average: tv.vote_average,
-      genre_ids: tv.genre_ids,
-      media_type: 'tv',
       ...tv,
+      title: tv.name,
+      release_date: tv.first_air_date,
+      media_type: 'tv',
       watch_providers: providers,
     };
   }
@@ -289,7 +283,7 @@ export class TMDBService {
   }
 
   async getGenres(mediaType: MediaType): Promise<TMDBGenre[]> {
-    const response = await this.get<TMDBGenresResponseSchema>(`/genre/${mediaType}/list`, {}, this.CACHE_TTL.GENRES);
+    const response = await this.get<typeof TMDBGenresResponseSchema>(`/genre/${mediaType}/list`, {}, this.CACHE_TTL.GENRES);
     return response.genres;
   }
 

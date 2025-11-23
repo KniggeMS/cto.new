@@ -44,7 +44,7 @@ async function main() {
   });
 
   // Create profiles for users
-  const _profile1 = await prisma.profile.create({
+  await prisma.profile.create({
     data: {
       userId: user1.id,
       bio: 'Love movies and TV shows!',
@@ -52,7 +52,7 @@ async function main() {
     },
   });
 
-  const _profile2 = await prisma.profile.create({
+  await prisma.profile.create({
     data: {
       userId: user2.id,
       bio: 'Sci-fi enthusiast',
@@ -60,7 +60,7 @@ async function main() {
     },
   });
 
-  const _profile3 = await prisma.profile.create({
+  await prisma.profile.create({
     data: {
       userId: user3.id,
       bio: 'Documentary lover',
