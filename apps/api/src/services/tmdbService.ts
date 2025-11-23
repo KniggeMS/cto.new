@@ -73,6 +73,21 @@ export type TMDBGenre = z.infer<typeof TMDBGenreSchema>;
 export type TMDBWatchProvider = z.infer<typeof TMDBWatchProviderSchema>;
 export type TMDBWatchProvidersResponse = z.infer<typeof TMDBWatchProvidersResponseSchema>;
 
+export interface CachedStreamingProvider {
+  provider_id: string;
+  provider_name: string;
+  logo_path: string | null;
+  regions?: string[];
+}
+
+export type WatchProvidersWithCache = TMDBWatchProvidersResponse & {
+  cached?: CachedStreamingProvider[];
+};
+
+export type TMDBSearchResponseWithMediaType = Omit<TMDBSearchResponse, 'results'> & {
+  results: SearchResult[];
+};
+
 export type MediaType = 'movie' | 'tv';
 
 export interface SearchResult {
@@ -85,6 +100,8 @@ export interface SearchResult {
   vote_average: number | null;
   genre_ids: number[];
   media_type: MediaType;
+  streamingProviders?: CachedStreamingProvider[] | WatchProvidersWithCache;
+  inDatabase?: boolean;
 }
 
 export interface MediaDetails extends SearchResult {
@@ -207,7 +224,7 @@ export class TMDBService {
     }
   }
 
-  async searchMulti(query: string, page: number = 1): Promise<TMDBSearchResponse> {
+  async searchMulti(query: string, page: number = 1): Promise<TMDBSearchResponseWithMediaType> {
     if (!query.trim()) {
       throw new Error('Search query cannot be empty');
     }
@@ -224,13 +241,44 @@ export class TMDBService {
     const validated = TMDBSearchResponseSchema.parse(response);
     
     // Transform results to include media_type
-    const transformedResults = validated.results.map(result => {
+    const transformedResults: SearchResult[] = validated.results.map(result => {
       if ('title' in result) {
-        return { ...result, media_type: 'movie' as MediaType };
+        return { 
+          id: result.id,
+          title: result.title,
+          overview: result.overview,
+          poster_path: result.poster_path,
+          backdrop_path: result.backdrop_path,
+          release_date: result.release_date ?? null,
+          vote_average: result.vote_average,
+          genre_ids: result.genre_ids,
+          media_type: 'movie' as MediaType,
+        };
       } else if ('name' in result) {
-        return { ...result, media_type: 'tv' as MediaType };
+        return { 
+          id: result.id,
+          title: result.name,
+          overview: result.overview,
+          poster_path: result.poster_path,
+          backdrop_path: result.backdrop_path,
+          release_date: result.first_air_date ?? null,
+          vote_average: result.vote_average,
+          genre_ids: result.genre_ids,
+          media_type: 'tv' as MediaType,
+        };
       }
-      return result;
+      // Fallback - should not happen but for type safety
+      return {
+        id: result.id,
+        title: 'title' in result ? result.title : '',
+        overview: result.overview,
+        poster_path: result.poster_path,
+        backdrop_path: result.backdrop_path,
+        release_date: null,
+        vote_average: result.vote_average,
+        genre_ids: result.genre_ids,
+        media_type: 'movie' as MediaType,
+      };
     });
 
     return {
@@ -283,8 +331,9 @@ export class TMDBService {
   }
 
   async getGenres(mediaType: MediaType): Promise<TMDBGenre[]> {
-    const response = await this.get<typeof TMDBGenresResponseSchema>(`/genre/${mediaType}/list`, {}, this.CACHE_TTL.GENRES);
-    return response.genres;
+    const response = await this.get(`/genre/${mediaType}/list`, {}, this.CACHE_TTL.GENRES);
+    const validated = TMDBGenresResponseSchema.parse(response);
+    return validated.genres;
   }
 
   // Cache management methods
