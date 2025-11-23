@@ -25,7 +25,7 @@ const MediaDetailsQuerySchema = z.object({
 
 // Helper function to enrich search results with provider data
 async function enrichSearchResults(results: SearchResult[]): Promise<SearchResult[]> {
-  const enrichedResults = [];
+  const enrichedResults: SearchResult[] = [];
 
   for (const result of results) {
     // Check if we have this media item in our database
@@ -36,16 +36,17 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
       },
     });
 
-    let enrichedResult = { ...result };
+    const enrichedResult: SearchResult = { ...result };
 
     if (existingMedia) {
       // Add streaming provider info from our database
-      (enrichedResult as any).streamingProviders = existingMedia.streamingProviders.map(provider => ({
+      enrichedResult.streamingProviders = existingMedia.streamingProviders.map(provider => ({
         provider_id: provider.provider,
         provider_name: provider.provider,
-        logo_path: null, // We don't store logo paths
+        logo_path: null,
+        regions: provider.regions,
       }));
-      (enrichedResult as any).inDatabase = true;
+      enrichedResult.inDatabase = true;
     }
 
     enrichedResults.push(enrichedResult);
@@ -139,7 +140,7 @@ router.get('/search', async (req: Request, res: Response) => {
       });
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to perform search',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -196,7 +197,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
       });
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to fetch media details',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -245,7 +246,7 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
       });
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to fetch genres',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -253,13 +254,13 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
 });
 
 // POST /cache/clear - Clear cache (for debugging/admin purposes)
-router.post('/cache/clear', async (req: Request, res: Response) => {
+router.post('/cache/clear', async (_req: Request, res: Response) => {
   try {
     cacheService.clear();
-    res.json({ message: 'Cache cleared successfully' });
+    return res.json({ message: 'Cache cleared successfully' });
   } catch (error) {
     console.error('Cache clear error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to clear cache',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -270,10 +271,10 @@ router.post('/cache/clear', async (req: Request, res: Response) => {
 router.get('/cache/stats', async (_req: Request, res: Response) => {
   try {
     const stats = cacheService.getStats();
-    res.json(stats);
+    return res.json(stats);
   } catch (error) {
     console.error('Cache stats error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to get cache statistics',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
