@@ -40,12 +40,12 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
 
     if (existingMedia) {
       // Add streaming provider info from our database
-      enrichedResult.streamingProviders = existingMedia.streamingProviders.map(provider => ({
+      enrichedResult.streamingProviders = existingMedia.streamingProviders?.map(provider => ({
         provider_id: provider.provider,
         provider_name: provider.provider,
         logo_path: null,
         regions: provider.regions,
-      }));
+      })) || [];
       enrichedResult.inDatabase = true;
     }
 
@@ -67,7 +67,7 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
 
   if (existingMedia) {
     // Merge TMDB provider data with our cached provider data
-    const ourProviders = existingMedia.streamingProviders.map(provider => ({
+    const ourProviders = existingMedia.streamingProviders?.map(provider => ({
       provider_id: provider.provider,
       provider_name: provider.provider,
       logo_path: null,
@@ -76,10 +76,10 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
 
     return {
       ...details,
-      streamingProviders: {
+      streamingProviders: details.watch_providers ? {
         ...details.watch_providers,
-        cached: ourProviders,
-      },
+        cached: ourProviders || [],
+      } as any : (ourProviders || []) as any,
       inDatabase: true,
     };
   }

@@ -457,19 +457,13 @@ router.get(
       }
 
       // Validate and set sorting
-      const allowedSortFields: Array<keyof Prisma.WatchlistEntryOrderByWithRelationInput> = [
-        'dateAdded',
-        'dateUpdated',
-        'status',
-        'rating',
-      ];
+      const allowedSortFields = ['dateAdded', 'dateUpdated', 'status', 'rating'];
       const sortField =
-        typeof sortBy === 'string' &&
-        allowedSortFields.includes(sortBy as keyof Prisma.WatchlistEntryOrderByWithRelationInput)
-          ? (sortBy as keyof Prisma.WatchlistEntryOrderByWithRelationInput)
+        typeof sortBy === 'string' && allowedSortFields.includes(sortBy)
+          ? sortBy
           : 'dateAdded';
-      const sortOrder: Prisma.SortOrder = order === 'asc' ? 'asc' : 'desc';
-      const orderBy = { [sortField]: sortOrder } as Prisma.WatchlistEntryOrderByWithRelationInput;
+      const sortOrder = order === 'asc' ? 'asc' : 'desc';
+      const orderBy = { [sortField]: sortOrder };
 
       const watchlistEntries = await prisma.watchlistEntry.findMany({
         where,

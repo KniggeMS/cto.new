@@ -241,7 +241,7 @@ export class TMDBService {
     const validated = TMDBSearchResponseSchema.parse(response);
     
     // Transform results to include media_type
-    const transformedResults: SearchResult[] = validated.results.map(result => {
+    const transformedResults: SearchResult[] = validated.results.map((result) => {
       if ('title' in result) {
         return { 
           id: result.id,
@@ -254,31 +254,21 @@ export class TMDBService {
           genre_ids: result.genre_ids,
           media_type: 'movie' as MediaType,
         };
-      } else if ('name' in result) {
+      } else {
+        // TV show case
+        const tvResult = result as any;
         return { 
-          id: result.id,
-          title: result.name,
-          overview: result.overview,
-          poster_path: result.poster_path,
-          backdrop_path: result.backdrop_path,
-          release_date: result.first_air_date ?? null,
-          vote_average: result.vote_average,
-          genre_ids: result.genre_ids,
+          id: tvResult.id,
+          title: tvResult.name,
+          overview: tvResult.overview,
+          poster_path: tvResult.poster_path,
+          backdrop_path: tvResult.backdrop_path,
+          release_date: tvResult.first_air_date ?? null,
+          vote_average: tvResult.vote_average,
+          genre_ids: tvResult.genre_ids,
           media_type: 'tv' as MediaType,
         };
       }
-      // Fallback - should not happen but for type safety
-      return {
-        id: result.id,
-        title: 'title' in result ? result.title : '',
-        overview: result.overview,
-        poster_path: result.poster_path,
-        backdrop_path: result.backdrop_path,
-        release_date: null,
-        vote_average: result.vote_average,
-        genre_ids: result.genre_ids,
-        media_type: 'movie' as MediaType,
-      };
     });
 
     return {

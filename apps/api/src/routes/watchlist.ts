@@ -103,19 +103,13 @@ router.get(
         where.status = status as WatchStatus;
       }
 
-      const allowedSortFields: Array<keyof Prisma.WatchlistEntryOrderByWithRelationInput> = [
-        'dateAdded',
-        'dateUpdated',
-        'status',
-        'rating',
-      ];
+      const allowedSortFields = ['dateAdded', 'dateUpdated', 'status', 'rating'];
       const sortField =
-        typeof sortBy === 'string' &&
-        allowedSortFields.includes(sortBy as keyof Prisma.WatchlistEntryOrderByWithRelationInput)
-          ? (sortBy as keyof Prisma.WatchlistEntryOrderByWithRelationInput)
+        typeof sortBy === 'string' && allowedSortFields.includes(sortBy)
+          ? sortBy
           : 'dateAdded';
-      const sortOrder: Prisma.SortOrder = order === 'asc' ? 'asc' : 'desc';
-      const orderBy = { [sortField]: sortOrder } as Prisma.WatchlistEntryOrderByWithRelationInput;
+      const sortOrder = order === 'asc' ? 'asc' : 'desc';
+      const orderBy = { [sortField]: sortOrder };
 
       const watchlistEntries = await prisma.watchlistEntry.findMany({
         where,
@@ -162,7 +156,7 @@ router.get(
         completed: 0,
       } as Record<string, number> & { total: number };
 
-      stats.forEach((stat) => {
+      stats.forEach((stat: any) => {
         formattedStats[stat.status] = stat._count.status;
         formattedStats.total += stat._count.status;
       });
@@ -189,7 +183,7 @@ router.post(
       });
 
       if (!mediaItem) {
-        if (!metadata || !metadata.title) {
+        if (!metadata || !(metadata as any).title) {
           res.status(400).json({
             error: 'Media item not found. Please provide metadata to create it.',
           });
