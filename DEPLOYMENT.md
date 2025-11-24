@@ -15,6 +15,8 @@ This document describes how to deploy the InFocus backend API to production envi
 9. [Database Migrations](#database-migrations)
 10. [Troubleshooting](#troubleshooting)
 
+**For comprehensive Railway deployment verification, see [RAILWAY_DEPLOYMENT_VERIFICATION.md](./RAILWAY_DEPLOYMENT_VERIFICATION.md)**
+
 ## Overview
 
 The InFocus API is containerized using Docker and designed for deployment on modern PaaS platforms like Railway or Render. The deployment process includes:
@@ -259,6 +261,197 @@ railway logs --service infocus-api
 
 ```bash
 railway rollback
+```
+
+### End-to-End Verification Checklist
+
+After deployment, run these smoke tests to verify the Railway deployment is fully functional:
+
+#### 1. Health Check
+
+```bash
+RAILWAY_DOMAIN="your-railway-domain.railway.app"
+
+# Test health endpoint (should return { status: 'ok', timestamp: ... })
+curl -s https://$RAILWAY_DOMAIN/health | jq .
+```
+
+Expected response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-15T10:30:45.123Z"
+}
+```
+
+#### 2. Migration Verification
+
+Check that migrations have been applied:
+
+```bash
+# View recent logs to confirm migrations ran
+railway logs | grep -i "migration\|prisma" | head -20
+
+# Or manually check the database
+railway run pnpm run prisma -- migrate status
+```
+
+#### 3. Authentication Flow Test
+
+```bash
+RAILWAY_DOMAIN="your-railway-domain.railway.app"
+TEST_EMAIL="test-$(date +%s)@example.com"
+TEST_PASSWORD="TestPassword123!"
+
+# Step 1: Register a new user
+REGISTER_RESPONSE=$(curl -s -X POST https://$RAILWAY_DOMAIN/auth/register \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"email\": \"$TEST_EMAIL\",
+    \"password\": \"$TEST_PASSWORD\",
+    \"name\": \"Test User\"
+  }")
+
+echo "Register Response: $REGISTER_RESPONSE"
+ACCESS_TOKEN=$(echo $REGISTER_RESPONSE | jq -r '.accessToken')
+
+# Step 2: Login with the same credentials
+LOGIN_RESPONSE=$(curl -s -X POST https://$RAILWAY_DOMAIN/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"email\": \"$TEST_EMAIL\",
+    \"password\": \"$TEST_PASSWORD\"
+  }")
+
+echo "Login Response: $LOGIN_RESPONSE"
+NEW_ACCESS_TOKEN=$(echo $LOGIN_RESPONSE | jq -r '.accessToken')
+
+# Verify login returned a valid token
+if [ -z "$NEW_ACCESS_TOKEN" ] || [ "$NEW_ACCESS_TOKEN" = "null" ]; then
+  echo "❌ Login failed: No access token returned"
+  exit 1
+else
+  echo "✓ Login successful, got access token"
+fi
+```
+
+#### 4. Database Connectivity Test (Watchlist CRUD)
+
+```bash
+RAILWAY_DOMAIN="your-railway-domain.railway.app"
+
+# Using the access token from previous login
+ACCESS_TOKEN="your-access-token-here"
+
+# Create a watchlist entry
+CREATE_RESPONSE=$(curl -s -X POST https://$RAILWAY_DOMAIN/watchlist \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tmdbId": 550,
+    "tmdbType": "movie",
+    "status": "watching",
+    "rating": 5,
+    "notes": "Classic film",
+    "metadata": {
+      "title": "Fight Club",
+      "description": "An insomniac office worker and a devil-may-care soap maker",
+      "posterPath": "/path/to/poster.jpg",
+      "releaseDate": "1999-10-15",
+      "rating": 8.5,
+      "genres": ["Drama", "Thriller"],
+      "streamingProviders": []
+    }
+  }')
+
+echo "Create Watchlist Entry Response: $CREATE_RESPONSE"
+ENTRY_ID=$(echo $CREATE_RESPONSE | jq -r '.data.id')
+
+# Read the watchlist
+curl -s -X GET https://$RAILWAY_DOMAIN/watchlist \
+  -H "Authorization: Bearer $ACCESS_TOKEN" | jq .
+
+# Update the watchlist entry
+curl -s -X PUT https://$RAILWAY_DOMAIN/watchlist/$ENTRY_ID \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "completed",
+    "rating": 5
+  }' | jq .
+
+# Delete the watchlist entry
+curl -s -X DELETE https://$RAILWAY_DOMAIN/watchlist/$ENTRY_ID \
+  -H "Authorization: Bearer $ACCESS_TOKEN" | jq .
+```
+
+#### 5. CORS Validation
+
+```bash
+RAILWAY_DOMAIN="your-railway-domain.railway.app"
+FRONTEND_DOMAIN="your-frontend-domain.vercel.app"
+
+# Send CORS preflight request
+curl -s -X OPTIONS https://$RAILWAY_DOMAIN/auth/login \
+  -H "Origin: https://$FRONTEND_DOMAIN" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: Content-Type" \
+  -v 2>&1 | grep -i "access-control-allow-origin"
+```
+
+Expected response header:
+```
+access-control-allow-origin: https://your-frontend-domain.vercel.app
+```
+
+If this header is missing, the frontend will encounter CORS errors. Ensure `CORS_ORIGIN` environment variable is correctly set to match your frontend domain.
+
+#### 6. Troubleshooting Deployment Issues
+
+If any of the above tests fail:
+
+**Health Check Fails:**
+- Check that the service is running: `railway status`
+- View logs: `railway logs --service infocus-api --tail 100`
+- Verify PORT is set to 3000: `railway variables get PORT`
+
+**Migration Errors:**
+- Check recent logs: `railway logs | grep -i "migration\|error"`
+- Manually run migrations: `railway run pnpm run migrate:prod`
+- Check database connectivity: `railway run pnpm run prisma -- db push`
+
+**Authentication/Database Errors:**
+- Verify DATABASE_URL is set correctly: `railway variables get DATABASE_URL`
+- Check database is accessible: `railway run pnpm run prisma -- db validate`
+- View application logs: `railway logs --service infocus-api --follow`
+
+**CORS Errors:**
+- Verify CORS_ORIGIN is set to frontend domain: `railway variables get CORS_ORIGIN`
+- Update if needed: `railway variables set CORS_ORIGIN "https://your-frontend-domain.vercel.app"`
+- Redeploy: `railway up --detach`
+
+**Log Streaming for Debugging:**
+```bash
+# Real-time log streaming
+railway logs --follow
+
+# Get logs with timestamps
+railway logs --timestamp
+
+# Get last N lines
+railway logs --tail 50
+
+# Filter by service
+railway logs --service infocus-api
+```
+
+**Manual Rollback:**
+```bash
+# If deployment is broken, rollback to previous version
+railway rollback
+
+# View deployment history
+railway deployments
 ```
 
 ## Render Deployment

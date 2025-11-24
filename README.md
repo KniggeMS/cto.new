@@ -353,6 +353,10 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
 ## Documentation
 
 - [Deployment Guide](DEPLOYMENT.md) - Production deployment instructions
+- [Railway Deployment Verification](RAILWAY_DEPLOYMENT_VERIFICATION.md) - Comprehensive Railway deployment verification and smoke tests
+- [Railway Setup Checklist](RAILWAY_SETUP_CHECKLIST.md) - Pre/post-deployment Railway configuration checklist
+- [Infrastructure Guide](INFRASTRUCTURE.md) - Infrastructure setup reference
+- [Quick Deployment Guide](QUICKSTART_DEPLOYMENT.md) - Quick reference deployment guide
 - [Database Schema Documentation](apps/api/SCHEMA.md) - Comprehensive schema design
 - [API README](apps/api/README.md) - API-specific documentation
 - [Turborepo Documentation](https://turbo.build/repo/docs) - Turborepo guide
