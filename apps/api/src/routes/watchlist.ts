@@ -2,9 +2,34 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { PrismaClient, WatchStatus, Prisma } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth';
+import multer from 'multer';
+import { watchlistImportService } from '../services/watchlistImportService';
+import {
+  bulkImportRequestSchema,
+  exportResponseSchema,
+} from '@infocus/shared';
 
 const router: Router = Router();
 const prisma = new PrismaClient();
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (_req, file, cb) => {
+    const allowedTypes = ['text/csv', 'application/json', 'text/plain'];
+    const allowedExtensions = ['.csv', '.json'];
+    
+    if (allowedTypes.includes(file.mimetype) || 
+        allowedExtensions.some(ext => file.originalname?.toLowerCase().endsWith(ext))) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only CSV and JSON files are allowed'));
+    }
+  },
+});
 
 const parseOptionalDate = (value?: string | null): Date | null => {
   if (!value) {
@@ -425,6 +450,112 @@ router.delete(
       res.json({
         message: 'Watchlist entry deleted successfully',
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// POST /watchlist/import/preview - Preview import data
+router.post(
+  '/import/preview',
+  authMiddleware,
+  upload.single('file'),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      
+      if (!req.file) {
+        res.status(400).json({ error: 'No file uploaded' });
+        return;
+      }
+
+      // Parse the uploaded file
+      const rawRows = await watchlistImportService.parseUploadedFile(req.file);
+      
+      // Generate preview with TMDB matches
+      const previewItems = await watchlistImportService.generatePreview(rawRows, userId);
+
+      res.json({
+        message: 'Import preview generated successfully',
+        data: previewItems,
+        count: previewItems.length,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('file format')) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      next(error);
+    }
+  },
+);
+
+// POST /watchlist/import/confirm - Confirm and execute import
+router.post(
+  '/import/confirm',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const validatedData = bulkImportRequestSchema.parse(req.body);
+
+      // Execute the import
+      const result = await watchlistImportService.confirmImport(validatedData, userId);
+
+      res.json({
+        message: 'Import completed successfully',
+        data: result,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors,
+        });
+        return;
+      }
+      next(error);
+    }
+  },
+);
+
+// GET /watchlist/export - Export watchlist data
+router.get(
+  '/export',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const format = req.query.format as string || 'json';
+
+      if (!['json', 'csv'].includes(format)) {
+        res.status(400).json({ error: 'Invalid format. Use "json" or "csv"' });
+        return;
+      }
+
+      // Get export data
+      const exportData = await watchlistImportService.exportWatchlist(userId);
+
+      // Validate export data
+      const validatedData = exportResponseSchema.parse(exportData);
+
+      if (format === 'csv') {
+        // Return CSV
+        const csv = watchlistImportService.exportToCsv(validatedData);
+        const filename = `watchlist-export-${new Date().toISOString().split('T')[0]}.csv`;
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csv);
+      } else {
+        // Return JSON
+        const filename = `watchlist-export-${new Date().toISOString().split('T')[0]}.json`;
+        
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.json(validatedData);
+      }
     } catch (error) {
       next(error);
     }

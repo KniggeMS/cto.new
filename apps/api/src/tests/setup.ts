@@ -1,5 +1,8 @@
 // Test setup file
 
+// Load test environment variables
+require('dotenv').config({ path: '.env.test' });
+
 // Set default test environment variables
 process.env.NODE_ENV = 'test';
 process.env.TMDB_API_KEY = 'test-tmdb-api-key';

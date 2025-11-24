@@ -7,17 +7,19 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@infocus/shared": ["../../packages/shared/src"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@infocus/shared": [
+        "../../packages/shared/src"
+      ]
     }
   },
   "include": [
     "src/**/*",
     "*.ts",
     "*.tsx",
-    "*.js",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "*.js"
   ],
   "exclude": [
     "node_modules",

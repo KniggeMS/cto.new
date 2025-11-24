@@ -1,6 +1,8 @@
 import request from 'supertest';
 import { app } from '../server';
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -810,6 +812,351 @@ describe('Watchlist Endpoints', () => {
         .expect(400);
 
       expect(response.body.error).toBe('Validation failed');
+    });
+  });
+
+  describe('POST /watchlist/import/preview', () => {
+    it('should generate preview from CSV file', async () => {
+      // Create a sample CSV file
+      const csvContent = `title,year,status,rating,notes,dateAdded,streamingProviders
+Inception,2010,completed,9,Amazing movie!,2024-01-15,"netflix,hulu"
+The Matrix,1999,watching,8,"Classic sci-fi",2024-01-16,netflix
+Unknown Movie,2025,not_watched,7,,2024-01-17,`;
+
+      const response = await request(app)
+        .post('/watchlist/import/preview')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('file', Buffer.from(csvContent), 'test.csv')
+        .expect(200);
+
+      expect(response.body.message).toBe('Import preview generated successfully');
+      expect(response.body.data).toHaveLength(3);
+      expect(response.body.count).toBe(3);
+
+      const firstItem = response.body.data[0];
+      expect(firstItem.originalTitle).toBe('Inception');
+      expect(firstItem.originalYear).toBe(2010);
+      expect(firstItem.suggestedStatus).toBe('completed');
+      expect(firstItem.rating).toBe(9);
+      expect(firstItem.matchCandidates).toBeDefined();
+    });
+
+    it('should generate preview from JSON file', async () => {
+      const jsonContent = JSON.stringify([
+        {
+          title: 'Pulp Fiction',
+          year: 1994,
+          status: 'completed',
+          rating: 10,
+          notes: 'Tarantino masterpiece',
+          streamingProviders: ['netflix']
+        },
+        {
+          title: 'The Godfather',
+          year: 1972,
+          status: 'not_watched',
+          rating: null,
+          notes: null,
+          streamingProviders: []
+        }
+      ]);
+
+      const response = await request(app)
+        .post('/watchlist/import/preview')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('file', Buffer.from(jsonContent), 'test.json')
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data[0].originalTitle).toBe('Pulp Fiction');
+      expect(response.body.data[1].originalTitle).toBe('The Godfather');
+    });
+
+    it('should return 400 for unsupported file format', async () => {
+      const response = await request(app)
+        .post('/watchlist/import/preview')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('file', Buffer.from('test'), 'test.txt')
+        .expect(400);
+
+      expect(response.body.error).toContain('Unsupported file format');
+    });
+
+    it('should return 400 when no file uploaded', async () => {
+      const response = await request(app)
+        .post('/watchlist/import/preview')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400);
+
+      expect(response.body.error).toBe('No file uploaded');
+    });
+
+    it('should return 401 without authentication', async () => {
+      const response = await request(app)
+        .post('/watchlist/import/preview')
+        .attach('file', Buffer.from('test'), 'test.csv')
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
+  describe('POST /watchlist/import/confirm', () => {
+    it('should confirm and execute import', async () => {
+      const importRequest = {
+        items: [
+          {
+            originalTitle: 'Test Movie',
+            originalYear: 2023,
+            matchCandidates: [
+              {
+                tmdbId: 550,
+                tmdbType: 'movie',
+                title: 'Fight Club',
+                year: 1999,
+                posterPath: '/test.jpg',
+                confidence: 0.9
+              }
+            ],
+            selectedMatchIndex: 0,
+            suggestedStatus: 'completed',
+            rating: 8,
+            notes: 'Test note',
+            dateAdded: '2024-01-15T00:00:00.000Z',
+            streamingProviders: ['netflix'],
+            hasExistingEntry: false,
+            existingEntryId: null,
+            shouldSkip: false,
+            error: null
+          }
+        ],
+        resolutions: [],
+        skipUnmatched: false,
+        defaultDuplicateStrategy: 'skip'
+      };
+
+      const response = await request(app)
+        .post('/watchlist/import/confirm')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(importRequest)
+        .expect(200);
+
+      expect(response.body.message).toBe('Import completed successfully');
+      expect(response.body.data.imported).toBe(1);
+      expect(response.body.data.skipped).toBe(0);
+      expect(response.body.data.failed).toBe(0);
+    });
+
+    it('should handle duplicate items with skip strategy', async () => {
+      // First, create an existing watchlist entry
+      const movie = await prisma.mediaItem.create({
+        data: {
+          tmdbId: 278,
+          tmdbType: 'movie',
+          title: 'The Shawshank Redemption',
+          genres: ['Drama'],
+        },
+      });
+
+      const existingEntry = await prisma.watchlistEntry.create({
+        data: {
+          userId,
+          mediaItemId: movie.id,
+          status: 'not_watched',
+        },
+      });
+
+      const importRequest = {
+        items: [
+          {
+            originalTitle: 'The Shawshank Redemption',
+            originalYear: 1994,
+            matchCandidates: [
+              {
+                tmdbId: 278,
+                tmdbType: 'movie',
+                title: 'The Shawshank Redemption',
+                year: 1994,
+                posterPath: '/test.jpg',
+                confidence: 0.95
+              }
+            ],
+            selectedMatchIndex: 0,
+            suggestedStatus: 'completed',
+            rating: 9,
+            notes: 'Updated note',
+            hasExistingEntry: true,
+            existingEntryId: existingEntry.id,
+            shouldSkip: false,
+            error: null
+          }
+        ],
+        resolutions: [
+          {
+            itemIndex: 0,
+            strategy: 'skip'
+          }
+        ],
+        skipUnmatched: false,
+        defaultDuplicateStrategy: 'skip'
+      };
+
+      const response = await request(app)
+        .post('/watchlist/import/confirm')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(importRequest)
+        .expect(200);
+
+      expect(response.body.data.skipped).toBe(1);
+      expect(response.body.data.imported).toBe(0);
+    });
+
+    it('should return 400 for invalid request data', async () => {
+      const response = await request(app)
+        .post('/watchlist/import/confirm')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ invalid: 'data' })
+        .expect(400);
+
+      expect(response.body.error).toBe('Validation failed');
+    });
+
+    it('should return 401 without authentication', async () => {
+      const response = await request(app)
+        .post('/watchlist/import/confirm')
+        .send({ items: [], resolutions: [] })
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
+  describe('GET /watchlist/export', () => {
+    beforeEach(async () => {
+      // Create test data for export
+      const movie1 = await prisma.mediaItem.create({
+        data: {
+          tmdbId: 550,
+          tmdbType: 'movie',
+          title: 'Fight Club',
+          genres: ['Drama'],
+          releaseDate: new Date('1999-10-15'),
+          posterPath: '/poster1.jpg',
+        },
+      });
+
+      const movie2 = await prisma.mediaItem.create({
+        data: {
+          tmdbId: 278,
+          tmdbType: 'movie',
+          title: 'The Shawshank Redemption',
+          genres: ['Drama'],
+          releaseDate: new Date('1994-09-23'),
+          posterPath: '/poster2.jpg',
+        },
+      });
+
+      await prisma.watchlistEntry.create({
+        data: {
+          userId,
+          mediaItemId: movie1.id,
+          status: 'completed',
+          rating: 5,
+          notes: 'Great movie!',
+          dateAdded: new Date('2024-01-15'),
+          dateUpdated: new Date('2024-01-16'),
+        },
+      });
+
+      await prisma.watchlistEntry.create({
+        data: {
+          userId,
+          mediaItemId: movie2.id,
+          status: 'not_watched',
+          rating: null,
+          notes: null,
+          dateAdded: new Date('2024-01-17'),
+        },
+      });
+    });
+
+    it('should export watchlist as JSON', async () => {
+      const response = await request(app)
+        .get('/watchlist/export?format=json')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.headers['content-type']).toContain('application/json');
+      expect(response.headers['content-disposition']).toContain('attachment');
+      expect(response.headers['content-disposition']).toContain('.json');
+
+      const exportData = response.body;
+      expect(exportData.userId).toBe(userId);
+      expect(exportData.version).toBe('1.0');
+      expect(exportData.totalEntries).toBe(2);
+      expect(exportData.entries).toHaveLength(2);
+
+      const firstEntry = exportData.entries[0];
+      expect(firstEntry.title).toBe('Fight Club');
+      expect(firstEntry.year).toBe(1999);
+      expect(firstEntry.type).toBe('movie');
+      expect(firstEntry.status).toBe('completed');
+      expect(firstEntry.rating).toBe(5);
+      expect(firstEntry.notes).toBe('Great movie!');
+      expect(firstEntry.tmdbId).toBe(550);
+    });
+
+    it('should export watchlist as CSV', async () => {
+      const response = await request(app)
+        .get('/watchlist/export?format=csv')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.headers['content-type']).toContain('text/csv');
+      expect(response.headers['content-disposition']).toContain('attachment');
+      expect(response.headers['content-disposition']).toContain('.csv');
+
+      const csvContent = response.text;
+      expect(csvContent).toContain('title,year,type,status,rating,notes,dateAdded');
+      expect(csvContent).toContain('Fight Club');
+      expect(csvContent).toContain('The Shawshank Redemption');
+    });
+
+    it('should default to JSON format when no format specified', async () => {
+      const response = await request(app)
+        .get('/watchlist/export')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.headers['content-type']).toContain('application/json');
+      expect(response.body.totalEntries).toBe(2);
+    });
+
+    it('should return 400 for invalid format', async () => {
+      const response = await request(app)
+        .get('/watchlist/export?format=xml')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400);
+
+      expect(response.body.error).toBe('Invalid format. Use "json" or "csv"');
+    });
+
+    it('should return empty export for user with no entries', async () => {
+      const response = await request(app)
+        .get('/watchlist/export?format=json')
+        .set('Authorization', `Bearer ${otherAccessToken}`)
+        .expect(200);
+
+      expect(response.body.totalEntries).toBe(0);
+      expect(response.body.entries).toHaveLength(0);
+    });
+
+    it('should return 401 without authentication', async () => {
+      const response = await request(app)
+        .get('/watchlist/export')
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
     });
   });
 });
