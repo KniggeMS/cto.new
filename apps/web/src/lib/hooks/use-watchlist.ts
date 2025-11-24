@@ -1,6 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { watchlistApi } from '@/lib/api/watchlist';
-import type { CreateWatchlistEntryData, UpdateWatchlistEntryData, WatchlistEntry } from '@/lib/api/watchlist';
+import type { 
+  CreateWatchlistEntryData, 
+  UpdateWatchlistEntryData, 
+  WatchlistEntry 
+} from '@/lib/api/watchlist';
+import type { 
+  NormalizedPreviewItem, 
+  BulkImportRequest, 
+  ImportResult 
+} from '@infocus/shared';
 
 export function useWatchlist() {
   return useQuery({
@@ -129,5 +138,30 @@ export function useRemoveFromWatchlist() {
       // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: ['watchlist'] });
     },
+  });
+}
+
+// Import/Export hooks
+export function useWatchlistImportPreview() {
+  return useMutation({
+    mutationFn: (file: File) => watchlistApi.importWatchlistPreview(file),
+  });
+}
+
+export function useConfirmWatchlistImport() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: BulkImportRequest) => watchlistApi.confirmWatchlistImport(request),
+    onSuccess: () => {
+      // Invalidate watchlist query to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+    },
+  });
+}
+
+export function useWatchlistExport() {
+  return useMutation({
+    mutationFn: (format: 'csv' | 'json') => watchlistApi.exportWatchlist(format),
   });
 }

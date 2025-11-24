@@ -1,4 +1,11 @@
 import { apiClient } from './client';
+import type { 
+  NormalizedPreviewItem, 
+  BulkImportRequest, 
+  ImportResult, 
+  ExportResponse,
+  DuplicateResolution
+} from '@infocus/shared';
 
 export interface WatchlistEntry {
   id: string;
@@ -66,5 +73,32 @@ export const watchlistApi = {
 
   async removeFromWatchlist(id: string): Promise<void> {
     await apiClient.delete(`/watchlist/${id}`);
+  },
+
+  // Import/Export methods
+  async importWatchlistPreview(file: File): Promise<NormalizedPreviewItem[]> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await apiClient.post('/watchlist/import/preview', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    
+    return response.data.data;
+  },
+
+  async confirmWatchlistImport(request: BulkImportRequest): Promise<ImportResult> {
+    const response = await apiClient.post('/watchlist/import/confirm', request);
+    return response.data.data;
+  },
+
+  async exportWatchlist(format: 'csv' | 'json' = 'csv'): Promise<Blob> {
+    const response = await apiClient.get(`/watchlist/export?format=${format}`, {
+      responseType: 'blob',
+    });
+    
+    return response.data;
   },
 };
