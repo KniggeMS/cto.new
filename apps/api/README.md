@@ -8,14 +8,32 @@ Backend API server for the InFocus media tracking platform, built with Node.js, 
 
 - Node.js 18+
 - PostgreSQL 14+
-- npm
+- pnpm (Node.js package manager)
+
+### Workspace Bootstrap
+
+This project is part of a monorepo managed by pnpm. Before working on the API, bootstrap the entire workspace:
+
+```bash
+# From the project root
+pnpm install
+```
+
+The `.pnpmrc` and `pnpm-workspace.yaml` are configured to approve build scripts for dependencies that require them (`@prisma/client`, `@prisma/engines`, `prisma`, `detox`, `dtrace-provider`). This ensures a smooth install without manual prompts.
 
 ### Setup
 
-1. **Install dependencies**:
+1. **Install dependencies** (from project root):
 
 ```bash
-npm install
+pnpm install
+```
+
+Or, if working only on the API package:
+
+```bash
+cd apps/api
+pnpm install --filter @infocus/api
 ```
 
 2. **Configure database connection**:
@@ -60,13 +78,19 @@ npm run dev
 
 ## Available Scripts
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build TypeScript to JavaScript
-- `npm run migrate` - Create or update database migrations
-- `npm run migrate:prod` - Deploy migrations to production database
-- `npm run seed` - Populate database with demo data
-- `npm run prisma:generate` - Generate Prisma client types
-- `npm run prisma:studio` - Open Prisma Studio (visual DB editor)
+- `pnpm run dev` - Start development server with hot reload
+- `pnpm run build` - Build TypeScript to JavaScript (uses `tsconfig.build.json`)
+- `pnpm run typecheck` - Type-check TypeScript without building (uses `tsconfig.build.json`)
+- `pnpm run clean` - Remove dist directory
+- `pnpm run lint` - Run ESLint on source code
+- `pnpm run test` - Run Jest test suite
+- `pnpm run test:watch` - Run tests in watch mode
+- `pnpm run test:coverage` - Run tests with coverage report
+- `pnpm run migrate` - Create or update database migrations
+- `pnpm run migrate:prod` - Deploy migrations to production database
+- `pnpm run seed` - Populate database with demo data
+- `pnpm run prisma:generate` - Generate Prisma client types
+- `pnpm run prisma:studio` - Open Prisma Studio (visual DB editor)
 
 ## Project Structure
 
@@ -80,6 +104,8 @@ apps/api/
 │   ├── middleware/
 │   │   ├── auth.ts              # Authentication middleware
 │   │   └── errorHandler.ts      # Error handling middleware
+│   ├── services/
+│   │   └── tmdbService.ts       # TMDB API integration
 │   └── tests/
 │       └── auth.test.ts         # Authentication integration tests
 ├── prisma/
@@ -92,7 +118,9 @@ apps/api/
 ├── .env.example                 # Environment template
 ├── jest.config.cjs              # Jest test configuration
 ├── package.json
-├── tsconfig.json
+├── tsconfig.json                # TypeScript configuration (includes tests)
+├── tsconfig.build.json          # Build-focused config (excludes tests)
+├── Dockerfile                   # Multi-stage Docker build
 ├── SCHEMA.md                    # Database schema documentation
 └── README.md                    # This file
 ```
@@ -116,6 +144,48 @@ The application models the following core entities:
 See [SCHEMA.md](SCHEMA.md) for complete documentation including entity relationships, constraints, and design decisions.
 
 ## Development Workflow
+
+### TypeScript Build Configuration
+
+This API uses two TypeScript configurations:
+
+- **`tsconfig.json`** - Full configuration including tests, used for development and IDE support
+- **`tsconfig.build.json`** - Build-focused configuration that excludes test files, used for production builds
+
+The build configuration:
+- Sets `rootDir` to `src` to ensure clean output
+- Excludes `src/tests/**` and `**/*.test.ts` to prevent test files from being included in builds
+- Outputs to the `dist` directory
+
+**Building for production:**
+
+```bash
+# From the API directory
+pnpm run build
+
+# Or from the project root
+pnpm run build --filter @infocus/api
+```
+
+This generates production-ready JavaScript in the `dist/` directory without test files.
+
+**Type checking without building:**
+
+```bash
+pnpm run typecheck
+```
+
+This is useful for CI/CD pipelines and IDE integration.
+
+### Prisma Client Generation
+
+Before building or running the API, ensure the Prisma client is generated:
+
+```bash
+pnpm run prisma:generate
+```
+
+This generates type-safe Prisma client code based on the schema. It's automatically run during Docker builds.
 
 ### Creating New Migrations
 

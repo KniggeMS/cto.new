@@ -43,7 +43,7 @@ RUN pnpm install --frozen-lockfile --filter @infocus/api
 # Generate Prisma client
 RUN cd apps/api && pnpm run prisma:generate
 
-# Build the application
+# Build the application using the build-focused tsconfig
 RUN pnpm run build --filter @infocus/api
 
 # Stage 3: Production prune

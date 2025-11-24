@@ -6,9 +6,9 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "NODE_ENV=development ts-node src/index.ts",
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf dist",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "typecheck": "tsc --project tsconfig.build.json --noEmit",
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"prisma/**/*.ts\"",
     "test": "jest --config jest.config.cjs",
     "test:watch": "jest --config jest.config.cjs --watch",
