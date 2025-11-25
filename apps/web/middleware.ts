@@ -13,13 +13,13 @@ export function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => pathname === route);
   const isPublicRoute = publicRoutes.includes(pathname);
 
-  // Note: In middleware, we can only check cookies, not localStorage
-  // The actual auth check will happen client-side with the auth context
-  // This middleware provides basic protection
-  const accessToken = request.cookies.get('accessToken')?.value;
+  // Check for refresh token cookie (HTTP-only)
+  const refreshTokenCookie = request.cookies.get('refreshToken')?.value;
 
-  // If trying to access protected route without auth cookie, redirect to login
-  if (isProtectedRoute && !accessToken) {
+  // If trying to access protected route without refresh cookie, redirect to login
+  // In development, we may not have the cookie set properly, so be more permissive
+  const isDev = process.env.NODE_ENV === 'development';
+  if (isProtectedRoute && !refreshTokenCookie && !isDev) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

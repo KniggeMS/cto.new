@@ -2,6 +2,7 @@ import React from 'react';
 import { Filter } from 'lucide-react';
 import { Select } from './Select';
 import { cn } from '@/lib/utils/cn';
+import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
 
 import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
 
@@ -11,6 +12,8 @@ export interface FilterOption {
 }
 
 export interface FilterControlsProps {
+  statusFilter?: StatusFilter;
+  sortBy?: SortOption;
   statusFilter?: string;
   sortBy?: string;
   onStatusChange: (status: StatusFilter) => void;

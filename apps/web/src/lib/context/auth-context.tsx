@@ -28,8 +28,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userData = await authApi.getCurrentUser();
           setUser(userData);
         } catch (error) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
+          // Don't clear tokens on 404 or other errors - let refresh handle it
+          console.warn('Failed to fetch current user:', error);
         }
       }
       setIsLoading(false);
@@ -62,7 +62,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Logout error:', error);
     } finally {
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
       setUser(null);
       router.push('/login');
     }
