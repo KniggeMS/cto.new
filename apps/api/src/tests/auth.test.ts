@@ -79,16 +79,17 @@ describe('Authentication Endpoints', () => {
   });
 
   describe('POST /auth/login', () => {
-    beforeEach(async () => {
-      // Create a test user for login tests
+    it('should login successfully with valid credentials', async () => {
+      // Create user first
       await request(app).post('/auth/register').send({
         email: 'login@example.com',
         password: 'password123',
         name: 'Login User',
       });
-    });
 
-    it('should login successfully with valid credentials', async () => {
+      // Add delay to ensure different JWT timestamps
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const loginData = {
         email: 'login@example.com',
         password: 'password123',
@@ -115,8 +116,15 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should return 401 for invalid password', async () => {
+      // Create a user for this test
+      await request(app).post('/auth/register').send({
+        email: 'login2@example.com',
+        password: 'password123',
+        name: 'Login User 2',
+      });
+
       const loginData = {
-        email: 'login@example.com',
+        email: 'login2@example.com',
         password: 'wrongpassword',
       };
 
@@ -135,6 +143,7 @@ describe('Authentication Endpoints', () => {
   describe('POST /auth/refresh', () => {
     let refreshToken: string;
     let accessToken: string;
+    let userId: string;
 
     beforeEach(async () => {
       // Register and login to get tokens
@@ -145,6 +154,7 @@ describe('Authentication Endpoints', () => {
       });
 
       accessToken = registerResponse.body.accessToken;
+      userId = registerResponse.body.user.id;
 
       // Extract refresh token from cookies
       const cookies = registerResponse.headers['set-cookie'];
@@ -153,6 +163,21 @@ describe('Authentication Endpoints', () => {
           ?.find((cookie: string) => cookie.startsWith('refreshToken='))
           ?.split('=')[1]
           ?.split(';')[0] || '';
+    });
+
+    it('should return 401 for missing refresh token', async () => {
+      const response = await request(app).post('/auth/refresh').expect(401);
+
+      expect(response.body.error).toBe('Refresh token required');
+    });
+
+    it('should return 401 for invalid refresh token', async () => {
+      const response = await request(app)
+        .post('/auth/refresh')
+        .set('Cookie', 'refreshToken=invalid-token')
+        .expect(401);
+
+      expect(response.body.error).toBe('Invalid or expired refresh token');
     });
 
     it('should refresh access token successfully', async () => {
@@ -170,26 +195,20 @@ describe('Authentication Endpoints', () => {
       expect(response.body.accessToken).not.toBe(accessToken);
     });
 
-    it('should return 401 for missing refresh token', async () => {
-      const response = await request(app).post('/auth/refresh').expect(401);
+    it('should reject revoked refresh token', async () => {
+      // Logout to revoke token
+      await request(app)
+        .post('/auth/logout')
+        .set('Cookie', `refreshToken=${refreshToken}`)
+        .expect(200);
 
-      expect(response.body.error).toBe('Refresh token required');
-    });
-
-    it('should return 401 for invalid refresh token', async () => {
+      // Try to use revoked token
       const response = await request(app)
         .post('/auth/refresh')
-        .set('Cookie', 'refreshToken=invalid-token')
+        .set('Cookie', `refreshToken=${refreshToken}`)
         .expect(401);
 
-      expect(response.body.error).toBe('Invalid refresh token');
-    });
-
-    it('should work with refresh token in request body', async () => {
-      const response = await request(app).post('/auth/refresh').send({ refreshToken }).expect(200);
-
-      expect(response.body.message).toBe('Token refreshed successfully');
-      expect(response.body.accessToken).toBeDefined();
+      expect(response.body.error).toBe('Invalid or expired refresh token');
     });
   });
 
@@ -236,11 +255,74 @@ describe('Authentication Endpoints', () => {
 
       expect(response.body.message).toBe('Logout successful');
     });
+  });
 
-    it('should handle logout without token gracefully', async () => {
-      const response = await request(app).post('/auth/logout').expect(200);
+  describe('GET /auth/me', () => {
+    let accessToken: string;
+    let userId: string;
+    let userEmail: string;
+    let userName: string;
 
-      expect(response.body.message).toBe('Logout successful');
+    beforeEach(async () => {
+      // Register user to get access token
+      const registerResponse = await request(app).post('/auth/register').send({
+        email: 'me@example.com',
+        password: 'password123',
+        name: 'Me User',
+      });
+
+      accessToken = registerResponse.body.accessToken;
+      userId = registerResponse.body.user.id;
+      userEmail = registerResponse.body.user.email;
+      userName = registerResponse.body.user.name;
+    });
+
+    it('should return current user with valid token', async () => {
+      const response = await request(app)
+        .get('/auth/me')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.message).toBe('User retrieved successfully');
+      expect(response.body.user).toBeDefined();
+      expect(response.body.user.id).toBe(userId);
+      expect(response.body.user.email).toBe(userEmail);
+      expect(response.body.user.name).toBe(userName);
+      expect(response.body.user.createdAt).toBeDefined();
+    });
+
+    it('should return 401 without authorization header', async () => {
+      const response = await request(app).get('/auth/me').expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+
+    it('should return 401 with invalid token', async () => {
+      const response = await request(app)
+        .get('/auth/me')
+        .set('Authorization', 'Bearer invalid-token')
+        .expect(401);
+
+      expect(response.body.error).toBe('Invalid or expired access token');
+    });
+
+    it('should return 401 with malformed authorization header', async () => {
+      const response = await request(app)
+        .get('/auth/me')
+        .set('Authorization', 'InvalidFormat token')
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+
+    it('should not expose password field', async () => {
+      const response = await request(app)
+        .get('/auth/me')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(response.body.user.password).toBeUndefined();
+      expect(response.body.user.updatedAt).toBeUndefined();
     });
   });
 

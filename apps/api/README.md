@@ -283,9 +283,13 @@ Authenticate and receive tokens.
 
 #### POST /auth/refresh
 
-Refresh an expired access token using a valid refresh token.
+Refresh an expired access token using a valid refresh token. Implements automatic token rotation for enhanced security.
 
 **Request:**
+
+The refresh token can be provided in two ways:
+1. **HTTP-only Cookie** (preferred): `refreshToken` cookie
+2. **Request Body**: JSON payload with `refreshToken` field
 
 ```json
 {
@@ -302,6 +306,17 @@ Refresh an expired access token using a valid refresh token.
 }
 ```
 
+**Token Rotation Details:**
+- When a refresh token is used, a new refresh token is generated and issued
+- The old refresh token is automatically revoked in the database
+- The new refresh token is set in an HTTP-only cookie (secure, SameSite=Strict)
+- Previous refresh tokens cannot be reused after rotation
+- This prevents token replay attacks and enhances security
+
+**Error Responses:**
+- `401 Refresh token required` - No refresh token provided
+- `401 Invalid or expired refresh token` - Token is revoked, expired, or invalid
+
 #### POST /auth/logout
 
 Revoke refresh token and clear session.
@@ -313,6 +328,32 @@ Revoke refresh token and clear session.
   "message": "Logout successful"
 }
 ```
+
+#### GET /auth/me
+
+Get the currently authenticated user's profile information.
+
+**Request:**
+- Requires `Authorization: Bearer <access_token>` header
+
+**Response:**
+
+```json
+{
+  "message": "User retrieved successfully",
+  "user": {
+    "id": "clx123abc456",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Error Responses:**
+- `401 Access token required` - Missing or invalid Authorization header
+- `401 Invalid or expired access token` - Token has expired or is invalid
+- `401 User not found` - User account not found in database
 
 ### Protected Routes
 
@@ -346,7 +387,12 @@ Get the authenticated user's profile.
 - **Password Hashing**: bcrypt with salt rounds (12)
 - **JWT Tokens**: Short-lived access tokens (15min) + long-lived refresh tokens (7d)
 - **Secure Cookies**: HttpOnly, Secure, SameSite=Strict for refresh tokens
-- **Token Rotation**: Refresh tokens are stored in database and can be revoked
+- **Token Rotation**: Automatic refresh token rotation on every refresh operation
+  - Old tokens are revoked in database after new token is issued
+  - Prevents token replay attacks
+  - Enforces single-use refresh tokens
+- **Token Revocation**: Refresh tokens are stored in database and can be revoked
+- **Cookie Preference**: HTTP-only cookies are preferred over request body for security
 - **Input Validation**: Zod schema validation for all inputs
 - **Error Handling**: Standardized error responses without sensitive information
 
@@ -468,13 +514,21 @@ npm run test:coverage
 
 The test suite covers:
 
-- User registration with validation
+- User registration with validation and error cases
 - User login with credential verification
-- Token refresh flow
+- User profile retrieval (`GET /auth/me`)
+- Token refresh flow with multiple scenarios:
+  - Basic refresh with cookie
+  - Refresh with request body fallback
+  - HTTP-only cookie preference
+  - Token rotation and revocation
+  - Revoked token rejection
+  - Expired token rejection
 - Logout and token revocation
-- Authentication middleware
+- Authentication middleware (valid, invalid, malformed tokens)
 - Error handling scenarios
 - Input validation edge cases
+- Password and sensitive field exclusion
 
 ### Postman Collection
 

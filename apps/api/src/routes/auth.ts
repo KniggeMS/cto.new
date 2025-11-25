@@ -3,6 +3,8 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { authMiddleware } from '../middleware/auth';
+import { sanitizeUser } from '../utils/userHelpers';
 
 const router: Router = Router();
 const prisma = new PrismaClient();
@@ -69,12 +71,6 @@ router.post('/register', async (req: any, res: any, next: any): Promise<void> =>
         password: hashedPassword,
         name,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true,
-      },
     });
 
     // Generate tokens
@@ -95,7 +91,7 @@ router.post('/register', async (req: any, res: any, next: any): Promise<void> =>
 
     res.status(201).json({
       message: 'User registered successfully',
-      user,
+      user: sanitizeUser(user),
       accessToken,
     });
   } catch (error) {
@@ -147,13 +143,9 @@ router.post('/login', async (req: any, res: any, next: any): Promise<void> => {
     setRefreshTokenCookie(res, refreshToken);
 
     res.json({
-      message: 'Login successful',
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-      accessToken,
+     message: 'Login successful',
+     user: sanitizeUser(user),
+     accessToken,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -170,7 +162,8 @@ router.post('/login', async (req: any, res: any, next: any): Promise<void> => {
 router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => {
   try {
     const cookies = req.cookies || {};
-    const refreshToken = cookies.refreshToken || req.body.refreshToken;
+    // Prefer HTTP-only cookie over request body
+    const refreshToken = cookies.refreshToken || (req.body && req.body.refreshToken);
 
     if (!refreshToken) {
       return res.status(401).json({ error: 'Refresh token required' });
@@ -181,7 +174,7 @@ router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => 
     try {
       decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     } catch (error) {
-      return res.status(401).json({ error: 'Invalid refresh token' });
+      return res.status(401).json({ error: 'Invalid or expired refresh token' });
     }
 
     // Check if refresh token exists in database and is not revoked
@@ -197,6 +190,27 @@ router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => 
     // Generate new access token
     const accessToken = generateAccessToken(decoded.userId);
 
+    // Generate new refresh token for rotation
+    const newRefreshToken = generateRefreshToken(decoded.userId);
+
+    // Store new refresh token in database
+    await prisma.refreshToken.create({
+      data: {
+        userId: decoded.userId,
+        token: newRefreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
+    });
+
+    // Revoke old refresh token
+    await prisma.refreshToken.update({
+      where: { id: storedToken.id },
+      data: { revoked: true },
+    });
+
+    // Set new refresh token cookie
+    setRefreshTokenCookie(res, newRefreshToken);
+
     res.json({
       message: 'Token refreshed successfully',
       accessToken,
@@ -211,7 +225,7 @@ router.post('/refresh', async (req: any, res: any, next: any): Promise<void> => 
 router.post('/logout', async (req: any, res: any, next: any): Promise<void> => {
   try {
     const cookies = req.cookies || {};
-    const refreshToken = cookies.refreshToken || req.body.refreshToken;
+    const refreshToken = cookies.refreshToken || (req.body && req.body.refreshToken);
 
     if (refreshToken) {
       // Revoke refresh token in database
@@ -227,6 +241,27 @@ router.post('/logout', async (req: any, res: any, next: any): Promise<void> => {
     res.json({ message: 'Logout successful' });
   } catch (error) {
     console.error('Logout route error:', error);
+    next(error);
+  }
+});
+
+// GET /auth/me
+router.get('/me', authMiddleware, async (req: any, res: any, next: any): Promise<void> => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    res.json({
+      message: 'User retrieved successfully',
+      user: sanitizeUser(user),
+    });
+  } catch (error) {
+    console.error('Get user route error:', error);
     next(error);
   }
 });
