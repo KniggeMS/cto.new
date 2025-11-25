@@ -78,14 +78,14 @@ export function SharedWatchlist({
                 id="member-filter"
                 value={memberFilter}
                 onChange={(e) => setMemberFilter(e.target.value)}
-              >
-                <option value="">All Members</option>
-                {members.map((member) => (
-                  <option key={member.userId} value={member.userId}>
-                    {member.user.name || member.user.email}
-                  </option>
-                ))}
-              </Select>
+                options={[
+                  { value: '', label: 'All Members' },
+                  ...members.map((member) => ({
+                    value: member.userId,
+                    label: member.user.name || member.user.email,
+                  })),
+                ]}
+              />
             </div>
             <div>
               <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700">
@@ -95,12 +95,13 @@ export function SharedWatchlist({
                 id="status-filter"
                 value={statusFilter}
                 onChange={(e) => onStatusFilterChange(e.target.value)}
-              >
-                <option value="">All Statuses</option>
-                <option value="not_watched">Not Watched</option>
-                <option value="watching">Watching</option>
-                <option value="completed">Completed</option>
-              </Select>
+                options={[
+                  { value: '', label: 'All Statuses' },
+                  { value: 'not_watched', label: 'Not Watched' },
+                  { value: 'watching', label: 'Watching' },
+                  { value: 'completed', label: 'Completed' },
+                ]}
+              />
             </div>
           </div>
         </CardContent>

@@ -36,28 +36,20 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       if (typeof window !== 'undefined') {
-        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+          const response = await apiClient.post('/auth/refresh');
+          const { accessToken } = response.data;
+          localStorage.setItem('accessToken', accessToken);
 
-        if (refreshToken) {
-          try {
-            const response = await axios.post(`${API_URL}/auth/refresh`, {
-              refreshToken,
-            });
-
-            const { accessToken } = response.data;
-            localStorage.setItem('accessToken', accessToken);
-
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-            }
-
-            return apiClient(originalRequest);
-          } catch (refreshError) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = '/login';
-            return Promise.reject(refreshError);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           }
+
+          return apiClient(originalRequest);
+        } catch (refreshError) {
+          localStorage.removeItem('accessToken');
+          window.location.href = '/login';
+          return Promise.reject(refreshError);
         }
       }
     }

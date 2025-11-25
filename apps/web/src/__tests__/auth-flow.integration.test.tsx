@@ -51,6 +51,16 @@ Object.defineProperty(window, 'localStorage', {
 
 // Mock API module
 jest.mock('@/lib/api/auth');
+jest.mock('@/lib/api/client', () => ({
+  apiClient: {
+    get: jest.fn(),
+    post: jest.fn(),
+    interceptors: {
+      request: { use: jest.fn() },
+      response: { use: jest.fn() },
+    },
+  },
+}));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -242,7 +252,7 @@ describe('Authentication Flow Integration Tests', () => {
       });
     });
 
-    it('clears tokens and redirects to login if persisted token is invalid', async () => {
+    it('clears only access token if persisted token is invalid', async () => {
       localStorage.setItem('accessToken', 'invalid-token');
 
       (authApi.getCurrentUser as jest.Mock).mockRejectedValue(new Error('Unauthorized'));
@@ -252,6 +262,9 @@ describe('Authentication Flow Integration Tests', () => {
       await waitFor(() => {
         expect(localStorage.getItem('accessToken')).toBeNull();
       });
+
+      // Verify that refreshToken is not being touched since it's not in localStorage anymore
+      expect(localStorage.getItem('refreshToken')).toBeNull();
     });
   });
 
@@ -294,6 +307,33 @@ describe('Authentication Flow Integration Tests', () => {
       await waitFor(() => {
         expect(authApi.register).not.toHaveBeenCalled();
         expect(screen.getByText(/password must be at least 8 characters/i)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Token Refresh Flow', () => {
+    it('handles successful token refresh', async () => {
+      const mockUser = {
+        id: '123',
+        email: 'test@example.com',
+        name: 'Test User',
+      };
+
+      localStorage.setItem('accessToken', 'expired-token');
+
+      // Mock getCurrentUser to initially fail with 401, then succeed
+      (authApi.getCurrentUser as jest.Mock)
+        .mockRejectedValueOnce({ response: { status: 401 } })
+        .mockResolvedValueOnce(mockUser);
+
+      renderWithProviders(<LoginPage />);
+
+      await waitFor(() => {
+        expect(authApi.getCurrentUser).toHaveBeenCalledTimes(2);
+      });
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/watchlist');
       });
     });
   });

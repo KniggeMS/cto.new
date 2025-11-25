@@ -1,8 +1,8 @@
 import React from 'react';
-import { Filter, ChevronDown } from 'lucide-react';
-import { Button } from './Button';
+import { Filter } from 'lucide-react';
 import { Select } from './Select';
 import { cn } from '@/lib/utils/cn';
+import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
 
 export interface FilterOption {
   value: string;
@@ -10,15 +10,12 @@ export interface FilterOption {
 }
 
 export interface FilterControlsProps {
-  statusFilter?: string;
-  sortBy?: string;
-  onStatusChange: (status: string) => void;
-  onSortChange: (sort: string) => void;
+  statusFilter?: StatusFilter;
+  sortBy?: SortOption;
+  onStatusChange: (status: StatusFilter) => void;
+  onSortChange: (sort: SortOption) => void;
   className?: string;
 }
-
-// Export the StatusFilter type for use in other components
-export type StatusFilter = 'all' | 'not_watched' | 'watching' | 'completed';
 
 const statusOptions: FilterOption[] = [
   { value: 'all', label: 'All Status' },
@@ -53,14 +50,14 @@ export function FilterControls({
       <div className="flex flex-col sm:flex-row gap-3 flex-1">
         <Select
           value={statusFilter}
-          onChange={(e) => onStatusChange(e.target.value)}
+          onChange={(e) => onStatusChange(e.target.value as StatusFilter)}
           options={statusOptions}
           className="w-full sm:w-48"
         />
 
         <Select
           value={sortBy}
-          onChange={(e) => onSortChange(e.target.value)}
+          onChange={(e) => onSortChange(e.target.value as SortOption)}
           options={sortOptions}
           className="w-full sm:w-48"
         />

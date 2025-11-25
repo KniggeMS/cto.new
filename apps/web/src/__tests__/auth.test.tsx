@@ -21,7 +21,6 @@ jest.mock('@/lib/api/auth', () => ({
     register: jest.fn(),
     logout: jest.fn(),
     getCurrentUser: jest.fn(),
-    refreshToken: jest.fn(),
   },
 }));
 

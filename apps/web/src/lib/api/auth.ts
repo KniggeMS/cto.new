@@ -49,9 +49,4 @@ export const authApi = {
     // Backend returns user directly in data or wrapped in user property
     return response.data?.user || response.data;
   },
-
-  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-    const response = await apiClient.post('/auth/refresh', { refreshToken });
-    return response.data;
-  },
 };
