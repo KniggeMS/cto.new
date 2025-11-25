@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { X, Save, Trash2 } from 'lucide-react';
+import { Save, Trash2 } from 'lucide-react';
 import { Sheet } from '@/components/ui/Sheet';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
@@ -87,7 +87,7 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
         notes: data.notes || undefined,
       };
 
-      if (data.rating && data.rating !== '') {
+      if (data.rating !== undefined && data.rating !== '') {
         updateData.rating = data.rating;
       }
 

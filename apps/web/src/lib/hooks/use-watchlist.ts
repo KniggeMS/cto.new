@@ -5,7 +5,7 @@ import type {
   UpdateWatchlistEntryData,
   WatchlistEntry,
 } from '@/lib/api/watchlist';
-import type { NormalizedPreviewItem, BulkImportRequest, ImportResult } from '@infocus/shared';
+import type { BulkImportRequest } from '@infocus/shared';
 
 export function useWatchlist() {
   return useQuery({

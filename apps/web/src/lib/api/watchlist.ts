@@ -3,8 +3,6 @@ import type {
   NormalizedPreviewItem,
   BulkImportRequest,
   ImportResult,
-  ExportResponse,
-  DuplicateResolution,
 } from '@infocus/shared';
 
 export interface WatchlistEntry {

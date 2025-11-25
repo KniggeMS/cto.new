@@ -1,5 +1,3 @@
-import React from 'react';
-import { PlayCircle, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { WatchlistCard } from './WatchlistCard';
 import type { WatchlistEntry } from '@/lib/api/watchlist';

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import type {
   NormalizedPreviewItem,
   DuplicateResolution,
@@ -11,7 +10,7 @@ import type {
   MergeFields,
 } from '@infocus/shared';
 import { createFocusTrap } from '@/lib/utils/accessibility';
-import { X, Copy, ArrowRight, Check, AlertTriangle, Film, Tv, Star, Calendar } from 'lucide-react';
+import { X, Copy, AlertTriangle, Star } from 'lucide-react';
 
 interface DuplicateResolutionDialogProps {
   items: NormalizedPreviewItem[];
@@ -49,6 +48,7 @@ export function DuplicateResolutionDialog({
         document.removeEventListener('keydown', handleEscape);
       };
     }
+    return undefined;
   }, [onCancel]);
 
   // Filter items that have duplicates
@@ -83,7 +83,10 @@ export function DuplicateResolutionDialog({
         itemIndex,
         mergeFields: {
           ...prev[itemIndex]?.mergeFields,
-          ...mergeFields,
+          status: mergeFields.status ?? false,
+          rating: mergeFields.rating ?? false,
+          notes: mergeFields.notes ?? 'keep',
+          streamingProviders: mergeFields.streamingProviders ?? 'keep',
         },
       },
     }));
@@ -138,7 +141,7 @@ export function DuplicateResolutionDialog({
         </div>
 
         <div className="p-6 space-y-4">
-          {duplicateItems.map((item, index) => {
+          {duplicateItems.map((item) => {
             const itemIndex = items.indexOf(item);
             const existingEntry = getExistingEntry(item);
             const resolution = resolutions[itemIndex];

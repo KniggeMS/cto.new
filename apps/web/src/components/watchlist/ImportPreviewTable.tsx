@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
-import type { NormalizedPreviewItem, TmdbMatchCandidate } from '@infocus/shared';
+import type { NormalizedPreviewItem } from '@infocus/shared';
 import {
   Check,
   X,
