@@ -61,17 +61,17 @@ export function ExportPanel() {
 
   return (
     <Card>
-      <CardContent className="p-6">
-        <div className="space-y-6">
+      <CardContent className="p-4 sm:p-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Export Watchlist</h3>
               <p className="text-sm text-gray-600">
                 Download your watchlist for backup or importing into other services
               </p>
             </div>
-            <Download className="h-6 w-6 text-gray-400" />
+            <Download className="h-6 w-6 text-gray-400 flex-shrink-0" />
           </div>
 
           {/* Watchlist Summary */}
@@ -100,14 +100,14 @@ export function ExportPanel() {
           {/* Format Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">Export Format</label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {(['csv', 'json'] as ExportFormat[]).map((fmt) => (
                 <button
                   key={fmt}
                   type="button"
                   onClick={() => setFormat(fmt)}
                   className={`
-                    p-4 border rounded-lg text-left transition-all
+                    p-3 sm:p-4 border rounded-lg text-left transition-all
                     ${
                       format === fmt
                         ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-500 ring-opacity-20'
@@ -118,15 +118,15 @@ export function ExportPanel() {
                   <div className="flex items-start space-x-3">
                     <div
                       className={`
-                      p-2 rounded-lg
-                      ${format === fmt ? 'bg-primary-100 text-primary-600' : 'bg-gray-100 text-gray-600'}
-                    `}
+                        p-2 rounded-lg
+                        ${format === fmt ? 'bg-primary-100 text-primary-600' : 'bg-gray-100 text-gray-600'}
+                      `}
                     >
                       {getFormatIcon(fmt)}
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 uppercase">{fmt}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{getFormatDescription(fmt)}</p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 uppercase text-sm sm:text-base">{fmt}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1">{getFormatDescription(fmt)}</p>
                     </div>
                   </div>
                 </button>
@@ -152,12 +152,12 @@ export function ExportPanel() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row sm:space-x-3 gap-3">
             <Button
               onClick={handleExport}
               disabled={!watchlist || watchlist.length === 0 || exportMutation.isPending}
               isLoading={exportMutation.isPending}
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
               {exportMutation.isPending ? 'Exporting...' : 'Export Watchlist'}
             </Button>

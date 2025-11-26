@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { Navigation } from '@/components/layout/Navigation';
 import { AuthProvider } from '@/lib/context/auth-context';
@@ -141,6 +142,3 @@ describe('Navigation Component Visual Regression', () => {
     expect(watchlistLink).toHaveClass('bg-primary-100', 'text-primary-700');
   });
 });
-
-// Helper for user interactions
-import userEvent from '@testing-library/user-event';
