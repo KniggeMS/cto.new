@@ -544,6 +544,230 @@ describe('Family Endpoints', () => {
     });
   });
 
+  describe('GET /families/:id/invitations', () => {
+    it('should list family invitations for admin', async () => {
+      const response = await request(app)
+        .get(`/families/${familyId}/invitations`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body.count).toBeDefined();
+    });
+
+    it('should return 403 for member without admin role', async () => {
+      const response = await request(app)
+        .get(`/families/${familyId}/invitations`)
+        .set('Authorization', `Bearer ${user3Token}`)
+        .expect(403);
+
+      expect(response.body.error).toContain('at least an admin');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const response = await request(app)
+        .get(`/families/${familyId}/invitations`)
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
+  describe('POST /families/:id/invitations/:invitationId/resend', () => {
+    let invitationId: string;
+
+    beforeAll(async () => {
+      // Create an invitation to resend
+      const inviteResponse = await request(app)
+        .post(`/families/${familyId}/invite`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          email: 'resend@example.com',
+        })
+        .expect(201);
+
+      invitationId = inviteResponse.body.data.id;
+    });
+
+    it('should resend invitation successfully', async () => {
+      const response = await request(app)
+        .post(`/families/${familyId}/invitations/${invitationId}/resend`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(response.body.message).toBe('Invitation resent successfully');
+      expect(response.body.data.id).toBe(invitationId);
+      expect(response.body.data.status).toBe('pending');
+      expect(response.body.data.token).toBeDefined();
+      expect(response.body.data.expiresAt).toBeDefined();
+    });
+
+    it('should return 403 for member without admin role', async () => {
+      const response = await request(app)
+        .post(`/families/${familyId}/invitations/${invitationId}/resend`)
+        .set('Authorization', `Bearer ${user3Token}`)
+        .expect(403);
+
+      expect(response.body.error).toContain('at least an admin');
+    });
+
+    it('should return 404 for non-existent invitation', async () => {
+      const response = await request(app)
+        .post(`/families/${familyId}/invitations/nonexistent/resend`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(404);
+
+      expect(response.body.error).toBe('Invitation not found');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const response = await request(app)
+        .post(`/families/${familyId}/invitations/${invitationId}/resend`)
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
+  describe('DELETE /families/:id/members/:memberId', () => {
+    it('should remove member successfully', async () => {
+      const response = await request(app)
+        .delete(`/families/${familyId}/members/${user3Id}`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(200);
+
+      expect(response.body.message).toBe('Member removed successfully');
+      expect(response.body.data.userId).toBe(user3Id);
+    });
+
+    it('should return 403 for member without admin role', async () => {
+      // First add user3 back as a regular member for this test
+      const newInviteResponse = await request(app)
+        .post(`/families/${familyId}/invite`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          email: 'family3@example.com',
+        });
+
+      const token = newInviteResponse.body.data.token;
+      await request(app)
+        .post(`/families/${familyId}/invitations/${token}/accept`)
+        .set('Authorization', `Bearer ${user3Token}`);
+
+      const response = await request(app)
+        .delete(`/families/${familyId}/members/${user2Id}`)
+        .set('Authorization', `Bearer ${user3Token}`)
+        .expect(403);
+
+      expect(response.body.error).toContain('at least an admin');
+    });
+
+    it('should return 400 when trying to remove owner', async () => {
+      const response = await request(app)
+        .delete(`/families/${familyId}/members/${user1Id}`)
+        .set('Authorization', `Bearer ${user2Token}`)
+        .expect(400);
+
+      expect(response.body.error).toBe('Cannot remove the family owner');
+    });
+
+    it('should return 404 for non-existent member', async () => {
+      const response = await request(app)
+        .delete(`/families/${familyId}/members/nonexistent`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(404);
+
+      expect(response.body.error).toBe('Member not found in this family');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const response = await request(app)
+        .delete(`/families/${familyId}/members/${user2Id}`)
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
+  describe('POST /families/:id/leave', () => {
+    let testFamilyId: string;
+    let memberToken: string;
+
+    beforeAll(async () => {
+      // Create a new family for leave tests
+      const createFamilyResponse = await request(app)
+        .post('/families')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          name: 'Leave Test Family',
+        })
+        .expect(201);
+
+      testFamilyId = createFamilyResponse.body.data.id;
+
+      // Invite and accept user3 as a member
+      const inviteResponse = await request(app)
+        .post(`/families/${testFamilyId}/invite`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          email: 'family3@example.com',
+        });
+
+      const token = inviteResponse.body.data.token;
+
+      await request(app)
+        .post(`/families/${testFamilyId}/invitations/${token}/accept`)
+        .set('Authorization', `Bearer ${user3Token}`);
+    });
+
+    it('should leave family successfully', async () => {
+      const response = await request(app)
+        .post(`/families/${testFamilyId}/leave`)
+        .set('Authorization', `Bearer ${user3Token}`)
+        .expect(200);
+
+      expect(response.body.message).toBe('Left family successfully');
+
+      // Verify membership is removed
+      const membership = await prisma.familyMembership.findUnique({
+        where: {
+          userId_familyId: {
+            userId: user3Id,
+            familyId: testFamilyId,
+          },
+        },
+      });
+
+      expect(membership).toBeNull();
+    });
+
+    it('should return 400 when owner tries to leave', async () => {
+      const response = await request(app)
+        .post(`/families/${testFamilyId}/leave`)
+        .set('Authorization', `Bearer ${user1Token}`)
+        .expect(400);
+
+      expect(response.body.error).toBe('Family owner cannot leave. Please transfer ownership first.');
+    });
+
+    it('should return 404 for non-member', async () => {
+      const response = await request(app)
+        .post(`/families/${testFamilyId}/leave`)
+        .set('Authorization', `Bearer ${user3Token}`)
+        .expect(404);
+
+      expect(response.body.error).toBe('You are not a member of this family');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const response = await request(app)
+        .post(`/families/${testFamilyId}/leave`)
+        .expect(401);
+
+      expect(response.body.error).toBe('Access token required');
+    });
+  });
+
   describe('GET /families', () => {
     it('should list user families successfully', async () => {
       const response = await request(app)

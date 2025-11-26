@@ -102,8 +102,10 @@ export function useLeaveFamily() {
 
   return useMutation({
     mutationFn: (familyId: string) => familyApi.leaveFamily(familyId),
-    onSuccess: () => {
+    onSuccess: (_, familyId) => {
       queryClient.invalidateQueries({ queryKey: ['families'] });
+      queryClient.invalidateQueries({ queryKey: ['family', familyId] });
+      queryClient.invalidateQueries({ queryKey: ['family', familyId, 'members'] });
     },
   });
 }
