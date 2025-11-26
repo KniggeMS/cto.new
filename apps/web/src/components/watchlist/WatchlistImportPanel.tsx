@@ -101,7 +101,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
           {/* File Upload Area */}
           <div
             className={`
-              relative border-2 border-dashed rounded-lg p-8 text-center transition-colors
+              relative border-2 border-dashed rounded-lg p-6 sm:p-8 text-center transition-colors
               ${
                 isDragging
                   ? 'border-primary-500 bg-primary-50'
@@ -120,8 +120,8 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
 
-            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-lg font-medium text-gray-900 mb-2">
+            <Upload className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-3 sm:mb-4" />
+            <p className="text-base sm:text-lg font-medium text-gray-900 mb-2">
               Drop your file here, or click to browse
             </p>
             <p className="text-sm text-gray-600">Supports CSV and JSON files up to 10MB</p>
@@ -129,27 +129,32 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
 
           {/* Selected File Info */}
           {selectedFile && (
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg gap-3">
               <div className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <div>
-                  <p className="font-medium text-gray-900">{selectedFile.name}</p>
+                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-gray-900 truncate">{selectedFile.name}</p>
                   <p className="text-sm text-gray-600">{formatFileSize(selectedFile.size)}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={handleReset}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleReset}
+                className="w-full sm:w-auto"
+              >
                 Remove
               </Button>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row sm:space-x-3 gap-3">
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || importPreviewMutation.isPending}
               isLoading={importPreviewMutation.isPending}
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
               {importPreviewMutation.isPending ? 'Parsing...' : 'Parse File'}
             </Button>
@@ -157,6 +162,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
               variant="outline"
               onClick={handleReset}
               disabled={importPreviewMutation.isPending}
+              className="w-full sm:w-auto"
             >
               Clear
             </Button>
@@ -187,6 +193,48 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
                   </li>
                 </ul>
               </div>
+            </div>
+          </div>
+
+          {/* Quick Start Templates */}
+          <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-sm font-medium text-gray-900 mb-2">Quick Start:</p>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <button
+                onClick={() => {
+                  const csvTemplate = `title,status,rating,notes
+The Matrix,completed,9,Amazing sci-fi movie
+Inception,not_watched,,Heard great things`;
+                  const blob = new Blob([csvTemplate], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'watchlist_template.csv';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="text-xs sm:text-sm text-primary-600 hover:text-primary-700 underline"
+              >
+                Download CSV Template
+              </button>
+              <button
+                onClick={() => {
+                  const jsonTemplate = JSON.stringify([
+                    { title: "The Matrix", status: "completed", rating: 9, notes: "Amazing sci-fi movie" },
+                    { title: "Inception", status: "not_watched", rating: null, notes: "Heard great things" }
+                  ], null, 2);
+                  const blob = new Blob([jsonTemplate], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'watchlist_template.json';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="text-xs sm:text-sm text-primary-600 hover:text-primary-700 underline"
+              >
+                Download JSON Template
+              </button>
             </div>
           </div>
         </div>

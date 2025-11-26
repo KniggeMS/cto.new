@@ -253,7 +253,7 @@ export default function WatchlistPage() {
                     : 'Try changing the filters to see more items.'}
                 </p>
                 {statusFilter === 'all' && (
-                  <div className="mt-6 flex space-x-3 justify-center">
+                  <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                     <Button onClick={() => (window.location.href = '/search')}>
                       <Plus className="w-4 h-4 mr-2" />
                       Browse Content
