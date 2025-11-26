@@ -569,6 +569,206 @@ router.patch(
   },
 );
 
+// GET /families/:id/invitations - List family invitations
+router.get(
+  '/:id/invitations',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const familyId = req.params.id;
+
+      // Check membership (admin or owner required)
+      const hasPermission = await checkFamilyMembership(userId, familyId, res, 'admin');
+      if (!hasPermission) {
+        return;
+      }
+
+      const invitations = await prisma.familyInvitation.findMany({
+        where: { familyId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      res.json({
+        data: invitations,
+        count: invitations.length,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// POST /families/:id/invitations/:invitationId/resend - Resend an invitation
+router.post(
+  '/:id/invitations/:invitationId/resend',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const familyId = req.params.id;
+      const invitationId = req.params.invitationId;
+
+      // Check membership (admin or owner required)
+      const hasPermission = await checkFamilyMembership(userId, familyId, res, 'admin');
+      if (!hasPermission) {
+        return;
+      }
+
+      // Find the invitation
+      const invitation = await prisma.familyInvitation.findUnique({
+        where: { id: invitationId },
+      });
+
+      if (!invitation) {
+        res.status(404).json({ error: 'Invitation not found' });
+        return;
+      }
+
+      if (invitation.familyId !== familyId) {
+        res.status(404).json({ error: 'Invitation not found for this family' });
+        return;
+      }
+
+      // Generate new token and expiry
+      const token = generateInviteToken();
+      const expiresAt = getInviteExpiryDate();
+
+      // Update the invitation
+      const updatedInvitation = await prisma.familyInvitation.update({
+        where: { id: invitationId },
+        data: {
+          token,
+          status: 'pending',
+          expiresAt,
+        },
+      });
+
+      res.json({
+        message: 'Invitation resent successfully',
+        data: updatedInvitation,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// DELETE /families/:id/members/:memberId - Remove a member from family
+router.delete(
+  '/:id/members/:memberId',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const familyId = req.params.id;
+      const memberId = req.params.memberId;
+
+      // Check membership (admin or owner required)
+      const hasPermission = await checkFamilyMembership(userId, familyId, res, 'admin');
+      if (!hasPermission) {
+        return;
+      }
+
+      // Find member to remove
+      const memberToRemove = await prisma.familyMembership.findUnique({
+        where: {
+          userId_familyId: {
+            userId: memberId,
+            familyId,
+          },
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      if (!memberToRemove) {
+        res.status(404).json({ error: 'Member not found in this family' });
+        return;
+      }
+
+      // Prevent removing owner (except by themselves)
+      if (memberToRemove.role === 'owner' && memberToRemove.userId !== userId) {
+        res.status(400).json({ error: 'Cannot remove the family owner' });
+        return;
+      }
+
+      // Remove the member
+      await prisma.familyMembership.delete({
+        where: {
+          userId_familyId: {
+            userId: memberId,
+            familyId,
+          },
+        },
+      });
+
+      res.json({
+        message: 'Member removed successfully',
+        data: memberToRemove,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// POST /families/:id/leave - Leave a family
+router.post(
+  '/:id/leave',
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const familyId = req.params.id;
+
+      // Check membership
+      const membership = await prisma.familyMembership.findUnique({
+        where: {
+          userId_familyId: {
+            userId,
+            familyId,
+          },
+        },
+      });
+
+      if (!membership) {
+        res.status(404).json({ error: 'You are not a member of this family' });
+        return;
+      }
+
+      // Prevent owner from leaving (they must transfer ownership first)
+      if (membership.role === 'owner') {
+        res.status(400).json({ error: 'Family owner cannot leave. Please transfer ownership first.' });
+        return;
+      }
+
+      // Remove the membership
+      await prisma.familyMembership.delete({
+        where: {
+          userId_familyId: {
+            userId,
+            familyId,
+          },
+        },
+      });
+
+      res.json({
+        message: 'Left family successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 // GET /families - List user's families
 router.get(
   '/',

@@ -14,6 +14,7 @@ import {
   useInviteToFamily,
   useResendInvitation,
   useRemoveMember,
+  useLeaveFamily,
 } from '@/lib/hooks/use-family';
 import { useAuth } from '@/lib/context/auth-context';
 import { InviteModal } from '@/components/family/InviteModal';
@@ -46,6 +47,7 @@ export default function FamilyDetailPage() {
   const inviteMutation = useInviteToFamily();
   const resendMutation = useResendInvitation();
   const removeMutation = useRemoveMember();
+  const leaveMutation = useLeaveFamily();
 
   const handleInvite = async (email: string) => {
     try {
@@ -74,6 +76,20 @@ export default function FamilyDetailPage() {
       toast.success('Member removed successfully');
     } catch (error: any) {
       const errorMessage = error?.response?.data?.error || 'Failed to remove member';
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleLeaveFamily = async () => {
+    if (!confirm('Are you sure you want to leave this family?')) return;
+
+    try {
+      await leaveMutation.mutateAsync(familyId);
+      toast.success('Left family successfully');
+      // Redirect to families list after leaving
+      window.location.href = '/family';
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.error || 'Failed to leave family';
       toast.error(errorMessage);
     }
   };
@@ -125,7 +141,14 @@ export default function FamilyDetailPage() {
               Created by {family.creator.name || family.creator.email}
             </p>
           </div>
-          {isAdmin && <Button onClick={() => setShowInviteModal(true)}>Invite Member</Button>}
+          <div className="flex space-x-3">
+            {isAdmin && <Button onClick={() => setShowInviteModal(true)}>Invite Member</Button>}
+            {!isOwner && (
+              <Button variant="outline" onClick={handleLeaveFamily}>
+                Leave Family
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="border-b border-gray-200">

@@ -123,56 +123,56 @@ export interface InviteResponse {
 
 export const familyApi = {
   async getFamilies(): Promise<Family[]> {
-    const response = await apiClient.get('/family');
+    const response = await apiClient.get('/families');
     return response.data.data;
   },
 
   async getFamily(id: string): Promise<Family> {
-    const response = await apiClient.get(`/family/${id}`);
+    const response = await apiClient.get(`/families/${id}`);
     return response.data.data;
   },
 
   async createFamily(data: CreateFamilyData): Promise<Family> {
-    const response = await apiClient.post('/family', data);
+    const response = await apiClient.post('/families', data);
     return response.data.data;
   },
 
   async getFamilyMembers(familyId: string): Promise<FamilyMembership[]> {
-    const response = await apiClient.get(`/family/${familyId}/members`);
+    const response = await apiClient.get(`/families/${familyId}/members`);
     return response.data.data;
   },
 
   async inviteToFamily(familyId: string, email: string): Promise<InviteResponse> {
-    const response = await apiClient.post(`/family/${familyId}/invite`, { email });
+    const response = await apiClient.post(`/families/${familyId}/invite`, { email });
     return response.data;
   },
 
   async getFamilyInvitations(familyId: string): Promise<FamilyInvitation[]> {
-    const response = await apiClient.get(`/family/${familyId}/invitations`);
+    const response = await apiClient.get(`/families/${familyId}/invitations`);
     return response.data.data;
   },
 
   async resendInvitation(familyId: string, invitationId: string): Promise<FamilyInvitation> {
-    const response = await apiClient.post(`/family/${familyId}/invitations/${invitationId}/resend`);
+    const response = await apiClient.post(`/families/${familyId}/invitations/${invitationId}/resend`);
     return response.data.data;
   },
 
   async removeMember(familyId: string, memberId: string): Promise<void> {
-    await apiClient.delete(`/family/${familyId}/members/${memberId}`);
+    await apiClient.delete(`/families/${familyId}/members/${memberId}`);
   },
 
   async getFamilyWatchlists(familyId: string, status?: string): Promise<WatchlistEntry[]> {
     const params = status ? { status } : {};
-    const response = await apiClient.get(`/family/${familyId}/watchlists`, { params });
+    const response = await apiClient.get(`/families/${familyId}/watchlists`, { params });
     return response.data.data;
   },
 
   async getFamilyRecommendations(familyId: string): Promise<Recommendation[]> {
-    const response = await apiClient.get(`/family/${familyId}/recommendations`);
+    const response = await apiClient.get(`/recommendations?familyId=${familyId}`);
     return response.data.data;
   },
 
   async leaveFamily(familyId: string): Promise<void> {
-    await apiClient.post(`/family/${familyId}/leave`);
+    await apiClient.post(`/families/${familyId}/leave`);
   },
 };

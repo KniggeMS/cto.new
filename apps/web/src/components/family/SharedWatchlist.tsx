@@ -84,11 +84,6 @@ export function SharedWatchlist({
                     value: member.userId,
                     label: member.user.name || member.user.email,
                   })),
-                  { value: "", label: "All Members" },
-                  ...members.map((member) => ({
-                    value: member.userId,
-                    label: member.user.name || member.user.email
-                  }))
                 ]}
               />
             </div>
@@ -105,10 +100,6 @@ export function SharedWatchlist({
                   { value: 'not_watched', label: 'Not Watched' },
                   { value: 'watching', label: 'Watching' },
                   { value: 'completed', label: 'Completed' },
-                  { value: "", label: "All Statuses" },
-                  { value: "not_watched", label: "Not Watched" },
-                  { value: "watching", label: "Watching" },
-                  { value: "completed", label: "Completed" }
                 ]}
               />
             </div>
