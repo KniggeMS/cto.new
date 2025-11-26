@@ -87,15 +87,15 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
 
   return (
     <Card>
-      <CardContent className="p-6">
-        <div className="space-y-4">
+      <CardContent className="p-4 sm:p-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Import Watchlist</h3>
               <p className="text-sm text-gray-600">Import your watchlist from a CSV or JSON file</p>
             </div>
-            <FileText className="h-6 w-6 text-gray-400" />
+            <FileText className="h-6 w-6 text-gray-400 flex-shrink-0" />
           </div>
 
           {/* File Upload Area */}

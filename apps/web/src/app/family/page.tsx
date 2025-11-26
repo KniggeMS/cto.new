@@ -56,9 +56,12 @@ export default function FamilyPage() {
 
   return (
     <PageShell title="Family" description="Manage your family groups and share recommendations">
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="flex justify-end">
-          <Button onClick={() => setShowCreateForm(!showCreateForm)}>
+          <Button 
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="w-full sm:w-auto"
+          >
             {showCreateForm ? 'Cancel' : 'Create Family'}
           </Button>
         </div>
@@ -66,7 +69,7 @@ export default function FamilyPage() {
         {showCreateForm && (
           <Card>
             <CardHeader>
-              <CardTitle>Create New Family</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Create New Family</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateFamily} className="space-y-4">
@@ -81,9 +84,14 @@ export default function FamilyPage() {
                     onChange={(e) => setNewFamilyName(e.target.value)}
                     placeholder="The Smith Family"
                     required
+                    className="w-full"
                   />
                 </div>
-                <Button type="submit" disabled={createMutation.isPending}>
+                <Button 
+                  type="submit" 
+                  disabled={createMutation.isPending}
+                  className="w-full sm:w-auto"
+                >
                   {createMutation.isPending ? 'Creating...' : 'Create'}
                 </Button>
               </form>
@@ -93,9 +101,9 @@ export default function FamilyPage() {
 
         {!families || families.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center">
+            <CardContent className="py-8 sm:py-12 text-center">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -107,31 +115,71 @@ export default function FamilyPage() {
                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              <h3 className="mt-4 text-lg font-medium text-gray-900">No family groups yet</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Create a family group to share recommendations with loved ones.
+              <h3 className="mt-3 sm:mt-4 text-base sm:text-lg font-medium text-gray-900">No family groups yet</h3>
+              <p className="mt-1 sm:mt-2 text-sm text-gray-600 px-4 max-w-md mx-auto">
+                Create a family group to share recommendations with loved ones and discover what they're watching.
               </p>
+              <div className="mt-4 sm:mt-6">
+                <Button 
+                  onClick={() => setShowCreateForm(true)}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  Create Your First Family
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {families.map((family) => (
               <Link key={family.id} href={`/family/${family.id}`}>
                 <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg">
-                  <CardHeader>
-                    <CardTitle>{family.name}</CardTitle>
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl truncate">{family.name}</CardTitle>
+                    {family.description && (
+                      <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                        {family.description}
+                      </p>
+                    )}
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="space-y-2">
-                      <p className="text-sm text-gray-600">
-                        {family.members.length} member{family.members.length !== 1 ? 's' : ''}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Created by {family.creator.name || family.creator.email}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(family.createdAt).toLocaleDateString()}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">{family.members.length}</span>
+                          <span className="ml-1">
+                            member{family.members.length !== 1 ? 's' : ''}
+                          </span>
+                        </p>
+                        <div className="flex -space-x-2">
+                          {family.members.slice(0, 3).map((member, index) => (
+                            <div
+                              key={member.id}
+                              className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary-100 border-2 border-white flex items-center justify-center"
+                              title={member.name || member.email}
+                            >
+                              <span className="text-xs font-medium text-primary-700">
+                                {(member.name || member.email || 'U').charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          ))}
+                          {family.members.length > 3 && (
+                            <div
+                              className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center"
+                              title={`+${family.members.length - 3} more members`}
+                            >
+                              <span className="text-xs font-medium text-gray-600">
+                                +{family.members.length - 3}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-500 space-y-1">
+                        <p>Created by {family.creator.name || family.creator.email}</p>
+                        <p>{new Date(family.createdAt).toLocaleDateString()}</p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

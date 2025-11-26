@@ -57,13 +57,13 @@ export default function SearchPage() {
 
   return (
     <PageShell title="Search" description="Search for movies and TV shows to add to your watchlist">
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <Input
           type="search"
           placeholder="Search for movies or TV shows..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="max-w-2xl"
+          className="w-full max-w-2xl"
           aria-label="Search for movies and TV shows"
         />
       </div>
@@ -79,10 +79,10 @@ export default function SearchPage() {
 
       {error && query.length > 2 && (
         <Card className="border-red-200 bg-red-50">
-          <CardContent className="py-8 text-center">
-            <AlertCircle className="mx-auto h-12 w-12 text-red-600" />
-            <h3 className="mt-4 text-lg font-medium text-red-900">Search failed</h3>
-            <p className="mt-2 text-sm text-red-700">
+          <CardContent className="py-6 sm:py-8 text-center">
+            <AlertCircle className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-red-600" />
+            <h3 className="mt-3 sm:mt-4 text-base sm:text-lg font-medium text-red-900">Search failed</h3>
+            <p className="mt-1 sm:mt-2 text-sm text-red-700 px-4">
               {error instanceof Error ? error.message : 'Unable to search. Please try again.'}
             </p>
           </CardContent>
@@ -91,9 +91,9 @@ export default function SearchPage() {
 
       {!query && (
         <Card>
-          <CardContent className="py-12 text-center">
+          <CardContent className="py-8 sm:py-12 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -105,24 +105,25 @@ export default function SearchPage() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">Start searching</h3>
-            <p className="mt-2 text-sm text-gray-600">Enter a movie or TV show title to search</p>
+            <h3 className="mt-3 sm:mt-4 text-base sm:text-lg font-medium text-gray-900">Start searching</h3>
+            <p className="mt-1 sm:mt-2 text-sm text-gray-600 px-4">Enter a movie or TV show title to search</p>
           </CardContent>
         </Card>
       )}
 
       {query.length > 2 && !isLoading && !error && results && results.length === 0 && (
         <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-gray-600">No results found for &quot;{query}&quot;</p>
+          <CardContent className="py-8 sm:py-12 text-center">
+            <p className="text-gray-600 px-4">No results found for &quot;{query}&quot;</p>
+            <p className="text-sm text-gray-500 mt-2">Try different keywords or check spelling</p>
           </CardContent>
         </Card>
       )}
 
       {results && results.length > 0 && (
         <div>
-          <p className="mb-4 text-sm text-gray-600">Found {results.length} result(s)</p>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <p className="mb-3 sm:mb-4 text-sm text-gray-600">Found {results.length} result(s)</p>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {results.map((result) => (
               <Card
                 key={result.id}
@@ -140,17 +141,17 @@ export default function SearchPage() {
                     </div>
                   ) : (
                     <div className="aspect-[2/3] bg-gray-300 flex items-center justify-center">
-                      <span className="text-gray-500 text-sm">No image</span>
+                      <span className="text-gray-500 text-xs sm:text-sm">No image</span>
                     </div>
                   )}
 
-                  <div className="p-4 space-y-3 flex-1 flex flex-col">
+                  <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-1 flex flex-col">
                     {/* Title and basic info */}
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-700 transition-colors">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-700 transition-colors">
                         {result.title}
                       </h3>
-                      <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
+                      <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mt-1">
                         <span className="capitalize">{result.mediaType}</span>
                         {result.releaseDate && (
                           <span>{new Date(result.releaseDate).getFullYear()}</span>
@@ -176,12 +177,12 @@ export default function SearchPage() {
 
                     {/* Overview */}
                     {result.overview && (
-                      <p className="line-clamp-3 text-sm text-gray-600 flex-1">{result.overview}</p>
+                      <p className="line-clamp-2 sm:line-clamp-3 text-xs sm:text-sm text-gray-600 flex-1">{result.overview}</p>
                     )}
 
                     {/* Rating */}
                     {result.voteAverage && (
-                      <div className="text-sm font-medium text-yellow-600">
+                      <div className="text-xs sm:text-sm font-medium text-yellow-600">
                         ⭐ {result.voteAverage.toFixed(1)}/10
                       </div>
                     )}
@@ -194,8 +195,10 @@ export default function SearchPage() {
                       className="w-full mt-2"
                       size="sm"
                     >
-                      <Plus className="w-4 h-4 mr-2" />
-                      {isItemAdded(result.id) ? 'Added' : 'Add to Watchlist'}
+                      <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm">
+                        {isItemAdded(result.id) ? 'Added' : 'Add to Watchlist'}
+                      </span>
                     </Button>
                   </div>
                 </CardContent>

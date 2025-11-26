@@ -214,11 +214,70 @@ This opens http://localhost:5555 with an interactive database explorer.
 
 ### Adding Demo Data
 
-To modify demo data, edit `prisma/seed.ts` and re-run:
+The enhanced seed script creates production-ready demo content with diverse users, families, and media content.
+
+#### Demo User Credentials
+
+All demo accounts use the same password: `password123`
+
+| User | Email | Profile | Interests |
+|------|-------|---------|-----------|
+| Alice Johnson | alice@example.com | Movie buff, psychological thrillers | Thriller, Drama, Indie |
+| Bob Smith | bob@example.com | Sci-fi enthusiast | Science Fiction, Documentary, Action |
+| Charlie Davis | charlie@example.com | Documentary lover | Documentary, History, Biography |
+| Diana Martinez | diana@example.com | Family movie night organizer | Family, Animation, Comedy |
+| Evan Wilson | evan@example.com | Classic film aficionado | Classic, Drama, Film Noir |
+| Fiona Chen | fiona@example.com | International cinema explorer | Foreign, Art House, Drama |
+| George (Kid) | george@example.com | Loves cartoons and superheroes | Animation, Superhero, Adventure |
+| Henry (Teen) | henry@example.com | Gaming and anime fan | Action, Anime, Teen Drama |
+
+#### Family Groups
+
+The seed creates four themed families:
+
+1. **Cinema Scholars** - Serious film discussions and classic cinema
+   - Members: Alice (owner), Evan (admin), Charlie (member)
+
+2. **Family Movie Night** - Kid-friendly content for all ages
+   - Members: Diana (owner), George (member), Henry (member)
+
+3. **Sci-Fi Explorers** - Science fiction and fantasy exploration
+   - Members: Bob (owner), Alice (member), Henry (member)
+
+4. **World Cinema Club** - International films and diverse perspectives
+   - Members: Fiona (owner), Charlie (member), Bob (member)
+
+#### Running the Seed
+
+To populate the database with demo data:
 
 ```bash
+# From the API directory
 npm run seed
+
+# Or from the project root
+pnpm --filter @infocus/api seed
 ```
+
+The seed script will:
+- Create 8 users with bcrypt-hashed passwords
+- Generate detailed user profiles with preferences
+- Add 10 diverse media items (movies and TV shows)
+- Create 20+ watchlist entries with ratings and notes
+- Set up 4 themed families with memberships
+- Generate family invitations and recommendations
+- Include streaming provider information for multiple regions
+- Create active sessions and refresh tokens
+
+#### Import/Export Ready Data
+
+All demo data is structured for import/export functionality:
+- Watchlist entries include detailed notes, ratings, and progress tracking
+- Streaming provider information covers multiple regions (US, CA, GB, DE, FR)
+- User profiles contain preferences and viewing history
+- Media items include comprehensive metadata from TMDB
+
+To modify demo data, edit `prisma/seed.ts` and re-run the seed command.
 
 ## API Documentation
 
