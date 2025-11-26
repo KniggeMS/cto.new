@@ -15,7 +15,8 @@ import type { SearchResult } from '@/lib/api/search';
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
-  const { data: results, isLoading, error } = useSearch(query);
+  const { data: searchResponse, isLoading, error } = useSearch(query);
+  const results = searchResponse?.data || [];
   const addToWatchlistMutation = useAddToWatchlist();
 
   const handleAddToWatchlist = async (result: SearchResult) => {
@@ -24,6 +25,21 @@ export default function SearchPage() {
         tmdbId: result.id,
         mediaType: result.mediaType,
         status: 'not_watched',
+        // Include metadata for new media items
+        metadata: {
+          title: result.title,
+          description: result.overview,
+          posterPath: result.posterPath,
+          backdropPath: result.backdropPath,
+          releaseDate: result.releaseDate,
+          rating: result.voteAverage,
+          genres: [], // Will be populated from genre IDs if needed
+          creators: [],
+          streamingProviders: result.streamingProviders?.map((provider: any) => ({
+            provider: provider.provider_name || provider.provider_id,
+            regions: provider.regions || [],
+          })) || [],
+        },
       });
 
       setAddedItems((prev) => new Set([...prev, result.id]));
@@ -143,9 +159,9 @@ export default function SearchPage() {
                     </div>
 
                     {/* Genres */}
-                    {result.genres && result.genres.length > 0 && (
+                    {result.genreIds && result.genreIds.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {getGenreNames(result.genres)
+                        {getGenreNames(result.genreIds)
                           .slice(0, 3)
                           .map((genre) => (
                             <span

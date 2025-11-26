@@ -104,6 +104,13 @@ export interface SearchResult {
   media_type: MediaType;
   streamingProviders?: CachedStreamingProvider[] | WatchProvidersWithCache;
   inDatabase?: boolean;
+  // CamelCase versions for web client compatibility
+  posterPath?: string | null;
+  backdropPath?: string | null;
+  releaseDate?: string | null;
+  voteAverage?: number | null;
+  genreIds?: number[];
+  mediaType?: MediaType;
 }
 
 export interface MediaDetails extends SearchResult {

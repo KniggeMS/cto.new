@@ -23,6 +23,26 @@ const MediaDetailsQuerySchema = z.object({
   language: z.string().optional(),
 });
 
+// Helper function to normalize TMDB response to camelCase
+function normalizeSearchResult(result: SearchResult): SearchResult {
+  return {
+    ...result,
+    posterPath: result.poster_path,
+    backdropPath: result.backdrop_path,
+    releaseDate: result.release_date,
+    voteAverage: result.vote_average,
+    genreIds: result.genre_ids,
+    mediaType: result.media_type,
+    // Keep original snake_case fields for backward compatibility during transition
+    poster_path: result.poster_path,
+    backdrop_path: result.backdrop_path,
+    release_date: result.release_date,
+    vote_average: result.vote_average,
+    genre_ids: result.genre_ids,
+    media_type: result.media_type,
+  };
+}
+
 // Helper function to enrich search results with provider data
 async function enrichSearchResults(results: SearchResult[]): Promise<SearchResult[]> {
   const enrichedResults: SearchResult[] = [];
@@ -36,7 +56,7 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
       },
     });
 
-    const enrichedResult: SearchResult = { ...result };
+    const enrichedResult = normalizeSearchResult(result);
 
     if (existingMedia) {
       // Add streaming provider info from our database
@@ -112,8 +132,10 @@ router.get('/search', async (req: Request, res: Response) => {
     const enrichedResults = await enrichSearchResults(searchResponse.results);
 
     const response = {
-      ...searchResponse,
-      results: enrichedResults,
+      data: enrichedResults,
+      page: searchResponse.page,
+      totalPages: searchResponse.total_pages,
+      totalResults: searchResponse.total_results,
       cached: false,
     };
 
@@ -135,6 +157,18 @@ router.get('/search', async (req: Request, res: Response) => {
     const cacheKey = `search:${req.query.query}:${req.query.page || 1}:${req.query.include_adult || false}`;
     const staleCache = cacheService.get(cacheKey);
     if (staleCache) {
+      // If stale cache has old format, convert it to new format
+      if (staleCache.results && !staleCache.data) {
+        return res.json({
+          data: staleCache.results,
+          page: staleCache.page,
+          totalPages: staleCache.total_pages,
+          totalResults: staleCache.total_results,
+          cached: true,
+          stale: true,
+          warning: 'Using cached data due to TMDB API unavailability',
+        });
+      }
       return res.json({
         ...staleCache,
         cached: true,

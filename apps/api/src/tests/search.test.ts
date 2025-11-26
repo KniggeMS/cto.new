@@ -78,14 +78,23 @@ describe('Search Routes', () => {
       const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
-      expect(response.body.results).toHaveLength(2);
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.page).toBe(1);
+      expect(response.body.totalPages).toBe(1);
+      expect(response.body.totalResults).toBe(2);
       expect(response.body.cached).toBe(false);
       expect(mockTmdbService.searchMulti).toHaveBeenCalledWith('test query', 1);
       expect(mockCacheService.set).toHaveBeenCalled();
     });
 
     it('should return cached results when available', async () => {
-      const cachedResponse = { ...mockSearchResponse, cached: true };
+      const cachedResponse = {
+        data: mockSearchResponse.results,
+        page: mockSearchResponse.page,
+        totalPages: mockSearchResponse.total_pages,
+        totalResults: mockSearchResponse.total_results,
+        cached: true,
+      };
       mockCacheService.get.mockReturnValue(cachedResponse);
 
       const response = await request(app).get('/search').query({ query: 'test query' });
@@ -116,8 +125,10 @@ describe('Search Routes', () => {
       const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
-      expect(response.body.results[0]).toHaveProperty('inDatabase', true);
-      expect(response.body.results[0]).toHaveProperty('streamingProviders');
+      expect(response.body.data[0]).toHaveProperty('inDatabase', true);
+      expect(response.body.data[0]).toHaveProperty('streamingProviders');
+      expect(response.body.data[0]).toHaveProperty('posterPath');
+      expect(response.body.data[0]).toHaveProperty('mediaType');
     });
 
     it('should handle pagination', async () => {
@@ -172,6 +183,35 @@ describe('Search Routes', () => {
       expect(response.status).toBe(200);
       expect(response.body.stale).toBe(true);
       expect(response.body.warning).toContain('Using cached data');
+      expect(response.body.data).toBeDefined();
+      expect(response.body.page).toBeDefined();
+    });
+
+    it('should return normalized camelCase response', async () => {
+      mockCacheService.get.mockReturnValue(undefined);
+      mockTmdbService.searchMulti.mockResolvedValue(mockSearchResponse);
+      mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
+
+      const response = await request(app).get('/search').query({ query: 'test query' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data).toHaveLength(2);
+      
+      const movieResult = response.body.data.find((r: any) => r.media_type === 'movie');
+      expect(movieResult).toHaveProperty('posterPath', '/test.jpg');
+      expect(movieResult).toHaveProperty('backdropPath', '/backdrop.jpg');
+      expect(movieResult).toHaveProperty('releaseDate', '2023-01-01');
+      expect(movieResult).toHaveProperty('voteAverage', 8.5);
+      expect(movieResult).toHaveProperty('genreIds', [1, 2]);
+      expect(movieResult).toHaveProperty('mediaType', 'movie');
+      
+      // Keep original snake_case for backward compatibility
+      expect(movieResult).toHaveProperty('poster_path', '/test.jpg');
+      expect(movieResult).toHaveProperty('backdrop_path', '/backdrop.jpg');
+      expect(movieResult).toHaveProperty('release_date', '2023-01-01');
+      expect(movieResult).toHaveProperty('vote_average', 8.5);
+      expect(movieResult).toHaveProperty('genre_ids', [1, 2]);
+      expect(movieResult).toHaveProperty('media_type', 'movie');
     });
   });
 

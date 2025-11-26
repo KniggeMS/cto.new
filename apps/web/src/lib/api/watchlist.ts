@@ -41,6 +41,21 @@ export interface CreateWatchlistEntryData {
   status?: 'not_watched' | 'watching' | 'completed';
   rating?: number;
   notes?: string;
+  metadata?: {
+    title: string;
+    description?: string | null;
+    posterPath?: string | null;
+    backdropPath?: string | null;
+    releaseDate?: string | null;
+    rating?: number | null;
+    genres?: string[];
+    creators?: string[];
+    streamingProviders?: Array<{
+      provider: string;
+      url?: string | null;
+      regions?: string[];
+    }>;
+  };
 }
 
 export interface UpdateWatchlistEntryData {
@@ -57,9 +72,12 @@ export const watchlistApi = {
 
   async addToWatchlist(data: CreateWatchlistEntryData): Promise<WatchlistEntry> {
     const response = await apiClient.post('/watchlist', {
-      ...data,
+      tmdbId: data.tmdbId,
       tmdbType: data.mediaType,
       status: data.status || 'not_watched',
+      rating: data.rating,
+      notes: data.notes,
+      metadata: data.metadata,
     });
     return response.data.data;
   },
