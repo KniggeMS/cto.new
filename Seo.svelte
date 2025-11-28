@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/stores'; // eslint-disable-line @typescript-eslint/no-unused-vars
 	import { title as siteTitle, description as siteDescription, url as siteUrl } from '$lib/config';
 
 	// Props für spezifische Seiten (z.B. ein Blog-Post)
