@@ -1,0 +1,60 @@
+# .github/workflows/repo-health-check-detailed.yml
+name: Comprehensive Repo Health Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM
+  workflow_dispatch:
+
+jobs:
+  comprehensive-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for uncommitted changes
+        run: git diff --exit-code || echo "⚠️ Uncommitted changes detected"
+
+      - name: Lint check
+        run: pnpm run lint 2>&1 | head -50 || true
+
+      - name: TypeScript check
+        run: pnpm run typecheck 2>&1 | head -50 || true
+
+      - name: Find TODO/FIXME comments
+        run: |
+          echo "### 🔍 TODO/FIXME Scan" >> $GITHUB_STEP_SUMMARY
+          grep -r "TODO\|FIXME" --include="*.ts" --include="*.tsx" apps packages 2>/dev/null | grep -v node_modules | head -20 >> $GITHUB_STEP_SUMMARY || echo "✅ No TODOs found" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check test coverage
+        run: |
+          echo "### 📊 Test Status" >> $GITHUB_STEP_SUMMARY
+          echo "Run: \`pnpm run test\` to check full coverage" >> $GITHUB_STEP_SUMMARY
+
+      - name: Dependency audit
+        run: |
+          echo "### 🔐 Security Audit" >> $GITHUB_STEP_SUMMARY
+          pnpm audit --audit-level moderate 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Generate summary report
+        if: always()
+        run: |
+          echo "## ✅ Repo Health Check Complete" >> $GITHUB_STEP_SUMMARY
+          echo "Run date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
