@@ -36,16 +36,44 @@ import {
 } from './utils';
 
 // Type assertions to ensure imports work
-const _rawRow: RawWatchlistRow = {} as any;
-const _match: TmdbMatchCandidate = {} as any;
-const _preview: NormalizedPreviewItem = {} as any;
+const _rawRow: RawWatchlistRow = {
+  title: '',
+  status: '',
+  rating: undefined,
+  notes: '',
+  dateWatched: '',
+};
+const _match: TmdbMatchCandidate = {
+  tmdbId: 0,
+  title: '',
+  matchConfidence: 0,
+};
+const _preview: NormalizedPreviewItem = {
+  title: '',
+  status: '',
+};
 const _strategy: DuplicateResolutionStrategy = 'skip';
-const _mergeFields: MergeFields = {} as any;
-const _resolution: DuplicateResolution = {} as any;
-const _bulkRequest: BulkImportRequest = {} as any;
-const _importResult: ImportResult = {} as any;
-const _exportedEntry: ExportedWatchlistEntry = {} as any;
-const _exportResponse: ExportResponse = {} as any;
+const _mergeFields: MergeFields = {};
+const _resolution: DuplicateResolution = {
+  mediaTitle: '',
+  strategy: 'skip',
+};
+const _bulkRequest: BulkImportRequest = {
+  previewItems: [],
+  resolutions: [],
+};
+const _importResult: ImportResult = {
+  imported: 0,
+  skipped: 0,
+  merged: 0,
+};
+const _exportedEntry: ExportedWatchlistEntry = {
+  title: '',
+  status: '',
+};
+const _exportResponse: ExportResponse = {
+  entries: [],
+};
 
 // Schema assertions
 const _schemas = [
@@ -70,7 +98,8 @@ const _utils = [
   normalizeRating,
 ];
 
-console.log('All exports verified:', {
+// Export for verification (no console.log in production)
+export const exportVerification = {
   types: [
     _rawRow,
     _match,
@@ -85,4 +114,4 @@ console.log('All exports verified:', {
   ],
   schemas: _schemas.length,
   utils: _utils.length,
-});
+};

@@ -1,97 +1,96 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 interface ButtonProps {
   onPress: () => void;
   title: string;
-  loading?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
   disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline';
-  style?: ViewStyle;
-  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   onPress,
   title,
-  loading = false,
-  disabled = false,
   variant = 'primary',
-  style,
-  testID,
+  disabled = false,
 }) => {
-  const isDisabled = disabled || loading;
+  const getButtonStyle = () => {
+    switch (variant) {
+      case 'primary':
+        return styles.primaryButton;
+      case 'secondary':
+        return styles.secondaryButton;
+      case 'danger':
+        return styles.dangerButton;
+      default:
+        return styles.primaryButton;
+    }
+  };
 
-  const buttonStyle = [
-    styles.button,
-    variant === 'primary' && styles.primaryButton,
-    variant === 'secondary' && styles.secondaryButton,
-    variant === 'outline' && styles.outlineButton,
-    isDisabled && styles.disabledButton,
-    style,
-  ];
-
-  const textStyle = [
-    styles.text,
-    variant === 'primary' && styles.primaryText,
-    variant === 'secondary' && styles.secondaryText,
-    variant === 'outline' && styles.outlineText,
-    isDisabled && styles.disabledText,
-  ];
+  const getTextStyle = () => {
+    switch (variant) {
+      case 'primary':
+        return styles.primaryText;
+      case 'secondary':
+        return styles.secondaryText;
+      case 'danger':
+        return styles.dangerText;
+      default:
+        return styles.primaryText;
+    }
+  };
 
   return (
     <TouchableOpacity
-      style={buttonStyle}
       onPress={onPress}
-      disabled={isDisabled}
-      activeOpacity={0.7}
-      testID={testID}
+      disabled={disabled}
+      style={[getButtonStyle(), disabled && styles.disabled]}
     >
-      {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? '#3b82f6' : '#fff'} />
-      ) : (
-        <Text style={textStyle}>{title}</Text>
-      )}
+      <Text style={getTextStyle()}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    borderRadius: 8,
-    height: 48,
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  disabledText: {
-    opacity: 0.7,
-  },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderColor: '#3b82f6',
-    borderWidth: 1,
-  },
-  outlineText: {
-    color: '#3b82f6',
-  },
   primaryButton: {
     backgroundColor: '#3b82f6',
+    borderRadius: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
   },
   primaryText: {
-    color: '#fff',
-  },
-  secondaryButton: {
-    backgroundColor: '#64748b',
-  },
-  secondaryText: {
-    color: '#fff',
-  },
-  text: {
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#3b82f6',
+    borderRadius: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  secondaryText: {
+    color: '#3b82f6',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dangerButton: {
+    backgroundColor: '#64748b',
+    borderRadius: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  dangerText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });
