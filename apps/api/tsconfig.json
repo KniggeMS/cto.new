@@ -3,8 +3,23 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
-    "types": ["node", "jest"]
+    "types": [
+      "node",
+      "jest"
+    ],
+    "paths": {
+      "@infocus/shared": [
+        "../../packages/shared/src/index.ts"
+      ]
+    }
   },
-  "include": ["src", "prisma"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "include": [
+    "src",
+    "prisma"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
 }

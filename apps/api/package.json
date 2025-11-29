@@ -5,7 +5,7 @@
   "description": "InFocus API server",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf dist",
     "typecheck": "tsc --project tsconfig.build.json --noEmit",
@@ -62,6 +62,7 @@
     "node-fetch": "^3.3.2",
     "prisma": "^5.8.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
   }
 }
