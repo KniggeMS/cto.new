@@ -1,15 +1,15 @@
 import { Request } from 'express';
 
-// Definieren des Basis-Benutzerobjekts, das im Request nach der Authentifizierung
-// durch die 'authMiddleware' erwartet wird.
+// Define the base user object expected in the request after authentication
+// by the 'authMiddleware'.
 interface AuthUser {
   id: string;
   email: string;
-  // Fügen Sie hier alle weiteren Benutzerfelder hinzu, die Sie benötigen, z. B. role
+  // Add any other user fields you need here, e.g. role
 }
 
-// Erweitern Sie den Express Request, um die 'user'-Eigenschaft hinzuzufügen.
-// Dies behebt den Fehler TS2769 ("Property 'user' is missing...")
+// Extend the Express Request to add the 'user' property.
+// This fixes the error TS2769 ("Property 'user' is missing...")
 export interface AuthenticatedRequest extends Request {
   user: AuthUser;
 }
