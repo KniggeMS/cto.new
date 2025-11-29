@@ -4,18 +4,14 @@ import { Select } from './Select';
 import { cn } from '@/lib/utils/cn';
 import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
 
-import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
-
 export interface FilterOption {
   value: string;
   label: string;
 }
 
 export interface FilterControlsProps {
-  statusFilter?: StatusFilter;
-  sortBy?: SortOption;
-  statusFilter?: string;
-  sortBy?: string;
+  statusFilter: StatusFilter;
+  sortBy: SortOption;
   onStatusChange: (status: StatusFilter) => void;
   onSortChange: (sort: SortOption) => void;
   className?: string;

@@ -55,8 +55,8 @@ export function isElementVisible(element: HTMLElement): boolean {
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   return Array.from(
-    container.querySelectorAll(
+    container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     ),
-  ).filter(isElementVisible) as HTMLElement[];
+  ).filter(isElementVisible);
 }

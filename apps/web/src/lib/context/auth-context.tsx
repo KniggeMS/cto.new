@@ -18,7 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { push, locale } = useLocaleNavigation();
+  const { push } = useLocaleNavigation();
 
   useEffect(() => {
     const initAuth = async () => {

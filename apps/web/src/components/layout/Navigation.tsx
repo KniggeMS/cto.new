@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/context/auth-context';
-import { useLocale, useLocaleNavigation } from '@/lib/hooks/use-locale';
+import { useLocaleNavigation } from '@/lib/hooks/use-locale';
 import { LocaleSwitcher } from '@/components/i18n/LocaleSwitcher';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
