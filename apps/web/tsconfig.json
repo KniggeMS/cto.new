@@ -14,5 +14,6 @@
       }
     ]
   },
-  "include": ["src", ".next/types/**/*.ts", "src/messages.d.ts"]
+  "include": ["src", ".next/types/**/*.ts", "src/messages.d.ts"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

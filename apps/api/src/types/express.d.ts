@@ -12,3 +12,4 @@ interface AuthUser {
 // Dies behebt den Fehler TS2769 ("Property 'user' is missing...")
 export interface AuthenticatedRequest extends Request {
   user: AuthUser;
+}

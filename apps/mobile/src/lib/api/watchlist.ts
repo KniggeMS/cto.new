@@ -86,8 +86,9 @@ export const watchlistApi = {
 
   async previewImport(file: ArrayBuffer | string): Promise<NormalizedPreviewItem[]> {
     const formData = new FormData();
-    const fileBlob = new Blob([file], {
+    const fileBlob = new Blob([file as any], {
       type: typeof file === 'string' ? 'text/csv' : 'application/octet-stream',
+      lastModified: Date.now(),
     });
 
     formData.append('file', fileBlob as any);

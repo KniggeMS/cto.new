@@ -1,9 +1,9 @@
 import express, { Express } from 'express';
 import cors from 'cors';
-import authRoutes from './routes/auth';
-import watchlistRoutes from './routes/watchlist';
-import searchRoutes from './routes/search';
-import familyRoutes from './routes/family';
+import { authRouter } from './routes/auth';
+import { watchlistRouter } from './routes/watchlist';
+import { searchRouter } from './routes/search';
+import { familyRouter } from './routes/family';
 import { errorHandler } from './middleware/errorHandler';
 
 const app: Express = express();
@@ -20,15 +20,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/watchlist', watchlistRoutes);
-app.use('/search', searchRoutes);
-app.use('/family', familyRoutes);
+app.use('/auth', authRouter);
+app.use('/watchlist', watchlistRouter);
+app.use('/search', searchRouter);
+app.use('/family', familyRouter);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

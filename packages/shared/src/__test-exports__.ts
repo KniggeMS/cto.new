@@ -3,19 +3,6 @@
  * This file is used internally for testing and should not be imported in production code.
  */
 
-import type {
-  RawWatchlistRow,
-  TmdbMatchCandidate,
-  NormalizedPreviewItem,
-  DuplicateResolutionStrategy,
-  MergeFields,
-  DuplicateResolution,
-  BulkImportRequest,
-  ImportResult,
-  ExportedWatchlistEntry,
-  ExportResponse,
-} from './types';
-
 import {
   rawWatchlistRowSchema,
   tmdbMatchCandidateSchema,

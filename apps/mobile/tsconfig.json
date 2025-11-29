@@ -11,6 +11,6 @@
       "@infocus/shared": ["../../packages/shared/src"]
     }
   },
-  "include": ["src/**/*", "*.ts", "*.tsx", "*.js"],
-  "exclude": ["node_modules", "android", "ios", ".expo"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "android", "ios", ".expo", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

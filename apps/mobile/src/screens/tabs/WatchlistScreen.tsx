@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { Container } from '../../components/layout/Container';
 import { ImportExportSection } from '../../components/watchlist/ImportExportSection';
 
 export const WatchlistScreen: React.FC = () => {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
   const handleImportComplete = () => {
-    setRefreshTrigger((prev) => prev + 1);
+    // TODO: Refresh watchlist data when import completes
   };
 
   return (

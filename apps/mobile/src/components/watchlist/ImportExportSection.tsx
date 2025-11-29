@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View,
   StyleSheet,
-  ScrollView,
   Alert,
   ActivityIndicator,
-  Platform,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {
   Box,

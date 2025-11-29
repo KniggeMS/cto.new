@@ -1,11 +1,14 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
 
 interface ButtonProps {
   onPress: () => void;
   title: string;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   disabled?: boolean;
+  loading?: boolean;
+  testID?: string;
+  style?: ViewStyle;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -13,6 +16,9 @@ export const Button: React.FC<ButtonProps> = ({
   title,
   variant = 'primary',
   disabled = false,
+  loading = false,
+  testID,
+  style,
 }) => {
   const getButtonStyle = () => {
     switch (variant) {
@@ -22,6 +28,8 @@ export const Button: React.FC<ButtonProps> = ({
         return styles.secondaryButton;
       case 'danger':
         return styles.dangerButton;
+      case 'outline':
+        return styles.outlineButton;
       default:
         return styles.primaryButton;
     }
@@ -35,6 +43,8 @@ export const Button: React.FC<ButtonProps> = ({
         return styles.secondaryText;
       case 'danger':
         return styles.dangerText;
+      case 'outline':
+        return styles.outlineText;
       default:
         return styles.primaryText;
     }
@@ -43,10 +53,15 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      disabled={disabled}
-      style={[getButtonStyle(), disabled && styles.disabled]}
+      disabled={disabled || loading}
+      style={[getButtonStyle(), (disabled || loading) && styles.disabled, style]}
+      testID={testID}
     >
-      <Text style={getTextStyle()}>{title}</Text>
+      {loading ? (
+        <ActivityIndicator color="#ffffff" />
+      ) : (
+        <Text style={getTextStyle()}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -90,6 +105,20 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: '#3b82f6',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  outlineButton: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderColor: '#6b7280',
+    borderRadius: 6,
+    borderWidth: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  outlineText: {
+    color: '#6b7280',
     fontSize: 16,
     fontWeight: '600',
   },
