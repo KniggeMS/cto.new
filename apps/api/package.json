@@ -18,7 +18,8 @@
     "seed": "ts-node prisma/seed.ts",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "verify:ai": "ts-node scripts/verify-ai.ts"
   },
   "keywords": [],
   "author": "",
