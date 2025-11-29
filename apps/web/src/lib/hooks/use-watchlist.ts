@@ -35,17 +35,21 @@ export function useAddToWatchlist() {
           tmdbId: newEntry.tmdbId,
           title: newEntry.metadata?.title || 'Loading...',
           mediaType: newEntry.mediaType,
-          posterPath: newEntry.metadata?.posterPath,
-          releaseDate: newEntry.metadata?.releaseDate,
-          description: newEntry.metadata?.description,
-          rating: newEntry.metadata?.rating,
+          posterPath: newEntry.metadata?.posterPath || undefined,
+          releaseDate: newEntry.metadata?.releaseDate || undefined,
+          description: newEntry.metadata?.description || undefined,
+          rating: newEntry.metadata?.rating || undefined,
           genres: newEntry.metadata?.genres || [],
           creators: newEntry.metadata?.creators || [],
-          streamingProviders: newEntry.metadata?.streamingProviders || [],
+          streamingProviders: newEntry.metadata?.streamingProviders?.map((sp, idx) => ({
+            ...sp,
+            id: `temp-sp-${idx}`,
+            url: sp.url || undefined,
+          })) || [],
         },
-        status: newEntry.status,
-        rating: newEntry.rating,
-        notes: newEntry.notes,
+        status: newEntry.status || 'not_watched',
+        rating: newEntry.rating || undefined,
+        notes: newEntry.notes || undefined,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         dateAdded: new Date().toISOString(),
@@ -60,7 +64,7 @@ export function useAddToWatchlist() {
 
       return { previousWatchlist };
     },
-    onError: (err: any, newEntry: any, context: any) => {
+    onError: (_err: any, _newEntry: any, context: any) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousWatchlist) {
         queryClient.setQueryData(['watchlist'], context.previousWatchlist);
@@ -102,7 +106,7 @@ export function useUpdateWatchlistEntry() {
 
       return { previousWatchlist };
     },
-    onError: (err: any, variables: any, context: any) => {
+    onError: (_err: any, _variables: any, context: any) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousWatchlist) {
         queryClient.setQueryData(['watchlist'], context.previousWatchlist);
@@ -134,7 +138,7 @@ export function useRemoveFromWatchlist() {
 
       return { previousWatchlist };
     },
-    onError: (err: any, variables: any, context: any) => {
+    onError: (_err: any, _variables: any, context: any) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousWatchlist) {
         queryClient.setQueryData(['watchlist'], context.previousWatchlist);
