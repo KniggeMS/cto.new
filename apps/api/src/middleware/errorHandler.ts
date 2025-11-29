@@ -22,7 +22,7 @@ export const errorHandler = (
   // Default error response
   let statusCode = error.statusCode || 500;
   let message = error.message || 'Internal server error';
-  let details = error.details;
+  const details = error.details;
 
   // Handle specific error types
   if (error.name === 'ValidationError') {

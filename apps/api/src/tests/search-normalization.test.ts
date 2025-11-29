@@ -62,9 +62,9 @@ describe('Search Response Normalization', () => {
       const response = await request(app).get('/search').query({ query: 'test' });
 
       expect(response.status).toBe(200);
-      
+
       const movieResult = response.body.data.find((r: any) => r.id === 123);
-      
+
       // Check camelCase fields
       expect(movieResult.posterPath).toBe('/test-poster.jpg');
       expect(movieResult.backdropPath).toBe('/test-backdrop.jpg');
@@ -72,7 +72,7 @@ describe('Search Response Normalization', () => {
       expect(movieResult.voteAverage).toBe(8.5);
       expect(movieResult.genreIds).toEqual([1, 2, 3]);
       expect(movieResult.mediaType).toBe('movie');
-      
+
       // Check original snake_case fields are preserved
       expect(movieResult.poster_path).toBe('/test-poster.jpg');
       expect(movieResult.backdrop_path).toBe('/test-backdrop.jpg');
@@ -89,9 +89,9 @@ describe('Search Response Normalization', () => {
       const response = await request(app).get('/search').query({ query: 'test' });
 
       expect(response.status).toBe(200);
-      
+
       const tvResult = response.body.data.find((r: any) => r.id === 456);
-      
+
       // Check camelCase fields
       expect(tvResult.posterPath).toBe('/test-tv-poster.jpg');
       expect(tvResult.backdropPath).toBe('/test-tv-backdrop.jpg');
@@ -99,7 +99,7 @@ describe('Search Response Normalization', () => {
       expect(tvResult.voteAverage).toBe(9.0);
       expect(tvResult.genreIds).toEqual([4, 5, 6]);
       expect(tvResult.mediaType).toBe('tv');
-      
+
       // Check original snake_case fields are preserved
       expect(tvResult.poster_path).toBe('/test-tv-poster.jpg');
       expect(tvResult.backdrop_path).toBe('/test-tv-backdrop.jpg');
@@ -121,7 +121,7 @@ describe('Search Response Normalization', () => {
       expect(response.body).toHaveProperty('totalPages', 1);
       expect(response.body).toHaveProperty('totalResults', 2);
       expect(response.body).toHaveProperty('cached', false);
-      
+
       expect(response.body.data).toHaveLength(2);
       expect(Array.isArray(response.body.data)).toBe(true);
     });
@@ -141,7 +141,7 @@ describe('Search Response Normalization', () => {
         totalResults: 1,
         cached: true,
       };
-      
+
       mockCacheService.get.mockReturnValue(cachedResponse);
 
       const response = await request(app).get('/search').query({ query: 'cached' });
@@ -165,7 +165,7 @@ describe('Search Response Normalization', () => {
         total_results: 1,
         total_pages: 1,
       };
-      
+
       mockCacheService.get
         .mockReturnValueOnce(undefined) // Fresh cache miss
         .mockReturnValueOnce(oldCacheFormat) // Stale cache hit
@@ -249,14 +249,14 @@ describe('Search Response Normalization', () => {
 
       expect(response.status).toBe(200);
       const result = response.body.data[0];
-      
+
       // Check all original fields are preserved
       expect(result.adult).toBe(false);
       expect(result.original_language).toBe('en');
       expect(result.popularity).toBe(100.5);
       expect(result.video).toBe(false);
       expect(result.vote_count).toBe(1000);
-      
+
       // Check camelCase versions are added
       expect(result.posterPath).toBe('/poster.jpg');
       expect(result.backdropPath).toBe('/backdrop.jpg');

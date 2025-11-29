@@ -1,7 +1,7 @@
 // Test setup file
+import 'dotenv/config';
 
 // Load test environment variables
-require('dotenv').config({ path: '.env.test' });
 
 // Set default test environment variables
 process.env.NODE_ENV = 'test';

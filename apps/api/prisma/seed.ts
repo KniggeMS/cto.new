@@ -12,7 +12,7 @@ export const DEMO_USERS = {
   evan: { email: 'evan@example.com', password: 'password123', name: 'Evan Wilson' },
   fiona: { email: 'fiona@example.com', password: 'password123', name: 'Fiona Chen' },
   george: { email: 'george@example.com', password: 'password123', name: 'George (Kid)' },
-  henry: { email: 'henry@example.com', password: 'password123', name: 'Henry (Teen)' }
+  henry: { email: 'henry@example.com', password: 'password123', name: 'Henry (Teen)' },
 };
 
 async function main() {
@@ -48,7 +48,7 @@ async function main() {
           name: user.name,
         },
       });
-    })
+    }),
   );
 
   const [alice, bob, charlie, diana, evan, fiona, george, henry] = users;
@@ -61,12 +61,12 @@ async function main() {
       data: {
         userId: alice.id,
         bio: 'Movie buff who loves psychological thrillers and indie films. Always looking for hidden gems!',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Thriller', 'Drama', 'Indie'],
-          streamingServices: ['Netflix', 'HBO Max', 'Mubi']
+          streamingServices: ['Netflix', 'HBO Max', 'Mubi'],
         },
       },
     }),
@@ -74,12 +74,12 @@ async function main() {
       data: {
         userId: bob.id,
         bio: 'Sci-fi enthusiast and tech lover. Star Wars is life, but I also enjoy thoughtful documentaries.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Science Fiction', 'Documentary', 'Action'],
-          streamingServices: ['Disney+', 'Amazon Prime', 'Apple TV+']
+          streamingServices: ['Disney+', 'Amazon Prime', 'Apple TV+'],
         },
       },
     }),
@@ -87,12 +87,12 @@ async function main() {
       data: {
         userId: charlie.id,
         bio: 'Documentary lover and history buff. Learning something new with every film I watch.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'es', 
+        preferences: {
+          theme: 'dark',
+          language: 'es',
           notifications: true,
           favoriteGenres: ['Documentary', 'History', 'Biography'],
-          streamingServices: ['Netflix', 'CuriosityStream', 'Hulu']
+          streamingServices: ['Netflix', 'CuriosityStream', 'Hulu'],
         },
       },
     }),
@@ -100,25 +100,25 @@ async function main() {
       data: {
         userId: diana.id,
         bio: 'Family movie night organizer. Love finding films that everyone from kids to adults can enjoy.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Family', 'Animation', 'Comedy'],
-          streamingServices: ['Disney+', 'Netflix', 'Amazon Prime']
+          streamingServices: ['Disney+', 'Netflix', 'Amazon Prime'],
         },
       },
     }),
     prisma.profile.create({
       data: {
         userId: evan.id,
-        bio: 'Classic film aficionado. If it\'s black and white or from the 70s, I\'ve probably seen it.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        bio: "Classic film aficionado. If it's black and white or from the 70s, I've probably seen it.",
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Classic', 'Drama', 'Film Noir'],
-          streamingServices: ['Criterion Channel', 'HBO Max', 'TCM']
+          streamingServices: ['Criterion Channel', 'HBO Max', 'TCM'],
         },
       },
     }),
@@ -126,12 +126,12 @@ async function main() {
       data: {
         userId: fiona.id,
         bio: 'International cinema explorer. Always searching for the best foreign films and world cinema.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Foreign', 'Art House', 'Drama'],
-          streamingServices: ['Mubi', 'Netflix', 'Hulu']
+          streamingServices: ['Mubi', 'Netflix', 'Hulu'],
         },
       },
     }),
@@ -139,25 +139,25 @@ async function main() {
       data: {
         userId: george.id,
         bio: 'I love cartoons and superhero movies! Spider-Man is my favorite.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Animation', 'Superhero', 'Adventure'],
-          streamingServices: ['Disney+', 'Netflix']
+          streamingServices: ['Disney+', 'Netflix'],
         },
       },
     }),
     prisma.profile.create({
       data: {
         userId: henry.id,
-        bio: 'Teen who\'s into gaming, anime, and action movies. Always looking for the next binge-worthy series.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        bio: "Teen who's into gaming, anime, and action movies. Always looking for the next binge-worthy series.",
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Action', 'Anime', 'Teen Drama'],
-          streamingServices: ['Netflix', 'Crunchyroll', 'Hulu']
+          streamingServices: ['Netflix', 'Crunchyroll', 'Hulu'],
         },
       },
     }),
@@ -173,7 +173,8 @@ async function main() {
         tmdbId: 550,
         tmdbType: 'movie',
         title: 'Fight Club',
-        description: 'An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.',
+        description:
+          'An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.',
         posterPath: '/p64JHd3bGjH8qSEp0gyS1BFrP4V.jpg',
         backdropPath: '/a0JqB5VHx7q0D8dj4qcpFSMiR8e.jpg',
         releaseDate: new Date('1999-10-15'),
@@ -187,7 +188,8 @@ async function main() {
         tmdbId: 278,
         tmdbType: 'movie',
         title: 'The Shawshank Redemption',
-        description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+        description:
+          'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
         posterPath: '/q6y0Go1tsGEsmtpSDb3kxcH9z0o.jpg',
         backdropPath: '/qiP0tFb3gMrW6wysZI2hlBudGVc.jpg',
         releaseDate: new Date('1994-09-23'),
@@ -201,7 +203,8 @@ async function main() {
         tmdbId: 13,
         tmdbType: 'movie',
         title: 'Forrest Gump',
-        description: 'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.',
+        description:
+          'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.',
         posterPath: '/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg',
         backdropPath: '/s3ENxRE5yfkv18h7VYe1rW2cfrP.jpg',
         releaseDate: new Date('1994-07-06'),
@@ -215,7 +218,8 @@ async function main() {
         tmdbId: 157336,
         tmdbType: 'movie',
         title: 'Interstellar',
-        description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+        description:
+          "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
         posterPath: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
         backdropPath: '/nGFRfTuGljHBbssp2fq1uz9nJCX.jpg',
         releaseDate: new Date('2014-11-07'),
@@ -229,7 +233,8 @@ async function main() {
         tmdbId: 10138,
         tmdbType: 'movie',
         title: 'Iron Man',
-        description: 'After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.',
+        description:
+          'After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.',
         posterPath: '/78lPtwv72eTNqFW9COBYI0dWDJa.jpg',
         backdropPath: '/sfM6JPQUSokBJsJ5IePX1OJgE4u.jpg',
         releaseDate: new Date('2008-05-02'),
@@ -243,7 +248,8 @@ async function main() {
         tmdbId: 10251,
         tmdbType: 'movie',
         title: 'Toy Story',
-        description: 'A cowboy doll is profoundly threatened and jealous when a new spaceman figure replaces him as the favorite toy.',
+        description:
+          'A cowboy doll is profoundly threatened and jealous when a new spaceman figure replaces him as the favorite toy.',
         posterPath: '/uXDfJxPcso5HLFiZkZKvL1S7a1Z.jpg',
         backdropPath: '/9FBwtxXeTl981MiCj7P9TaoEr9D.jpg',
         releaseDate: new Date('1995-11-22'),
@@ -258,7 +264,8 @@ async function main() {
         tmdbId: 1399,
         tmdbType: 'tv',
         title: 'Breaking Bad',
-        description: 'A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family\'s future.',
+        description:
+          "A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family's future.",
         posterPath: '/ggFHVNvVYapdOayUS6XRRtSaZc4.jpg',
         backdropPath: '/x2GZyKXw32edranZgzFnWKwgKSe.jpg',
         releaseDate: new Date('2008-01-20'),
@@ -272,7 +279,8 @@ async function main() {
         tmdbId: 82856,
         tmdbType: 'tv',
         title: 'The Mandalorian',
-        description: 'The travels of a lone bounty hunter in the outer reaches of the galaxy, far from the authority of the New Republic.',
+        description:
+          'The travels of a lone bounty hunter in the outer reaches of the galaxy, far from the authority of the New Republic.',
         posterPath: '/BbNvKCuEF4jSu4QJwQH5V0VI3zB.jpg',
         backdropPath: '/9IJtApU1XrNHnqU8y1cOr0toUtX.jpg',
         releaseDate: new Date('2019-11-12'),
@@ -286,7 +294,8 @@ async function main() {
         tmdbId: 456,
         tmdbType: 'tv',
         title: 'The Simpsons',
-        description: 'The satiric adventures of a working-class family in the misfit city of Springfield.',
+        description:
+          'The satiric adventures of a working-class family in the misfit city of Springfield.',
         posterPath: '/yTZQkSsxmJvg42j31sGnuaqwX9x.jpg',
         backdropPath: '/4caA2t2k1B1t6CiJiKMV6b2dngc.jpg',
         releaseDate: new Date('1989-12-17'),
@@ -300,7 +309,8 @@ async function main() {
         tmdbId: 60059,
         tmdbType: 'tv',
         title: 'Attack on Titan',
-        description: 'After his hometown is destroyed and his mother is killed, young Eren Jaeger vows to cleanse the earth of the giant humanoid Titans that have brought humanity to the brink of extinction.',
+        description:
+          'After his hometown is destroyed and his mother is killed, young Eren Jaeger vows to cleanse the earth of the giant humanoid Titans that have brought humanity to the brink of extinction.',
         posterPath: '/t21oY6aEWJg5r5WvHSbPjK5bTxc.jpg',
         backdropPath: '/zBOi8U5qks6b2t7c5gLp5a1t3Q.jpg',
         releaseDate: new Date('2013-04-07'),
@@ -429,7 +439,8 @@ async function main() {
         mediaItemId: mediaItems[0].id, // Fight Club
         status: 'completed',
         rating: 9,
-        notes: 'Mind-bending masterpiece! The twist ending still gets me every time. Fincher at his best.',
+        notes:
+          'Mind-bending masterpiece! The twist ending still gets me every time. Fincher at his best.',
         watchedAt: new Date('2024-01-15'),
       },
     }),
@@ -438,7 +449,8 @@ async function main() {
         userId: alice.id,
         mediaItemId: mediaItems[6].id, // Breaking Bad
         status: 'watching',
-        notes: 'Currently on Season 4. The tension is unreal! Walter White\'s transformation is fascinating.',
+        notes:
+          "Currently on Season 4. The tension is unreal! Walter White's transformation is fascinating.",
         progress: 'S4E8',
       },
     }),
@@ -447,7 +459,8 @@ async function main() {
         userId: alice.id,
         mediaItemId: mediaItems[3].id, // Interstellar
         status: 'not_watched',
-        notes: 'Heard amazing things about the science and emotional depth. Saving for a weekend movie night.',
+        notes:
+          'Heard amazing things about the science and emotional depth. Saving for a weekend movie night.',
       },
     }),
     // Bob's watchlist (sci-fi fan)
@@ -457,7 +470,8 @@ async function main() {
         mediaItemId: mediaItems[3].id, // Interstellar
         status: 'completed',
         rating: 10,
-        notes: 'Absolutely brilliant! The science is mostly accurate and the father-daughter story made me cry. Nolan is a genius.',
+        notes:
+          'Absolutely brilliant! The science is mostly accurate and the father-daughter story made me cry. Nolan is a genius.',
         watchedAt: new Date('2024-01-20'),
       },
     }),
@@ -487,7 +501,7 @@ async function main() {
         mediaItemId: mediaItems[1].id, // Shawshank Redemption
         status: 'completed',
         rating: 9,
-        notes: 'A powerful story of hope and friendship. Morgan Freeman\'s narration is perfect.',
+        notes: "A powerful story of hope and friendship. Morgan Freeman's narration is perfect.",
         watchedAt: new Date('2024-01-05'),
       },
     }),
@@ -558,7 +572,8 @@ async function main() {
         userId: fiona.id,
         mediaItemId: mediaItems[9].id, // Attack on Titan
         status: 'watching',
-        notes: 'Intense storytelling and animation! The themes about war and humanity are profound.',
+        notes:
+          'Intense storytelling and animation! The themes about war and humanity are profound.',
         progress: 'S3E5',
       },
     }),
@@ -587,7 +602,7 @@ async function main() {
         mediaItemId: mediaItems[4].id, // Iron Man
         status: 'completed',
         rating: 9,
-        notes: 'Iron Man is so cool! The suit is awesome and he\'s funny.',
+        notes: "Iron Man is so cool! The suit is awesome and he's funny.",
         watchedAt: new Date('2024-01-20'),
       },
     }),
@@ -648,7 +663,7 @@ async function main() {
     prisma.family.create({
       data: {
         name: 'Family Movie Night',
-        description: 'The Martinez-Wilson family\'s movie watching group',
+        description: "The Martinez-Wilson family's movie watching group",
         createdBy: diana.id,
       },
     }),
@@ -764,7 +779,8 @@ async function main() {
         mediaItemId: mediaItems[0].id, // Fight Club
         recommendedBy: alice.id,
         recommendedTo: bob.id,
-        message: 'You\'ll love the psychological depth and social commentary. One of Fincher\'s best works!',
+        message:
+          "You'll love the psychological depth and social commentary. One of Fincher's best works!",
         status: 'pending',
       },
     }),
@@ -774,7 +790,8 @@ async function main() {
         mediaItemId: mediaItems[3].id, // Interstellar
         recommendedBy: bob.id,
         recommendedTo: alice.id,
-        message: 'Perfect blend of hard science fiction and emotional storytelling. The black hole scenes are stunning!',
+        message:
+          'Perfect blend of hard science fiction and emotional storytelling. The black hole scenes are stunning!',
         status: 'accepted',
       },
     }),
@@ -784,7 +801,8 @@ async function main() {
         mediaItemId: mediaItems[5].id, // Toy Story
         recommendedBy: diana.id,
         recommendedTo: george.id,
-        message: 'Since you loved Iron Man, you should watch the movie that started Pixar\'s legacy!',
+        message:
+          "Since you loved Iron Man, you should watch the movie that started Pixar's legacy!",
         status: 'accepted',
       },
     }),
@@ -794,7 +812,8 @@ async function main() {
         mediaItemId: mediaItems[9].id, // Attack on Titan
         recommendedBy: henry.id,
         recommendedTo: bob.id,
-        message: 'I know you like sci-fi, and this anime has incredible world-building and moral complexity.',
+        message:
+          'I know you like sci-fi, and this anime has incredible world-building and moral complexity.',
         status: 'pending',
       },
     }),
@@ -804,7 +823,8 @@ async function main() {
         mediaItemId: mediaItems[9].id, // Attack on Titan
         recommendedBy: fiona.id,
         recommendedTo: charlie.id,
-        message: 'It\'s not just action - it\'s a profound exploration of war, freedom, and human nature. Beautiful animation too.',
+        message:
+          "It's not just action - it's a profound exploration of war, freedom, and human nature. Beautiful animation too.",
         status: 'pending',
       },
     }),
@@ -814,7 +834,8 @@ async function main() {
         mediaItemId: mediaItems[1].id, // Shawshank Redemption
         recommendedBy: evan.id,
         recommendedTo: fiona.id,
-        message: 'A modern American masterpiece. The storytelling and cinematography are exceptional.',
+        message:
+          'A modern American masterpiece. The storytelling and cinematography are exceptional.',
         status: 'pending',
       },
     }),

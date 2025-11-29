@@ -4,12 +4,12 @@
  * @returns Eine Fehlermeldungs-String.
  */
 export function getErrorMessage(error: unknown): string {
-    if (error instanceof Error) {
-        return error.message;
-    }
-    // Kann für Prisma-Fehler oder andere Objekte angepasst werden
-    if (typeof error === 'object' && error !== null && 'message' in error) {
-        return String((error as { message: unknown }).message);
-    }
-    return 'Ein unbekannter Fehler ist aufgetreten.';
+  if (error instanceof Error) {
+    return error.message;
+  }
+  // Kann für Prisma-Fehler oder andere Objekte angepasst werden
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return 'Ein unbekannter Fehler ist aufgetreten.';
 }

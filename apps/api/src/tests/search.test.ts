@@ -196,7 +196,7 @@ describe('Search Routes', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.data).toHaveLength(2);
-      
+
       const movieResult = response.body.data.find((r: any) => r.media_type === 'movie');
       expect(movieResult).toHaveProperty('posterPath', '/test.jpg');
       expect(movieResult).toHaveProperty('backdropPath', '/backdrop.jpg');
@@ -204,7 +204,7 @@ describe('Search Routes', () => {
       expect(movieResult).toHaveProperty('voteAverage', 8.5);
       expect(movieResult).toHaveProperty('genreIds', [1, 2]);
       expect(movieResult).toHaveProperty('mediaType', 'movie');
-      
+
       // Keep original snake_case for backward compatibility
       expect(movieResult).toHaveProperty('poster_path', '/test.jpg');
       expect(movieResult).toHaveProperty('backdrop_path', '/backdrop.jpg');

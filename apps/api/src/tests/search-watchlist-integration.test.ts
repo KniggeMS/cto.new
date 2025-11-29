@@ -170,7 +170,7 @@ describe('Search and Watchlist Integration', () => {
       // Setup mocks
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.searchMulti.mockResolvedValue(mockSearchResponse);
-      
+
       // Media already exists
       const existingMediaItem = {
         id: 'media-existing',
@@ -221,7 +221,7 @@ describe('Search and Watchlist Integration', () => {
 
       expect(watchlistResponse.status).toBe(201);
       expect(watchlistResponse.body.data.mediaItem.title).toBe('Existing Movie');
-      
+
       // Verify media item was not created (already exists)
       expect(mockPrismaInstance.mediaItem.create).not.toHaveBeenCalled();
       expect(mockPrismaInstance.watchlistEntry.create).toHaveBeenCalledWith({
@@ -251,7 +251,7 @@ describe('Search and Watchlist Integration', () => {
         tmdbId: 123,
         tmdbType: 'movie',
       });
-      
+
       // Already in watchlist
       mockPrismaInstance.watchlistEntry.findUnique.mockResolvedValue({
         id: 'existing-entry',
@@ -312,7 +312,9 @@ describe('Search and Watchlist Integration', () => {
         });
 
       expect(watchlistResponse.status).toBe(400);
-      expect(watchlistResponse.body.error).toBe('Media item not found. Please provide metadata to create it.');
+      expect(watchlistResponse.body.error).toBe(
+        'Media item not found. Please provide metadata to create it.',
+      );
     });
   });
 

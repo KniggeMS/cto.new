@@ -746,7 +746,9 @@ router.post(
 
       // Prevent owner from leaving (they must transfer ownership first)
       if (membership.role === 'owner') {
-        res.status(400).json({ error: 'Family owner cannot leave. Please transfer ownership first.' });
+        res
+          .status(400)
+          .json({ error: 'Family owner cannot leave. Please transfer ownership first.' });
         return;
       }
 

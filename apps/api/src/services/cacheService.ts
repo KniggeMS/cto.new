@@ -151,6 +151,7 @@ export function createCacheService(
   if (type === 'redis' && process.env.REDIS_URL) {
     // Import Redis dynamically to avoid dependency issues
     try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
       const Redis = require('redis');
       const client = Redis.createClient({
         url: process.env.REDIS_URL,

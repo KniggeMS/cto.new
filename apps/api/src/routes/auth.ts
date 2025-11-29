@@ -143,9 +143,9 @@ router.post('/login', async (req: any, res: any, next: any): Promise<void> => {
     setRefreshTokenCookie(res, refreshToken);
 
     res.json({
-     message: 'Login successful',
-     user: sanitizeUser(user),
-     accessToken,
+      message: 'Login successful',
+      user: sanitizeUser(user),
+      accessToken,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

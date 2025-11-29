@@ -13,6 +13,7 @@
     "tests",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
-    "src/components/**"
+    "src/components/**",
+    "src/__test-exports__.ts"
   ]
 }

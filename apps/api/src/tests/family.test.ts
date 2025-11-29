@@ -565,9 +565,7 @@ describe('Family Endpoints', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .get(`/families/${familyId}/invitations`)
-        .expect(401);
+      const response = await request(app).get(`/families/${familyId}/invitations`).expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });
@@ -747,7 +745,9 @@ describe('Family Endpoints', () => {
         .set('Authorization', `Bearer ${user1Token}`)
         .expect(400);
 
-      expect(response.body.error).toBe('Family owner cannot leave. Please transfer ownership first.');
+      expect(response.body.error).toBe(
+        'Family owner cannot leave. Please transfer ownership first.',
+      );
     });
 
     it('should return 404 for non-member', async () => {
@@ -760,9 +760,7 @@ describe('Family Endpoints', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .post(`/families/${testFamilyId}/leave`)
-        .expect(401);
+      const response = await request(app).post(`/families/${testFamilyId}/leave`).expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });

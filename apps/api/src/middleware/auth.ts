@@ -5,14 +5,14 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'your-access-secret-key';
 
-// Extend the Request interface to include user information
+// Extend Express Request to include user property
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: {
         id: string;
         email: string;
-        name?: string;
       };
     }
   }
@@ -34,6 +34,7 @@ export const authMiddleware = async (
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Verify JWT token
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let decoded: any;
     try {
       decoded = jwt.verify(token, JWT_ACCESS_SECRET);
@@ -48,7 +49,6 @@ export const authMiddleware = async (
       select: {
         id: true,
         email: true,
-        name: true,
       },
     });
 
@@ -61,7 +61,6 @@ export const authMiddleware = async (
     req.user = {
       id: user.id,
       email: user.email,
-      name: user.name || undefined,
     };
     next();
   } catch (error) {
@@ -110,7 +109,6 @@ export const optionalAuthMiddleware = async (
       req.user = {
         id: user.id,
         email: user.email,
-        name: user.name || undefined,
       };
     }
 

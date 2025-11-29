@@ -3,6 +3,7 @@
  * This file is used internally for testing and should not be imported in production code.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type {
   RawWatchlistRow,
   TmdbMatchCandidate,
