@@ -27,7 +27,7 @@ export interface VisionResponse {
 
 export const aiApi = {
     getRecommendations: async (userHistory: any[]): Promise<Recommendation[]> => {
-        const response = await apiClient.post<Recommendation[]>('/ai/recommendations', { userHistory });
+        const response = await apiClient.post<Recommendation[]>('/ai/recommendations', { items: userHistory });
         return response.data;
     },
 

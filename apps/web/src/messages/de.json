@@ -36,6 +36,15 @@
     "emailRequired": "E-Mail ist erforderlich",
     "passwordRequired": "Passwort ist erforderlich"
   },
+  "navigation": {
+    "home": "Startseite",
+    "watchlist": "Merkliste",
+    "search": "Suche",
+    "family": "Familie",
+    "settings": "Einstellungen",
+    "chat": "KI Chat",
+    "vision": "Bildsuche"
+  },
   "watchlist": {
     "title": "Meine Merkliste",
     "addToWatchlist": "Zur Merkliste hinzufügen",
@@ -107,5 +116,24 @@
     "recommendations": "Empfehlungen",
     "similar": "Ähnlich",
     "streamingOn": "Verfügbar auf"
+  },
+  "vision": {
+    "pageTitle": "Visuelle Suche",
+    "pageDescription": "Filme und Serien anhand von Bildern erkennen",
+    "title": "Bilderkennung",
+    "description": "Lade einen Screenshot oder ein Foto einer Filmszene hoch, und unsere KI versucht, es zu identifizieren.",
+    "uploadPrompt": "Klicken zum Hochladen",
+    "uploadSubtext": "oder hier ablegen (max 5MB)",
+    "analyzing": "Analysiere...",
+    "identifyButton": "Film identifizieren",
+    "resultTitle": "Analyse-Ergebnis",
+    "errors": {
+      "fileTooLarge": "Datei ist zu groß (max 5MB)",
+      "noMatch": "Konnte das Bild nicht identifizieren. Versuche eine klarere Aufnahme.",
+      "failed": "Analyse fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "success": {
+      "identified": "Analyse abgeschlossen!"
+    }
   }
 }

@@ -3,6 +3,7 @@
 import { PageShell } from '@/components/layout/PageShell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/lib/context/auth-context';
+import { AvatarGenerator } from '@/components/settings/AvatarGenerator';
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -24,6 +25,16 @@ export default function SettingsPage() {
               <label className="text-sm font-medium text-gray-700">Email</label>
               <p className="mt-1 text-gray-900">{user?.email}</p>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Avatar Generator</CardTitle>
+            <CardDescription>Create a unique profile picture using AI</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AvatarGenerator />
           </CardContent>
         </Card>
 

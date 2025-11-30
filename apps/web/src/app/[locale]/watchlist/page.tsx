@@ -11,6 +11,7 @@ import { WatchlistImportPanel } from '@/components/watchlist/WatchlistImportPane
 import { ImportPreviewTable } from '@/components/watchlist/ImportPreviewTable';
 import { DuplicateResolutionDialog } from '@/components/watchlist/DuplicateResolutionDialog';
 import { ExportPanel } from '@/components/watchlist/ExportPanel';
+import { AIRecommendations } from '@/components/watchlist/AIRecommendations';
 import {
   useWatchlist,
   useRemoveFromWatchlist,
@@ -20,7 +21,7 @@ import {
   filterAndSortWatchlist,
   groupWatchlistByStatus,
 } from '@/lib/utils/watchlist-utils';
-import { PlayCircle, CheckCircle, Clock, Plus, Download, Upload } from 'lucide-react';
+import { PlayCircle, CheckCircle, Clock, Plus, Download, Upload, Sparkles } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
 import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
@@ -33,7 +34,7 @@ export default function WatchlistPage() {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
   // Import/Export state
-  const [activeView, setActiveView] = useState<'watchlist' | 'import' | 'export'>('watchlist');
+  const [activeView, setActiveView] = useState<'watchlist' | 'import' | 'export' | 'recommendations'>('watchlist');
   const [importPreview, setImportPreview] = useState<NormalizedPreviewItem[]>([]);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
 
@@ -51,10 +52,10 @@ export default function WatchlistPage() {
     statusFilter === 'all'
       ? groupWatchlistByStatus(filteredAndSorted)
       : {
-          not_watched: statusFilter === 'not_watched' ? filteredAndSorted : [],
-          watching: statusFilter === 'watching' ? filteredAndSorted : [],
-          completed: statusFilter === 'completed' ? filteredAndSorted : [],
-        };
+        not_watched: statusFilter === 'not_watched' ? filteredAndSorted : [],
+        watching: statusFilter === 'watching' ? filteredAndSorted : [],
+        completed: statusFilter === 'completed' ? filteredAndSorted : [],
+      };
 
   const handleEditEntry = (entry: WatchlistEntry) => {
     setSelectedEntry(entry);
@@ -166,23 +167,34 @@ export default function WatchlistPage() {
               onClick={() => setActiveView('watchlist')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors
-                ${
-                  activeView === 'watchlist'
-                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${activeView === 'watchlist'
+                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
               My Watchlist
             </button>
             <button
+              onClick={() => setActiveView('recommendations')}
+              className={`
+                px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2
+                ${activeView === 'recommendations'
+                  ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }
+              `}
+            >
+              <Sparkles className="h-4 w-4 text-indigo-500" />
+              <span>AI For You</span>
+            </button>
+            <button
               onClick={() => setActiveView('import')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2
-                ${
-                  activeView === 'import'
-                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${activeView === 'import'
+                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
@@ -193,10 +205,9 @@ export default function WatchlistPage() {
               onClick={() => setActiveView('export')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2
-                ${
-                  activeView === 'export'
-                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${activeView === 'export'
+                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
@@ -307,6 +318,9 @@ export default function WatchlistPage() {
           )}
         </>
       )}
+
+      {/* Recommendations View */}
+      {activeView === 'recommendations' && <AIRecommendations />}
 
       {/* Import View */}
       {activeView === 'import' && (

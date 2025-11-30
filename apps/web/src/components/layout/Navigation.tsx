@@ -9,6 +9,7 @@ import { useLocaleNavigation } from '@/lib/hooks/use-locale';
 import { LocaleSwitcher } from '@/components/i18n/LocaleSwitcher';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
+import { Home, List, Search, Users, Settings, MessageSquare, Camera } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
@@ -22,6 +23,7 @@ export function Navigation() {
     { href: '/search', label: t('search') },
     { href: '/family', label: t('family') },
     { href: '/chat', label: t('chat') },
+    { href: '/vision', label: t('vision') },
     { href: '/settings', label: t('settings') },
   ];
 

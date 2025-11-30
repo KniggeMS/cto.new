@@ -34,12 +34,12 @@ export function middleware(request: NextRequest) {
   }
 
   // Extract locale from pathname
-  const pathnameLocale = SUPPORTED_LOCALES.find(locale => 
+  const pathnameLocale = SUPPORTED_LOCALES.find(locale =>
     pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
   // Remove locale from pathname for route checking
-  const pathnameWithoutLocale = pathnameLocale 
+  const pathnameWithoutLocale = pathnameLocale
     ? pathname.replace(`/${pathnameLocale}`, '') || '/'
     : pathname;
 
@@ -56,22 +56,11 @@ export function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development';
   if (isProtectedRoute && !refreshTokenCookie && !isDev) {
     // Get the current locale for the redirect
-    const locale = pathnameLocale || request.cookies.get('locale')?.value || DEFAULT_LOCALE;
+    const locale = pathnameLocale || request.cookies.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE;
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 
-  // If accessing root without locale, redirect to preferred locale
-  if (pathname === '/') {
-    const preferredLocale = request.cookies.get('locale')?.value || 
-      request.headers.get('accept-language')?.split(',')[0]?.split('-')[0] || 
-      DEFAULT_LOCALE;
-    
-    const finalLocale = SUPPORTED_LOCALES.includes(preferredLocale as any) 
-      ? preferredLocale 
-      : DEFAULT_LOCALE;
-    
-    return NextResponse.redirect(new URL(`/${finalLocale}`, request.url));
-  }
+  // Manual root redirect removed - handled by next-intl middleware
 
   return NextResponse.next();
 }

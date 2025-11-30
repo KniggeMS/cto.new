@@ -5,8 +5,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 // We use a factory function or singleton to ensure we can handle missing keys gracefully
 class AIService {
     private client: GoogleGenAI | null = null;
-    private readonly MODEL_NAME = "gemini-2.0-flash"; // Updated to latest stable flash model if available, or keep 1.5-flash
-    private readonly IMAGE_MODEL_NAME = "gemini-2.0-flash"; // Using same model for simplicity if it supports multimodal
+    private readonly MODEL_NAME = "gemini-2.0-flash";
+    private readonly IMAGE_MODEL_NAME = "gemini-2.0-flash";
 
     constructor() {
         const apiKey = process.env.GEMINI_API_KEY;
@@ -116,10 +116,12 @@ class AIService {
                     return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
                 }
             }
-            return null;
+            const debugInfo = JSON.stringify(response, null, 2);
+            console.warn("No image found in response:", debugInfo);
+            throw new Error(`No image found. Response: ${debugInfo}`);
         } catch (error) {
             console.error("Gemini Avatar Generation Error:", error);
-            return null;
+            throw error;
         }
     }
 
@@ -133,15 +135,18 @@ class AIService {
 
             const response = await this.getClient().models.generateContent({
                 model: this.MODEL_NAME,
-                contents: {
-                    parts: [
-                        { inlineData: { mimeType: 'image/jpeg', data: base64Data } },
-                        { text: prompt }
-                    ]
-                }
+                contents: [
+                    {
+                        parts: [
+                            { inlineData: { mimeType: 'image/jpeg', data: base64Data } },
+                            { text: prompt }
+                        ]
+                    }
+                ]
             });
 
-            return response.text?.trim() || null;
+            const text = response.text;
+            return text?.trim() || null;
         } catch (error) {
             console.error("Vision Search Error:", error);
             return null;

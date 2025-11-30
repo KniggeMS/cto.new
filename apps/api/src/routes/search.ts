@@ -85,9 +85,9 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
       ...details,
       streamingProviders: details.watch_providers
         ? ({
-            ...details.watch_providers,
-            cached: ourProviders || [],
-          } as any)
+          ...details.watch_providers,
+          cached: ourProviders || [],
+        } as any)
         : ((ourProviders || []) as any),
       inDatabase: true,
     };
@@ -96,7 +96,7 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
   return details;
 }
 
-router.get('/search', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const { query, page, include_adult } = SearchQuerySchema.parse(req.query);
     const cacheKey = `search:${query}:${page}:${include_adult}`;
