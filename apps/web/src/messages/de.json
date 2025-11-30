@@ -16,19 +16,6 @@
     "previous": "Vorherige",
     "submit": "Absenden",
     "yes": "Ja",
-    "no": "Nein"
-  },
-  "navigation": {
-    "home": "Startseite",
-    "watchlist": "Merkliste",
-    "search": "Suche",
-    "family": "Familie",
-    "settings": "Einstellungen",
-    "login": "Anmelden",
-    "logout": "Abmelden",
-    "profile": "Profil"
-  },
-  "auth": {
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",

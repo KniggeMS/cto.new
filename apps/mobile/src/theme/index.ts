@@ -148,30 +148,6 @@ export const theme = extendTheme({
       },
     },
   },
-  fontConfig: {
-    Roboto: {
-      100: {
-        normal: 'Roboto-Light',
-      },
-      300: {
-        normal: 'Roboto-Light',
-      },
-      400: {
-        normal: 'Roboto-Regular',
-      },
-      500: {
-        normal: 'Roboto-Medium',
-      },
-      700: {
-        normal: 'Roboto-Bold',
-      },
-    },
-  },
-  fonts: {
-    heading: 'Roboto',
-    body: 'Roboto',
-    mono: 'Roboto',
-  },
 });
 
 export type Theme = typeof theme;

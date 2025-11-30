@@ -21,6 +21,7 @@ export function Navigation() {
     { href: '/watchlist', label: t('watchlist') },
     { href: '/search', label: t('search') },
     { href: '/family', label: t('family') },
+    { href: '/chat', label: t('chat') },
     { href: '/settings', label: t('settings') },
   ];
 
@@ -33,7 +34,7 @@ export function Navigation() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <button 
+            <button
               onClick={() => push('/')}
               className="flex-shrink-0 text-left"
             >
@@ -142,7 +143,7 @@ export function Navigation() {
               </Link>
             );
           })}
-          
+
           {/* Mobile user info and logout */}
           <div className="border-t border-gray-200 pt-4 mt-4">
             <div className="px-3 py-2">
@@ -157,9 +158,9 @@ export function Navigation() {
               </p>
             </div>
             <div className="px-3 py-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={logout}
                 className="w-full justify-center"
               >

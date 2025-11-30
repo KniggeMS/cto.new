@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0ea5e9"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.infocus.mobile"
@@ -29,10 +31,10 @@
     },
     "scheme": "infocus",
     "extra": {
-      "eas": {
-        "projectId": "your-eas-project-id"
-      },
       "apiUrl": "http://localhost:3001"
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }
