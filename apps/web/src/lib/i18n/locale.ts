@@ -9,17 +9,17 @@ export function getClientLocale(): Locale {
   if (typeof window === 'undefined') {
     return DEFAULT_LOCALE;
   }
-  
+
   // Try to get from cookie first
   const cookies = document.cookie.split(';');
   for (const cookie of cookies) {
     const [name, value] = cookie.trim().split('=');
-    if (name === 'locale') {
+    if (name === 'NEXT_LOCALE') {
       const locale = value || 'en';
       return SUPPORTED_LOCALES.includes(locale as Locale) ? locale as Locale : DEFAULT_LOCALE;
     }
   }
-  
+
   // Fallback to browser language or default
   const browserLang = navigator.language.split('-')[0];
   return SUPPORTED_LOCALES.includes(browserLang as Locale) ? browserLang as Locale : DEFAULT_LOCALE;
@@ -30,6 +30,6 @@ export function getClientLocale(): Locale {
  */
 export function setLocaleCookie(locale: Locale): void {
   if (typeof window !== 'undefined') {
-    document.cookie = `locale=${locale}; Path=/; Max-Age=31536000; SameSite=Strict`;
+    document.cookie = `NEXT_LOCALE=${locale}; Path=/; Max-Age=31536000; SameSite=Strict`;
   }
 }

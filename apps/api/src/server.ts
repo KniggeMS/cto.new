@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { authRouter } from './routes/auth';
 import { watchlistRouter } from './routes/watchlist';
 import { searchRouter } from './routes/search';
@@ -17,8 +18,9 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: '10mb' })); // Increased limit for base64 images
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Health check endpoint
 app.get('/health', (_req, res) => {

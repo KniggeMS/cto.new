@@ -44,7 +44,7 @@ router.post('/vision', async (req: Request, res: Response, next: NextFunction): 
             return;
         }
         const title = await aiService.identifyMovieFromImage(image);
-        res.json({ title });
+        res.json({ analysis: title });
     } catch (error) {
         console.error('Error identifying movie:', error);
         next(error);

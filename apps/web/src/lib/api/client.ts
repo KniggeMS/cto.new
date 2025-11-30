@@ -19,12 +19,12 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
-    
+
     // Add Accept-Language header
     if (config.headers) {
       config.headers['Accept-Language'] = getClientLocale();
     }
-    
+
     return config;
   },
   (error) => {
@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes('/auth/refresh')) {
       originalRequest._retry = true;
 
       if (typeof window !== 'undefined') {

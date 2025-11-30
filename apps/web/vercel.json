@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://your-railway-domain.railway.app/api/$1"
+      "destination": "https://infocus-api-production.up.railway.app/api/$1"
     }
   ],
   "headers": [

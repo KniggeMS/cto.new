@@ -16,19 +16,6 @@
     "previous": "Previous",
     "submit": "Submit",
     "yes": "Yes",
-    "no": "No"
-  },
-  "navigation": {
-    "home": "Home",
-    "watchlist": "Watchlist",
-    "search": "Search",
-    "family": "Family",
-    "settings": "Settings",
-    "login": "Login",
-    "logout": "Logout",
-    "profile": "Profile"
-  },
-  "auth": {
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -48,6 +35,15 @@
     "passwordMismatch": "Passwords do not match",
     "emailRequired": "Email is required",
     "passwordRequired": "Password is required"
+  },
+  "navigation": {
+    "home": "Home",
+    "watchlist": "Watchlist",
+    "search": "Search",
+    "family": "Family",
+    "settings": "Settings",
+    "chat": "AI Chat",
+    "vision": "Vision Search"
   },
   "watchlist": {
     "title": "My Watchlist",
@@ -120,5 +116,24 @@
     "recommendations": "Recommendations",
     "similar": "Similar",
     "streamingOn": "Streaming on"
+  },
+  "vision": {
+    "pageTitle": "Vision Search",
+    "pageDescription": "Identify movies and TV shows from images",
+    "title": "Image Recognition",
+    "description": "Upload a screenshot or photo of a movie scene, and our AI will try to identify it for you.",
+    "uploadPrompt": "Click to upload an image",
+    "uploadSubtext": "or drag and drop here (max 5MB)",
+    "analyzing": "Analyzing...",
+    "identifyButton": "Identify Movie",
+    "resultTitle": "Analysis Result",
+    "errors": {
+      "fileTooLarge": "File is too large (max 5MB)",
+      "noMatch": "Could not identify the image. Try a clearer shot.",
+      "failed": "Analysis failed. Please try again."
+    },
+    "success": {
+      "identified": "Analysis complete!"
+    }
   }
 }

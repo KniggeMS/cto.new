@@ -1,0 +1,356 @@
+src/app/[locale]/(auth)/login/page.tsx(100,14): error TS2786: 'Link' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/(auth)/register/page.tsx(126,14): error TS2786: 'Link' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/family/page.tsx(136,16): error TS2786: 'Link' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/layout.tsx(42,16): error TS2786: 'Toaster' cannot be used as a JSX component.
+  Its type 'FC<ToasterProps>' is not a valid JSX element type.
+    Type 'FunctionComponent<ToasterProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/search/page.tsx(83,14): error TS2786: 'AlertCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/search/page.tsx(198,24): error TS2786: 'Plus' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(188,16): error TS2786: 'Sparkles' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(201,16): error TS2786: 'Upload' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(214,16): error TS2786: 'Download' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(269,24): error TS2786: 'Plus' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(273,24): error TS2786: 'Upload' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(290,26): error TS2786: 'Clock' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(302,26): error TS2786: 'PlayCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/app/[locale]/watchlist/page.tsx(314,26): error TS2786: 'CheckCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/ChatInterface.tsx(10,21): error TS6133: 'User' is declared but its value is never read.
+src/components/ai/ChatInterface.tsx(60,39): error TS2339: Property 'year' does not exist on type '{ id: string; tmdbId: number; title: string; mediaType: "movie" | "tv"; posterPath?: string | undefined; releaseDate?: string | undefined; description?: string | undefined; rating?: number | undefined; genres?: string[] | undefined; creators?: string[] | undefined; streamingProviders?: { ...; }[] | undefined; }'.
+src/components/ai/ChatInterface.tsx(63,35): error TS2339: Property 'isFavorite' does not exist on type 'WatchlistEntry'.
+src/components/ai/ChatInterface.tsx(97,30): error TS2786: 'Bot' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/ChatInterface.tsx(102,34): error TS2786: 'Sparkles' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/ChatInterface.tsx(137,34): error TS2786: 'Loader2' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/ChatInterface.tsx(160,30): error TS2786: 'Send' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/VisionSearch.tsx(70,26): error TS2786: 'ImageIcon' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/VisionSearch.tsx(82,30): error TS2786: 'Upload' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/VisionSearch.tsx(99,34): error TS2786: 'X' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/VisionSearch.tsx(120,38): error TS2786: 'Loader2' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ai/VisionSearch.tsx(125,38): error TS2786: 'Search' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/layout/Navigation.tsx(12,1): error TS6192: All imports in import declaration are unused.
+src/components/layout/Navigation.tsx(53,20): error TS2786: 'Link' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/layout/Navigation.tsx(133,16): error TS2786: 'Link' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> & InternalLinkProps & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/settings/AvatarGenerator.tsx(66,26): error TS2786: 'Image' cannot be used as a JSX component.
+  Its type 'ForwardRefExoticComponent<Omit<DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>, "ref" | ... 5 more ... | "srcSet"> & { ...; } & RefAttributes<...>>' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<Omit<DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>, "ref" | ... 5 more ... | "srcSet"> & { ...; } & RefAttributes<...>>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ui/FilterControls.tsx(46,10): error TS2786: 'Filter' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ui/RatingInput.tsx(48,14): error TS2786: 'Star' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/ui/Sheet.tsx(35,16): error TS2786: 'X' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/AIRecommendations.tsx(28,39): error TS2339: Property 'year' does not exist on type '{ id: string; tmdbId: number; title: string; mediaType: "movie" | "tv"; posterPath?: string | undefined; releaseDate?: string | undefined; description?: string | undefined; rating?: number | undefined; genres?: string[] | undefined; creators?: string[] | undefined; streamingProviders?: { ...; }[] | undefined; }'.
+src/components/watchlist/AIRecommendations.tsx(30,35): error TS2339: Property 'isFavorite' does not exist on type 'WatchlistEntry'.
+src/components/watchlist/AIRecommendations.tsx(51,22): error TS2786: 'Sparkles' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/AIRecommendations.tsx(77,70): error TS2786: 'Film' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/AIRecommendations.tsx(77,106): error TS2786: 'Tv' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/AIRecommendations.tsx(96,38): error TS2786: 'Plus' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/DuplicateResolutionDialog.tsx(138,16): error TS2786: 'X' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/DuplicateResolutionDialog.tsx(162,28): error TS2786: 'Copy' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/DuplicateResolutionDialog.tsx(236,36): error TS2786: 'Star' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/DuplicateResolutionDialog.tsx(262,34): error TS2786: 'Star' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/DuplicateResolutionDialog.tsx(371,18): error TS2786: 'AlertTriangle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(54,17): error TS2786: 'FileText' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(56,17): error TS2786: 'Code' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(58,17): error TS2786: 'FileText' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(74,14): error TS2786: 'Download' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(83,22): error TS2786: 'Film' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(89,22): error TS2786: 'Calendar' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(95,43): error TS2786: 'CheckCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(140,16): error TS2786: 'AlertCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ExportPanel.tsx(169,16): error TS2786: 'AlertCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(123,28): error TS2786: 'Copy' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(129,28): error TS2786: 'AlertTriangle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(145,28): error TS2786: 'Star' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(151,28): error TS2786: 'Calendar' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(170,43): error TS2786: 'Check' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(170,75): error TS2786: 'X' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(216,38): error TS2786: 'Film' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(218,38): error TS2786: 'Tv' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(258,36): error TS2786: 'ExternalLink' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/ImportPreviewTable.tsx(268,26): error TS2786: 'AlertTriangle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(19,17): error TS2786: 'Clock' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(21,17): error TS2786: 'PlayCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(23,17): error TS2786: 'CheckCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(25,17): error TS2786: 'Clock' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(73,16): error TS2786: 'Film' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(109,16): error TS2786: 'Star' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistCard.tsx(120,12): error TS2786: 'Calendar' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistDetailDrawer.tsx(246,14): error TS2786: 'Save' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistDetailDrawer.tsx(261,14): error TS2786: 'Trash2' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistImportPanel.tsx(98,14): error TS2786: 'FileText' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistImportPanel.tsx(123,14): error TS2786: 'Upload' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistImportPanel.tsx(134,18): error TS2786: 'CheckCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
+src/components/watchlist/WatchlistImportPanel.tsx(174,16): error TS2786: 'AlertCircle' cannot be used as a JSX component.
+  Its type 'LucideIcon' is not a valid JSX element type.
+    Type 'ForwardRefExoticComponent<LucideProps>' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
+      Type 'import("E:/GithubRepo/node_modules/.pnpm/@types+react@18.2.79/node_modules/@types/react/index").ReactNode' is not assignable to type 'React.ReactNode'.
+        Type 'bigint' is not assignable to type 'ReactNode'.
