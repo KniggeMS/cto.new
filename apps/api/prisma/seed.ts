@@ -61,9 +61,9 @@ async function main() {
       data: {
         userId: alice.id,
         bio: 'Movie buff who loves psychological thrillers and indie films. Always looking for hidden gems!',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Thriller', 'Drama', 'Indie'],
           streamingServices: ['Netflix', 'HBO Max', 'Mubi']
@@ -74,9 +74,9 @@ async function main() {
       data: {
         userId: bob.id,
         bio: 'Sci-fi enthusiast and tech lover. Star Wars is life, but I also enjoy thoughtful documentaries.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Science Fiction', 'Documentary', 'Action'],
           streamingServices: ['Disney+', 'Amazon Prime', 'Apple TV+']
@@ -87,9 +87,9 @@ async function main() {
       data: {
         userId: charlie.id,
         bio: 'Documentary lover and history buff. Learning something new with every film I watch.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'es', 
+        preferences: {
+          theme: 'dark',
+          language: 'es',
           notifications: true,
           favoriteGenres: ['Documentary', 'History', 'Biography'],
           streamingServices: ['Netflix', 'CuriosityStream', 'Hulu']
@@ -100,9 +100,9 @@ async function main() {
       data: {
         userId: diana.id,
         bio: 'Family movie night organizer. Love finding films that everyone from kids to adults can enjoy.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Family', 'Animation', 'Comedy'],
           streamingServices: ['Disney+', 'Netflix', 'Amazon Prime']
@@ -113,9 +113,9 @@ async function main() {
       data: {
         userId: evan.id,
         bio: 'Classic film aficionado. If it\'s black and white or from the 70s, I\'ve probably seen it.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Classic', 'Drama', 'Film Noir'],
           streamingServices: ['Criterion Channel', 'HBO Max', 'TCM']
@@ -126,9 +126,9 @@ async function main() {
       data: {
         userId: fiona.id,
         bio: 'International cinema explorer. Always searching for the best foreign films and world cinema.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Foreign', 'Art House', 'Drama'],
           streamingServices: ['Mubi', 'Netflix', 'Hulu']
@@ -139,9 +139,9 @@ async function main() {
       data: {
         userId: george.id,
         bio: 'I love cartoons and superhero movies! Spider-Man is my favorite.',
-        preferences: { 
-          theme: 'light', 
-          language: 'en', 
+        preferences: {
+          theme: 'light',
+          language: 'en',
           notifications: false,
           favoriteGenres: ['Animation', 'Superhero', 'Adventure'],
           streamingServices: ['Disney+', 'Netflix']
@@ -152,9 +152,9 @@ async function main() {
       data: {
         userId: henry.id,
         bio: 'Teen who\'s into gaming, anime, and action movies. Always looking for the next binge-worthy series.',
-        preferences: { 
-          theme: 'dark', 
-          language: 'en', 
+        preferences: {
+          theme: 'dark',
+          language: 'en',
           notifications: true,
           favoriteGenres: ['Action', 'Anime', 'Teen Drama'],
           streamingServices: ['Netflix', 'Crunchyroll', 'Hulu']
@@ -430,7 +430,6 @@ async function main() {
         status: 'completed',
         rating: 9,
         notes: 'Mind-bending masterpiece! The twist ending still gets me every time. Fincher at his best.',
-        watchedAt: new Date('2024-01-15'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -439,7 +438,6 @@ async function main() {
         mediaItemId: mediaItems[6].id, // Breaking Bad
         status: 'watching',
         notes: 'Currently on Season 4. The tension is unreal! Walter White\'s transformation is fascinating.',
-        progress: 'S4E8',
       },
     }),
     prisma.watchlistEntry.create({
@@ -458,7 +456,6 @@ async function main() {
         status: 'completed',
         rating: 10,
         notes: 'Absolutely brilliant! The science is mostly accurate and the father-daughter story made me cry. Nolan is a genius.',
-        watchedAt: new Date('2024-01-20'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -468,7 +465,6 @@ async function main() {
         status: 'completed',
         rating: 10,
         notes: 'Best TV series ever made. Perfect writing, acting, and character development.',
-        watchedAt: new Date('2023-12-10'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -477,7 +473,6 @@ async function main() {
         mediaItemId: mediaItems[7].id, // The Mandalorian
         status: 'watching',
         notes: 'Love the Star Wars vibes! Baby Yoda is adorable. Just finished Season 2.',
-        progress: 'S2E8',
       },
     }),
     // Charlie's watchlist (documentary lover)
@@ -488,7 +483,6 @@ async function main() {
         status: 'completed',
         rating: 9,
         notes: 'A powerful story of hope and friendship. Morgan Freeman\'s narration is perfect.',
-        watchedAt: new Date('2024-01-05'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -498,7 +492,6 @@ async function main() {
         status: 'completed',
         rating: 8,
         notes: 'Interesting historical perspective, though some parts feel a bit sentimental.',
-        watchedAt: new Date('2023-11-20'),
       },
     }),
     // Diana's watchlist (family oriented)
@@ -509,7 +502,6 @@ async function main() {
         status: 'completed',
         rating: 9,
         notes: 'Perfect family movie! The kids loved it, and the adults enjoyed the clever humor.',
-        watchedAt: new Date('2024-01-25'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -518,7 +510,6 @@ async function main() {
         mediaItemId: mediaItems[7].id, // The Mandalorian
         status: 'watching',
         notes: 'Great for family viewing! Not too violent, exciting storylines.',
-        progress: 'S1E3',
       },
     }),
     prisma.watchlistEntry.create({
@@ -528,7 +519,6 @@ async function main() {
         status: 'completed',
         rating: 7,
         notes: 'Classic show! Some episodes are hit-or-miss, but the golden seasons are brilliant.',
-        watchedAt: new Date('2023-12-15'),
       },
     }),
     // Evan's watchlist (classic film buff)
@@ -539,7 +529,6 @@ async function main() {
         status: 'completed',
         rating: 10,
         notes: 'Modern classic that will stand the test of time. Every scene is perfectly crafted.',
-        watchedAt: new Date('2024-01-10'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -549,7 +538,6 @@ async function main() {
         status: 'completed',
         rating: 8,
         notes: 'Good film, though a bit overrated in my opinion. Tom Hanks is excellent though.',
-        watchedAt: new Date('2023-10-15'),
       },
     }),
     // Fiona's watchlist (international cinema)
@@ -559,7 +547,6 @@ async function main() {
         mediaItemId: mediaItems[9].id, // Attack on Titan
         status: 'watching',
         notes: 'Intense storytelling and animation! The themes about war and humanity are profound.',
-        progress: 'S3E5',
       },
     }),
     prisma.watchlistEntry.create({
@@ -578,7 +565,6 @@ async function main() {
         status: 'completed',
         rating: 10,
         notes: 'Buzz Lightyear is my favorite! "To infinity and beyond!"',
-        watchedAt: new Date('2024-01-28'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -588,7 +574,6 @@ async function main() {
         status: 'completed',
         rating: 9,
         notes: 'Iron Man is so cool! The suit is awesome and he\'s funny.',
-        watchedAt: new Date('2024-01-20'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -597,7 +582,6 @@ async function main() {
         mediaItemId: mediaItems[8].id, // The Simpsons
         status: 'watching',
         notes: 'Bart is so funny! Mom and dad watch with me.',
-        progress: 'Various episodes',
       },
     }),
     // Henry's watchlist (teen)
@@ -608,7 +592,6 @@ async function main() {
         status: 'completed',
         rating: 10,
         notes: 'BEST ANIME EVER! The action scenes are insane and the story is dark and deep.',
-        watchedAt: new Date('2024-01-22'),
       },
     }),
     prisma.watchlistEntry.create({
@@ -617,7 +600,6 @@ async function main() {
         mediaItemId: mediaItems[6].id, // Breaking Bad
         status: 'watching',
         notes: 'Everyone says this is the best show ever. Just started Season 1.',
-        progress: 'S1E4',
       },
     }),
     prisma.watchlistEntry.create({
@@ -627,7 +609,6 @@ async function main() {
         status: 'completed',
         rating: 8,
         notes: 'Started the MCU here. Robert Downey Jr. is perfect as Tony Stark.',
-        watchedAt: new Date('2023-12-25'),
       },
     }),
   ]);
@@ -640,7 +621,7 @@ async function main() {
     prisma.family.create({
       data: {
         name: 'Cinema Scholars',
-        description: 'Serious film lovers who appreciate the art of filmmaking',
+
         createdBy: alice.id,
       },
     }),
@@ -648,7 +629,7 @@ async function main() {
     prisma.family.create({
       data: {
         name: 'Family Movie Night',
-        description: 'The Martinez-Wilson family\'s movie watching group',
+
         createdBy: diana.id,
       },
     }),
@@ -656,7 +637,7 @@ async function main() {
     prisma.family.create({
       data: {
         name: 'Sci-Fi Explorers',
-        description: 'Exploring new worlds and futuristic stories together',
+
         createdBy: bob.id,
       },
     }),
@@ -664,7 +645,7 @@ async function main() {
     prisma.family.create({
       data: {
         name: 'World Cinema Club',
-        description: 'Discovering films from around the globe',
+
         createdBy: fiona.id,
       },
     }),
@@ -729,7 +710,6 @@ async function main() {
         email: 'evan@example.com',
         token: 'invite_family_movie_night_' + Math.random().toString(36).substring(7),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        invitedBy: diana.id,
       },
     }),
     // Invite Fiona to Cinema Scholars
@@ -739,7 +719,6 @@ async function main() {
         email: 'fiona@example.com',
         token: 'invite_cinema_scholars_' + Math.random().toString(36).substring(7),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        invitedBy: alice.id,
       },
     }),
     // Invite George to Sci-Fi Explorers
@@ -749,7 +728,6 @@ async function main() {
         email: 'george@example.com',
         token: 'invite_sci_fi_' + Math.random().toString(36).substring(7),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        invitedBy: bob.id,
       },
     }),
   ]);
