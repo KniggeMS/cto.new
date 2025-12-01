@@ -7,37 +7,49 @@ export const TMDBMovieSchema = z.object({
   id: z.number(),
   title: z.string(),
   overview: z.string().nullable(),
-  poster_path: z.string().nullable(),
-  backdrop_path: z.string().nullable(),
-  release_date: z.string().nullable(),
-  vote_average: z.number().nullable(),
-  genre_ids: z.array(z.number()),
+  poster_path: z.string().nullable().optional(),
+  backdrop_path: z.string().nullable().optional(),
+  release_date: z.string().nullable().optional(),
+  vote_average: z.number().nullable().optional(),
+  genre_ids: z.array(z.number()).optional(),
   adult: z.boolean().optional(),
   original_language: z.string().optional(),
   popularity: z.number().optional(),
   video: z.boolean().optional(),
   vote_count: z.number().optional(),
+  media_type: z.literal('movie').optional(),
 });
 
 export const TMDBTVSchema = z.object({
   id: z.number(),
   name: z.string(),
   overview: z.string().nullable(),
-  poster_path: z.string().nullable(),
-  backdrop_path: z.string().nullable(),
-  first_air_date: z.string().nullable(),
-  vote_average: z.number().nullable(),
-  genre_ids: z.array(z.number()),
+  poster_path: z.string().nullable().optional(),
+  backdrop_path: z.string().nullable().optional(),
+  first_air_date: z.string().nullable().optional(),
+  vote_average: z.number().nullable().optional(),
+  genre_ids: z.array(z.number()).optional(),
   adult: z.boolean().optional(),
   original_language: z.string().optional(),
   popularity: z.number().optional(),
   origin_country: z.array(z.string()).optional(),
   vote_count: z.number().optional(),
+  media_type: z.literal('tv').optional(),
+});
+
+export const TMDBPersonSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  media_type: z.literal('person'),
+  profile_path: z.string().nullable().optional(),
+  adult: z.boolean().optional(),
+  popularity: z.number().optional(),
+  known_for: z.array(z.union([TMDBMovieSchema, TMDBTVSchema])).optional(),
 });
 
 export const TMDBSearchResponseSchema = z.object({
   page: z.number(),
-  results: z.array(z.union([TMDBMovieSchema, TMDBTVSchema])),
+  results: z.array(z.union([TMDBMovieSchema, TMDBTVSchema, TMDBPersonSchema])),
   total_results: z.number(),
   total_pages: z.number(),
 });
@@ -70,6 +82,7 @@ export const TMDBWatchProvidersResponseSchema = z.object({
 // Type definitions
 export type TMDBMovie = z.infer<typeof TMDBMovieSchema>;
 export type TMDBTV = z.infer<typeof TMDBTVSchema>;
+export type TMDBPerson = z.infer<typeof TMDBPersonSchema>;
 export type TMDBSearchResponse = z.infer<typeof TMDBSearchResponseSchema>;
 export type TMDBGenre = z.infer<typeof TMDBGenreSchema>;
 export type TMDBWatchProvider = z.infer<typeof TMDBWatchProviderSchema>;
@@ -260,35 +273,43 @@ export class TMDBService {
     const validated = TMDBSearchResponseSchema.parse(response);
 
     // Transform results to include media_type
-    const transformedResults: SearchResult[] = validated.results.map((result) => {
-      if ('title' in result) {
-        return {
-          id: result.id,
-          title: result.title,
-          overview: result.overview,
-          poster_path: result.poster_path,
-          backdrop_path: result.backdrop_path,
-          release_date: result.release_date ?? null,
-          vote_average: result.vote_average,
-          genre_ids: result.genre_ids,
-          media_type: 'movie' as MediaType,
-        };
-      } else {
-        // TV show case
-        const tvResult = result as any;
-        return {
-          id: tvResult.id,
-          title: tvResult.name,
-          overview: tvResult.overview,
-          poster_path: tvResult.poster_path,
-          backdrop_path: tvResult.backdrop_path,
-          release_date: tvResult.first_air_date ?? null,
-          vote_average: tvResult.vote_average,
-          genre_ids: tvResult.genre_ids,
-          media_type: 'tv' as MediaType,
-        };
-      }
-    });
+    const transformedResults: SearchResult[] = validated.results
+      .filter((result) => {
+        // Filter out people and results without required fields
+        if ('media_type' in result && result.media_type === 'person') return false;
+        return true;
+      })
+      .map((result) => {
+        if ('title' in result) {
+          // Movie
+          const movie = result as TMDBMovie;
+          return {
+            id: movie.id,
+            title: movie.title,
+            overview: movie.overview,
+            poster_path: movie.poster_path ?? null,
+            backdrop_path: movie.backdrop_path ?? null,
+            release_date: movie.release_date ?? null,
+            vote_average: movie.vote_average ?? 0,
+            genre_ids: movie.genre_ids ?? [],
+            media_type: 'movie' as MediaType,
+          };
+        } else {
+          // TV show
+          const tv = result as TMDBTV;
+          return {
+            id: tv.id,
+            title: tv.name,
+            overview: tv.overview,
+            poster_path: tv.poster_path ?? null,
+            backdrop_path: tv.backdrop_path ?? null,
+            release_date: tv.first_air_date ?? null,
+            vote_average: tv.vote_average ?? 0,
+            genre_ids: tv.genre_ids ?? [],
+            media_type: 'tv' as MediaType,
+          };
+        }
+      });
 
     return {
       ...validated,
@@ -308,6 +329,12 @@ export class TMDBService {
     return {
       ...movie,
       media_type: 'movie',
+      poster_path: movie.poster_path ?? null,
+      backdrop_path: movie.backdrop_path ?? null,
+      release_date: movie.release_date ?? null,
+      vote_average: movie.vote_average ?? null,
+      overview: movie.overview ?? null,
+      genre_ids: movie.genre_ids ?? [],
       watch_providers: providers,
     };
   }
@@ -324,8 +351,13 @@ export class TMDBService {
     return {
       ...tv,
       title: tv.name,
-      release_date: tv.first_air_date,
+      release_date: tv.first_air_date ?? null,
       media_type: 'tv',
+      poster_path: tv.poster_path ?? null,
+      backdrop_path: tv.backdrop_path ?? null,
+      vote_average: tv.vote_average ?? null,
+      overview: tv.overview ?? null,
+      genre_ids: tv.genre_ids ?? [],
       watch_providers: providers,
     };
   }
