@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { listsApi, CustomList } from '@/lib/api/lists';
 import { Container } from '@/components/layout/Container';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Loader2, ArrowLeft, Trash2, Share2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { MediaCard } from '@/components/media/MediaCard';
