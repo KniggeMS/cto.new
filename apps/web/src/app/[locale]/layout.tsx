@@ -8,6 +8,7 @@ import { AuthProvider } from '@/lib/context/auth-context';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ChatBot } from '@/components/ai/ChatBot';
 import '../globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
                 <main className="flex-grow p-4 md:p-8 overflow-y-auto h-screen scroll-smooth">
                   <MobileHeader />
                   {children}
+                  <ChatBot />
                   <SpeedInsights />
                 </main>
               </div>
