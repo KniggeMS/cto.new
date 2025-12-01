@@ -20,11 +20,94 @@ import {
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { aiApi, Recommendation } from '@/lib/api/ai';
+import { useAddToWatchlist, useWatchlist } from '@/lib/hooks/use-watchlist';
+import { toast } from 'react-hot-toast';
+
 export function Sidebar() {
     const t = useTranslations('Navigation');
     const pathname = usePathname();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
+
+    // AI Recommendation State
+    const { data: watchlist } = useWatchlist();
+    const addToWatchlist = useAddToWatchlist();
+    const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+    const [isLoadingRecs, setIsLoadingRecs] = useState(false);
+    const [isAddingRec, setIsAddingRec] = useState(false);
+
+    const handleRecommendation = async () => {
+        setIsLoadingRecs(true);
+        try {
+            // Prepare context from watchlist
+            const context = watchlist?.map((entry) => ({
+                title: entry.mediaItem.title,
+                year: entry.mediaItem.year,
+                status: entry.status,
+                userRating: entry.rating,
+                isFavorite: entry.isFavorite,
+                userNotes: entry.notes
+            })) || [];
+
+            const recs = await aiApi.getRecommendations(context);
+            setRecommendations(recs);
+        } catch (error) {
+            console.error('Failed to get recommendations:', error);
+            toast.error(t('rec_error'));
+        } finally {
+            setIsLoadingRecs(false);
+        }
+    };
+
+    const handleAddRecommendation = async (rec: Recommendation) => {
+        setIsAddingRec(true);
+        try {
+            // We need to search for the movie first to get the TMDB ID
+            // Since the recommendation only gives us title/year, this is a simplified approach
+            // Ideally, the AI would return the TMDB ID if possible, or we search here.
+            // For now, we will assume we need to search or use a placeholder if not found.
+            // BUT, the `addToWatchlist` hook expects a `tmdbId`.
+            // So we must search for it.
+
+            // Let's use a quick search via existing search API if possible, or just fail gracefully for now
+            // and tell the user to search manually. 
+            // WAIT: The reference implementation does `addItem(rec)`. Let's see how `addItem` works in reference.
+            // In reference `App.tsx`: `addItem` calls `getMediaDetails(result, tmdbApiKey)`.
+            // `result` comes from `getRecommendations` which returns `SearchResult`.
+
+            // Our `addToWatchlist` needs `tmdbId`.
+            // I will implement a quick search helper here or just notify user for now.
+            // Actually, let's try to search for it using the search API.
+
+            // Importing searchApi to find the movie
+            const { searchApi } = await import('@/lib/api/search');
+            const searchResults = await searchApi.search(rec.title);
+
+            const match = searchResults.results.find(
+                r => r.title.toLowerCase() === rec.title.toLowerCase() &&
+                    (rec.year ? r.release_date?.startsWith(rec.year.toString()) : true)
+            );
+
+            if (match) {
+                await addToWatchlist.mutateAsync({
+                    tmdbId: match.id,
+                    mediaType: match.media_type,
+                    status: 'not_watched',
+                    notes: rec.plot // Add AI reason as note
+                });
+                toast.success(t('rec_added'));
+                setRecommendations([]); // Clear after adding
+            } else {
+                toast.error(t('rec_not_found'));
+            }
+        } catch (error) {
+            console.error('Failed to add recommendation:', error);
+            toast.error(t('add_error'));
+        } finally {
+            setIsAddingRec(false);
+        }
+    };
 
     // Helper for active link styling
     const NavItem = ({ href, icon: Icon, label }: { href: string, icon: any, label: string }) => {
@@ -33,8 +116,8 @@ export function Sidebar() {
             <Link
                 href={href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                        ? 'bg-cyan-500/10 text-cyan-400 font-medium'
-                        : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                    ? 'bg-cyan-500/10 text-cyan-400 font-medium'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                     }`}
             >
                 <Icon size={20} />
@@ -97,12 +180,39 @@ export function Sidebar() {
                     <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
                             <Sparkles size={14} className="text-purple-400" />
-                            AI Tip
+                            {t('ai_tip')}
                         </h4>
+                        <button
+                            onClick={handleRecommendation}
+                            disabled={isLoadingRecs}
+                            className="text-xs text-cyan-400 hover:text-cyan-300 disabled:opacity-50 transition-colors"
+                        >
+                            {isLoadingRecs ? <Loader2 size={12} className="animate-spin" /> : t('new_rec')}
+                        </button>
                     </div>
-                    <p className="text-xs text-slate-500">
-                        Get personalized recommendations based on your watchlist.
-                    </p>
+
+                    {recommendations.length > 0 ? (
+                        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2">
+                            {recommendations.slice(0, 1).map((rec, i) => (
+                                <div key={i} className="text-xs">
+                                    <div className="font-medium text-slate-200 line-clamp-1" title={rec.title}>{rec.title} ({rec.year})</div>
+                                    <div className="text-slate-500 mt-1 line-clamp-2" title={rec.plot}>{rec.plot}</div>
+                                    <button
+                                        onClick={() => handleAddRecommendation(rec)}
+                                        disabled={isAddingRec}
+                                        className="mt-2 w-full py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-300 transition-colors flex items-center justify-center gap-1"
+                                    >
+                                        {isAddingRec ? <Loader2 size={10} className="animate-spin" /> : <Plus size={12} />}
+                                        {t('add_button')}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-slate-500">
+                            {t('ai_tip_desc')}
+                        </p>
+                    )}
                 </div>
             </div>
         </aside>
