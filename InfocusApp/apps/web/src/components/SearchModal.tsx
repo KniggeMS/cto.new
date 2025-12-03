@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, Search, Plus, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { API_URL } from "@/config";
 
 interface SearchModalProps {

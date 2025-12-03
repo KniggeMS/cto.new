@@ -5,7 +5,8 @@
         "cancel": "Cancel",
         "delete": "Delete",
         "edit": "Edit",
-        "back": "Back"
+        "back": "Back",
+        "family": "Family"
     },
     "Navigation": {
         "home": "Home",

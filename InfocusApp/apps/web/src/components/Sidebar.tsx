@@ -9,6 +9,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useTranslations } from "next-intl";
 import { RecommendationsModal } from "./RecommendationsModal";
 import { SettingsPanel } from "./SettingsPanel";
+import { API_URL } from "@/config";
 
 export function Sidebar() {
 

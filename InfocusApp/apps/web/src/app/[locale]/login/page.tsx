@@ -6,6 +6,7 @@ import { Loader2, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { API_URL } from "@/config";
 
 export default function LoginPage() {
     const router = useRouter();

@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "@/navigation";
 import { ImportModal } from "./ImportModal";
 import { SearchResult } from "../types";
 import { Toast, ToastType } from "./Toast";
+import { API_URL } from "@/config";
 
 interface SettingsPanelProps {
     isOpen: boolean;
