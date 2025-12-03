@@ -1,14 +1,42 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "@/navigation";
 import { Sidebar } from "./Sidebar";
+import { useEffect, useState } from "react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
+
     // Check if the current path is login or register
-    // We check for both localized and non-localized paths just in case, 
-    // though usePathname from next/navigation usually returns the full path.
     const isAuthPage = pathname.includes('/login') || pathname.includes('/register');
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem("token");
+
+            if (!token && !isAuthPage) {
+                router.push("/login");
+                return;
+            }
+            setIsLoading(false);
+        };
+
+        checkAuth();
+
+        // Listen for logout events
+        const handleAuthChange = () => checkAuth();
+        window.addEventListener("auth-change", handleAuthChange);
+
+        return () => {
+            window.removeEventListener("auth-change", handleAuthChange);
+        };
+    }, [pathname, isAuthPage, router]);
+
+    if (isLoading) {
+        return <div className="min-h-screen bg-slate-950" />; // Prevent flash
+    }
 
     if (isAuthPage) {
         return <>{children}</>;

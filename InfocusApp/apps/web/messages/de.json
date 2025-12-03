@@ -57,5 +57,18 @@
         "analyze": "Analysieren",
         "import_confirm": "Auswahl importieren",
         "import_preview": "Vorschau"
+    },
+    "Login": {
+        "title": "Anmelden",
+        "email_label": "Benutzername / E-Mail Adresse",
+        "email_placeholder": "Benutzername",
+        "password_label": "Passwort",
+        "password_placeholder": "••••••••",
+        "forgot_password": "Passwort vergessen?",
+        "submit": "Anmelden",
+        "demo_login": "Demo Login (BigDaddy)",
+        "no_account": "Noch kein Konto?",
+        "register_link": "Hier registrieren",
+        "error_generic": "Anmeldung fehlgeschlagen"
     }
 }

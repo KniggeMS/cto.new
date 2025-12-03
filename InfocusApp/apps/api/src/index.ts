@@ -171,6 +171,7 @@ app.patch("/api/media/:id", authenticate, async (req, res) => {
         const updateData: any = {};
         if (status) updateData.status = status;
         if (isFavorite !== undefined) updateData.isFavorite = isFavorite;
+        if (req.body.rating !== undefined) updateData.rating = req.body.rating;
 
         const media = await prisma.mediaItem.update({
             where: { id },

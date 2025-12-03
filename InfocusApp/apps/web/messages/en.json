@@ -57,5 +57,18 @@
         "analyze": "Analyze",
         "import_confirm": "Import Selection",
         "import_preview": "Preview"
+    },
+    "Login": {
+        "title": "Login",
+        "email_label": "Username / Email Address",
+        "email_placeholder": "Username",
+        "password_label": "Password",
+        "password_placeholder": "••••••••",
+        "forgot_password": "Forgot password?",
+        "submit": "Login",
+        "demo_login": "Demo Login (BigDaddy)",
+        "no_account": "No account yet?",
+        "register_link": "Register here",
+        "error_generic": "Login failed"
     }
 }

@@ -20,7 +20,7 @@ export const getMediaDetails = async (id: number, type: "movie" | "tv") => {
     if (!apiKey) throw new Error("TMDB_API_KEY is not configured");
 
     const response = await fetch(
-        `${TMDB_BASE_URL}/${type}/${id}?api_key=${apiKey}&language=de-DE`
+        `${TMDB_BASE_URL}/${type}/${id}?api_key=${apiKey}&language=de-DE&append_to_response=watch/providers,credits`
     );
 
     if (!response.ok) {

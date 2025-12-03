@@ -3,7 +3,7 @@
 import { LayoutGrid, Settings, PlaySquare, Tv, CheckCircle2, Heart, PlusCircle, Plus, Sparkles, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { SearchModal } from "./SearchModal";
-import { Link } from "@/navigation";
+import { Link, useRouter } from "@/navigation";
 import { useSearchParams } from "next/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useTranslations } from "next-intl";
@@ -81,12 +81,14 @@ export function Sidebar() {
         };
     }, []);
 
+    const router = useRouter(); // Add this hook
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setUser(null);
-        window.dispatchEvent(new Event("auth-change")); // Notify other components if needed
-        window.location.href = "/login";
+        window.dispatchEvent(new Event("auth-change")); // Notify AppLayout
+        router.push("/login"); // Use Next.js router for client-side navigation
     };
 
     const isActive = (status?: string, fav?: boolean) => {
