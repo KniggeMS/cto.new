@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  passwordHash String? // Optional for now to support existing mock user if needed, but ideally required
+  username     String      @unique
+  firstName    String?
+  lastName     String?
+  avatarUrl    String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  media        MediaItem[]
+  lists        List[]
+}
+
+model MediaItem {
+  id           String      @id @default(uuid())
+  tmdbId       Int
+  type         MediaType
+  title        String
+  overview     String?
+  posterPath   String?
+  backdropPath String?
+  releaseDate  DateTime?
+  status       MediaStatus @default(PLANNED)
+  isFavorite   Boolean     @default(false)
+  rating       Int?
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lists        List[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@unique([userId, tmdbId, type])
+}
+
+model List {
+  id        String      @id @default(uuid())
+  name      String
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     MediaItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum MediaType {
+  MOVIE
+  TV
+}
+
+enum MediaStatus {
+  PLANNED
+  WATCHING
+  WATCHED
+  DROPPED
+}

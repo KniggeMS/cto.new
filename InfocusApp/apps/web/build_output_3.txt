@@ -1,0 +1,16 @@
+
+> web@0.0.1 build
+> next build
+
+   Γû▓ Next.js 14.1.0
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/[locale]/layout.tsx
+Module not found: Can't resolve '../../globals.css'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors

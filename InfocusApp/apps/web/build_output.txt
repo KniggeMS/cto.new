@@ -1,0 +1,34 @@
+
+> web@0.0.1 build
+> next build
+
+   Γû▓ Next.js 14.1.0
+
+   Creating an optimized production build ...
+
+> Build error occurred
+Error: 
+[next-intl] Could not locate request configuration module.
+
+This path is supported by default: ./(src/)i18n/request.{js,jsx,ts,tsx}
+
+Alternatively, you can specify a custom location in your Next.js config:
+
+const withNextIntl = createNextIntlPlugin(
+
+Alternatively, you can specify a custom location in your Next.js config:
+
+const withNextIntl = createNextIntlPlugin(
+  './path/to/i18n/request.tsx'
+);
+
+    at throwError (E:\GithubRepo\InfocusApp\apps\web\node_modules\next-intl\dist\cjs\development\plugin.cjs:12:9)
+    at resolveI18nPath (E:\GithubRepo\InfocusApp\apps\web\node_modules\next-intl\dist\cjs\development\plugin.cjs:187:5)
+    at Object.webpack (E:\GithubRepo\InfocusApp\apps\web\node_modules\next-intl\dist\cjs\development\plugin.cjs:323:79)
+    at getBaseWebpackConfig (E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\build\webpack-config.js:1775:32)
+    at async Promise.all (index 1)
+    at async Span.traceAsyncFn (E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\trace\trace.js:151:20)
+    at async webpackBuildImpl (E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\build\webpack-build\impl.js:133:21)
+    at async E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\build\index.js:828:115
+    at async Span.traceAsyncFn (E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\trace\trace.js:151:20)
+    at async build (E:\GithubRepo\InfocusApp\node_modules\.pnpm\next@14.1.0_react-dom@18.3.1_react@18.2.0\node_modules\next\dist\build\index.js:374:9)

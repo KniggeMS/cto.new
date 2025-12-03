@@ -1,0 +1,15 @@
+Action Required from You:
+
+Check Railway: Go to your Railway dashboard and verify that the latest deployment is building successfully.
+Set Environment Variables (Railway):
+Add TMDB_API_KEY (if not already added).
+Add CORS_ORIGIN: Set this to your Vercel frontend URL https://your-vercel-app.cto-new-api.vercel.app ist gesetzt!
+Set Environment Variables (Vercel):
+Update NEXT_PUBLIC_API_URL: Set this to your Railway Backend URL (e.g., https://infocus-api.up.railway.app). This ensures the frontend communicates directly with the backend.
+Once the Railway build succeeds and variables are set, your app should be fully functional! Let me know if the bui
+
+Wie wollen wir weitermachen?
+
+Sprachumschalter: Aktuell ist das nur ein Platzhalter. Soll ich das richtig einbauen? (Das ist etwas aufwendiger).
+Avatar-Upload: Aktuell werden Avatare generiert. Soll ich einen echten Bild-Upload einbauen?
+Oder hast du noch andere Wünsche?

@@ -1,0 +1,39 @@
+error TS2688: Cannot find type definition file for 'bcryptjs'.
+  The file is in the program because:
+    Entry point for implicit type library 'bcryptjs'
+error TS2688: Cannot find type definition file for 'cookie-parser'.
+  The file is in the program because:
+    Entry point for implicit type library 'cookie-parser'
+error TS2688: Cannot find type definition file for 'cors'.
+  The file is in the program because:
+    Entry point for implicit type library 'cors'
+error TS2688: Cannot find type definition file for 'express'.
+  The file is in the program because:
+    Entry point for implicit type library 'express'
+error TS2688: Cannot find type definition file for 'invariant'.
+  The file is in the program because:
+    Entry point for implicit type library 'invariant'
+error TS2688: Cannot find type definition file for 'jest'.
+  The file is in the program because:
+    Entry point for implicit type library 'jest'
+error TS2688: Cannot find type definition file for 'jsonwebtoken'.
+  The file is in the program because:
+    Entry point for implicit type library 'jsonwebtoken'
+error TS2688: Cannot find type definition file for 'morgan'.
+  The file is in the program because:
+    Entry point for implicit type library 'morgan'
+error TS2688: Cannot find type definition file for 'multer'.
+  The file is in the program because:
+    Entry point for implicit type library 'multer'
+error TS2688: Cannot find type definition file for 'node-cache'.
+  The file is in the program because:
+    Entry point for implicit type library 'node-cache'
+error TS2688: Cannot find type definition file for 'node-fetch'.
+  The file is in the program because:
+    Entry point for implicit type library 'node-fetch'
+error TS2688: Cannot find type definition file for 'react-native'.
+  The file is in the program because:
+    Entry point for implicit type library 'react-native'
+error TS2688: Cannot find type definition file for 'supertest'.
+  The file is in the program because:
+    Entry point for implicit type library 'supertest'
